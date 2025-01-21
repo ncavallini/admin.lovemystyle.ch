@@ -1,4 +1,4 @@
-# /vendor/
+/vendor/
 .env
 /.vscode/
 /inc/config.php

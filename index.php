@@ -16,7 +16,7 @@ require_once __DIR__ . "/components/nav.php";
     }
 
     if (!Auth::is_page_allowed($page)) {
-        Utils::redirect("index.php?page=login");
+        Utils::redirect("index.php?page=login&returnTo=" . urlencode("index.php?page=$page"));
     }
 
     require_once __DIR__ . "/pages/$page.php";
