@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Sprain\SwissQrBill as QrBill;
 use Fpdf\Fpdf as FPDF;
+use Sprain\SwissQrBill as QrBill;
 
 
 require __DIR__ . '/../vendor/autoload.php';

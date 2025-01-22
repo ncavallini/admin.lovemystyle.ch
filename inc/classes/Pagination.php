@@ -63,5 +63,16 @@ class Pagination
         return $pageLinks;
     }
 
+    public static function build_search_query(string $q, array $columns): array
+{
+    if($q === "") return ['text' => "TRUE", 'params' => []];
+    $res = "";
+    for($i = 0; $i < count($columns); $i++) {
+        $res .= $columns[$i] . " LIKE ?";
+        if($i < count($columns) - 1) $res .= " OR ";
+    }
+    return ['text' => $res, 'params' => array_fill(0, count($columns), "%$q%")];
+}
+
 
 }

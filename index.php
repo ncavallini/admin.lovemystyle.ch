@@ -5,12 +5,21 @@ require_once __DIR__ . "/inc/inc.php";
 
 
 $page = $_GET['page'] ?? "home";
-require_once __DIR__ . "/components/nav.php";
+
+if(Auth::is_logged()) {
+    require_once __DIR__ . "/components/nav_user.php";
+}
+else {
+    require_once __DIR__ . "/components/nav_minimal.php";
+
+}
+
 ?>
 <br>
 <main id="main" class="container-fluid">
     <?php
-    if (!file_exists(__DIR__ . "/pages/$page.php")) {
+    $pagePath = __DIR__ . "/pages/" . str_replace("_", "/", $page) . ".php";
+    if (!file_exists($pagePath)) {
         Utils::print_error("La pagina richiesta non esiste.");
         goto footer;
     }
@@ -19,7 +28,7 @@ require_once __DIR__ . "/components/nav.php";
         Utils::redirect("index.php?page=login&returnTo=" . urlencode("index.php?page=$page"));
     }
 
-    require_once __DIR__ . "/pages/$page.php";
+    require_once $pagePath;
     ?>
 </main>
 

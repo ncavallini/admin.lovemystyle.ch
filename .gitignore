@@ -1,4 +1,5 @@
 /vendor/
 .env
 /.vscode/
+/.idea/
 /inc/config.php
