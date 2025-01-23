@@ -1,6 +1,10 @@
 <?php
+
+use Brick\PhoneNumber\PhoneNumber;
+use Brick\PhoneNumber\PhoneNumberFormat;
 class Utils
 {
+
     public static function print_error(string $message, bool $needs_bootstrap = false)
     {
 
@@ -27,45 +31,65 @@ class Utils
             EOD;
     }
 
-   public static function print_table_row(?string $data, $class="", $colspan=1) {
-        if($data == null) $data = "";
+    public static function print_table_row(?string $data, $class = "", $colspan = 1)
+    {
+        if ($data == null)
+            $data = "";
         echo "<td class='$class text-nowrap' colspan='$colspan'>$data</td>";
     }
-    
-    public static function get_full_address(string $street, string $postcode, string $city, string $country): string {
+
+    public static function format_address(string $street = "", string $postcode = "", string $city = "", string | null $country = ""): string
+    {
+        if(empty($country)) return "";
         return "$street, $postcode $city, " . Country::iso2name($country);
     }
-    
-    
+
+
     public static function get_salutation(string $gender)
     {
-        if($gender === "M") return "Egregio Signor";
-        else if($gender === "F") return "Gentile Signora";
-        else return "Spettabile";
+        if ($gender === "M")
+            return "Egregio Signor";
+        else if ($gender === "F")
+            return "Gentile Signora";
+        else
+            return "Spettabile";
     }
-    
-    public static function format_phone_number(string $phone): string {
-        if($phone === "") return "-";
+
+    public static function format_phone_number(string $phone): string
+    {
+        if (empty($phone))
+            return "-";
         return (PhoneNumber::parse($phone))->format(PhoneNumberFormat::INTERNATIONAL) ?? "-";
     }
-    
-    public static function dropdown(array $items, string $divClass = 'dropdown', string $button = "<i class='fa-solid fa-gear'></i>") {
+
+    public static function get_phone_regex() {
+            return "\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$";
+    }
+
+    public static function dropdown(array $items, string $divClass = 'dropdown', string $button = "<i class='fa-solid fa-gear'></i>")
+    {
         $str = <<<EOF
         <div class='$divClass'>
         <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown">$button</button>
         <ul class="dropdown-menu">
     EOF;
-    
-        foreach($items as $key => $value) {
-            if($value === "DIVIDER") {
+
+        foreach ($items as $key => $value) {
+            if ($value === "DIVIDER") {
                 $str .= "<li><hr class='dropdown-divider'></li>";
-            }
-            else $str .= "<li><a class='dropdown-item' href='$value'>$key</a></li>";
+            } else
+                $str .= "<li><a class='dropdown-item' href='$value'>$key</a></li>";
         }
-    
+
         $str .= "</div>";
         return $str;
     }
-    
+
+    public static function format_date(string $date_mysql)
+    {
+        $date = new DateTime($date_mysql);
+        return $date->format("d/m/Y");
+    }
+
 }
 ?>

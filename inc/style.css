@@ -6,7 +6,10 @@ a {
     text-decoration: none;
 }
 
+label {
+    font-weight: bold;
+}
 
 .tt {
-    font-size: "Fira Code", "Courier New", monospace;
+    font-family: "Fira Code", "Consolas", "Courier New", monospace;
 }

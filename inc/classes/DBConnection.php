@@ -19,7 +19,7 @@ class DBConnection
         if (self::$connection != null)
             return self::$connection;
         self::$connection = new PDO(self::get_dsn(), $CONFIG['DB_USERNAME'], $CONFIG['DB_PASSWORD'], [
-            //PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+            // PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
         return self::$connection;

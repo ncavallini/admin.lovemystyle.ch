@@ -6,10 +6,9 @@ require_once __DIR__ . "/inc/inc.php";
 
 $page = $_GET['page'] ?? "home";
 
-if(Auth::is_logged()) {
+if (Auth::is_logged()) {
     require_once __DIR__ . "/components/nav_user.php";
-}
-else {
+} else {
     require_once __DIR__ . "/components/nav_minimal.php";
 
 }

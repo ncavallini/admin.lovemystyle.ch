@@ -18,15 +18,14 @@ class QRInvoiceUtils
         string $invoice_number,
         string $currency,
         float $amount
-    ): string
-    {
+    ): string {
 
-// This is an example of how to create a qr bill with a reference in SCOR format instead of TYPE_QR.
+        // This is an example of how to create a qr bill with a reference in SCOR format instead of TYPE_QR.
 
-// Create a new instance of QrBill, containing default headers with fixed values
+        // Create a new instance of QrBill, containing default headers with fixed values
         $qrBill = QrBill\QrBill::create();
 
-// Add creditor information
+        // Add creditor information
 // Who will receive the payment and to which bank account?
         $qrBill->setCreditor(
             QrBill\DataGroup\Element\CombinedAddress::create(
@@ -39,11 +38,11 @@ class QRInvoiceUtils
 
         $qrBill->setCreditorInformation(
             QrBill\DataGroup\Element\CreditorInformation::create(
-                $GLOBALS['CONFIG']['INVOICES_IBAN'] 
+                $GLOBALS['CONFIG']['INVOICES_IBAN']
             )
         );
 
-// Add debtor information
+        // Add debtor information
 // Who has to pay the invoice? This part is optional.
 //
 // Notice how you can use two different styles of addresses: CombinedAddress or StructuredAddress.
@@ -57,7 +56,7 @@ class QRInvoiceUtils
             )
         );
 
-// Add payment amount information
+        // Add payment amount information
 // What amount is to be paid?
         $qrBill->setPaymentAmountInformation(
             QrBill\DataGroup\Element\PaymentAmountInformation::create(
@@ -66,29 +65,29 @@ class QRInvoiceUtils
             )
         );
 
- // Add payment reference
+        // Add payment reference
 // This is what you will need to identify incoming payments.
         $qrBill->setPaymentReference(
             QrBill\DataGroup\Element\PaymentReference::create(
                 QrBill\DataGroup\Element\PaymentReference::TYPE_NON,
-               # QrBill\Reference\RfCreditorReferenceGenerator::generate(str_replace("/", "A", $invoice_number))
+                # QrBill\Reference\RfCreditorReferenceGenerator::generate(str_replace("/", "A", $invoice_number))
             )
         );
 
-// Optionally, add some human-readable information about what the bill is for.
+        // Optionally, add some human-readable information about what the bill is for.
         $qrBill->setAdditionalInformation(
             QrBill\DataGroup\Element\AdditionalInformation::create(
                 "Fattura PCN Group $invoice_number"
             )
         );
 
-// Time to output something!
+        // Time to output something!
 //
 // Get the QR code image  …
-            $fdpf = new FPDF();
-            $fdpf->AddPage();
-            $output = new QrBill\PaymentPart\Output\FpdfOutput\FpdfOutput($qrBill, 'it', $fdpf);
-            $output->setPrintable(false)->getPaymentPart();
-            return $fdpf->Output("S");
+        $fdpf = new FPDF();
+        $fdpf->AddPage();
+        $output = new QrBill\PaymentPart\Output\FpdfOutput\FpdfOutput($qrBill, 'it', $fdpf);
+        $output->setPrintable(false)->getPaymentPart();
+        return $fdpf->Output("S");
     }
 }

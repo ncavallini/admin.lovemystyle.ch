@@ -252,7 +252,8 @@ class Country
 
     private static array $reverse;
 
-    private static function reverse_array(): void {
+    private static function reverse_array(): void
+    {
         self::$reverse = [];
         foreach (self::$countries as $key => $value) {
             self::$reverse[$value] = $key;
@@ -262,21 +263,28 @@ class Country
 
     public static function iso2name(string $iso): string
     {
-        if(array_key_exists($iso, self::$countries)) return self::$countries[$iso];
-        else throw new Error("Country with ISO Code $iso does not exist.");
+        if (array_key_exists($iso, self::$countries))
+            return self::$countries[$iso];
+        else
+            throw new Error("Country with ISO Code $iso does not exist.");
     }
 
 
-    public static function name2iso(string $name) {
-        if(self::$reverse == null) self::reverse_array();
-        if(array_key_exists($name, self::$reverse)) return self::$reverse[$name];
-        else throw new Error("Invalid country '$name'.");
-     }
+    public static function name2iso(string $name)
+    {
+        if (self::$reverse == null)
+            self::reverse_array();
+        if (array_key_exists($name, self::$reverse))
+            return self::$reverse[$name];
+        else
+            throw new Error("Invalid country '$name'.");
+    }
 
-     public static function options(string $selected = '') :void {
+    public static function options(string $selected = ''): void
+    {
         foreach (self::$countries as $key => $val) {
             $sel = $selected == $key ? "selected" : "";
             echo "<option value='$key' $sel>$val</option>";
         }
-     }
+    }
 }

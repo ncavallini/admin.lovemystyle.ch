@@ -9,8 +9,9 @@ class MoneyUtils
     private static ?array $currencies = null;
     private static ?ISOCurrencies $isoCurrencies;
 
-    public static function get_currencies(): array {
-        if(self::$currencies === null) {
+    public static function get_currencies(): array
+    {
+        if (self::$currencies === null) {
             $obj = new ISOCurrencies();
             self::$isoCurrencies = $obj;
             self::$currencies = [];
@@ -22,7 +23,8 @@ class MoneyUtils
     }
 
 
-    public static function options($selected = "") {
+    public static function options($selected = "")
+    {
         $currencies = /*self::get_currencies()*/ ['CHF', 'EUR'];
         foreach ($currencies as $currency) {
             $selected_attr = $currency === $selected ? "selected" : "";
@@ -30,22 +32,26 @@ class MoneyUtils
         }
     }
 
-    public static function format_price(Money\Money $price): string {
+    public static function format_price(Money\Money $price): string
+    {
         self::get_currencies();
         $formatter = new Money\Formatter\DecimalMoneyFormatter(self::$isoCurrencies);
         return $formatter->format($price);
     }
 
-    public static function format_price_int(?int $price, string $currency): string {
+    public static function format_price_int(?int $price, string $currency): string
+    {
         self::get_currencies();
-        if(empty($price)) $price = 0;
-       $money = new Money\Money($price, new Money\Currency($currency));
-       $formatter = new Money\Formatter\DecimalMoneyFormatter(self::$isoCurrencies);
-         return $formatter->format($money);
+        if (empty($price))
+            $price = 0;
+        $money = new Money\Money($price, new Money\Currency($currency));
+        $formatter = new Money\Formatter\DecimalMoneyFormatter(self::$isoCurrencies);
+        return $formatter->format($money);
     }
 
 
-    public static function multiply(int $price, int|float $quantity, string $currency): Money\Money {
+    public static function multiply(int $price, int|float $quantity, string $currency): Money\Money
+    {
         return (new Money\Money($price, new Money\Currency($currency)))->multiply(floatval($quantity));
     }
 

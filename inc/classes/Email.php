@@ -15,10 +15,9 @@ class Email
         string $message,
         array $file_attachments = [],  // [[ 'path' => 'path/to/file', 'name' => 'filename', 'type' => 'application/pdf']]
         array $string_attachments = [] // [[ 'content' => 'string', 'name' => 'filename', 'type' => 'application/pdf']]
-    ): bool
-    {
-        if(!isset($_SESSION['user'])) {
-            Utils::print_error( "Errore invio email: utente non loggato");
+    ): bool {
+        if (!isset($_SESSION['user'])) {
+            Utils::print_error("Errore invio email: utente non loggato");
             return false;
         }
 
@@ -34,7 +33,7 @@ class Email
             $mail->Port = $GLOBALS['CONFIG']['SMTP_PORT'];
             $mail->SMTPDebug = $GLOBALS['CONFIG']['SMTP_DEBUG'];
 
-            $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'],  html_entity_decode($_SESSION['user']['first_name']) . ' ' . html_entity_decode($_SESSION['user']['last_name']));
+            $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], html_entity_decode($_SESSION['user']['first_name']) . ' ' . html_entity_decode($_SESSION['user']['last_name']));
             $mail->addAddress($to);
             $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
 
@@ -53,26 +52,26 @@ class Email
             }
 
             if (!$mail->send()) {
-                Utils::print_error( "Errore invio email: " . $mail->ErrorInfo);
+                Utils::print_error("Errore invio email: " . $mail->ErrorInfo);
                 return false;
             } else {
                 return true;
             }
         } catch (Exception $e) {
-            Utils::print_error( "Errore invio email: " . $e->getMessage());
+            Utils::print_error("Errore invio email: " . $e->getMessage());
             return false;
         }
     }
 
-   /* public static function get_file_as_string(string $path): string {
-        $http = HttpClient::get_client();
+    /* public static function get_file_as_string(string $path): string {
+         $http = HttpClient::get_client();
 
-        $response = $http->get($path, [
-            'headers' => [
-                'Cookie' => "PHPSESSID=" . session_id()
-            ]
-        ]);
-        return $response->getBody()->getContents();
-    }
-*/
+         $response = $http->get($path, [
+             'headers' => [
+                 'Cookie' => "PHPSESSID=" . session_id()
+             ]
+         ]);
+         return $response->getBody()->getContents();
+     }
+ */
 }
