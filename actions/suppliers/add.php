@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
-$sql = "INSERT INTO suppliers VALUES (UUID(), :name, :street, :postcode, :city, :country, :tel, :email, :vat_number)";
+$sql = "INSERT INTO suppliers VALUES (UUID(), :name, :street, :postcode, :city, :country, :tel, :email, :vat_number, :iban)";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
     ":name" => $_POST['name'],
@@ -12,6 +12,7 @@ $res = $stmt->execute([
     ":tel" => $_POST['tel'] ?? null,
     ":email" => $_POST['email'],
     ":vat_number" => $_POST['vat_number'] ?? null,
+    ":iban" => $_POST['iban'] ?? null
 ]);
 
 if(!$res) {

@@ -57,9 +57,11 @@ if(!$res) {
                 <a href="https://ec.europa.eu/taxation_customs/vies/#/vat-validation" target="_blank">Verifica VIES (UE)</a>
             </div>
     </div>
+    <br>
+    <label for="iban">IBAN</label>
+    <input type="text" class="form-control" name="iban" placeholder="IBAN" maxlength="34" value="<?php echo $supplier['iban'] ?>">
 
     <br>
-
     <button type="submit" class="btn btn-primary">Salva Fornitore</button>
 
 <?php end: ?>

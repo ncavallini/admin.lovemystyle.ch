@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
-$sql = "UPDATE suppliers SET name = :name, street = :street, postcode = :postcode, city = :city, country = :country, tel = :tel, email = :email, vat_number = :vat_number WHERE supplier_id = :supplier_id";
+$sql = "UPDATE suppliers SET name = :name, street = :street, postcode = :postcode, city = :city, country = :country, tel = :tel, email = :email, vat_number = :vat_number, iban = :iban WHERE supplier_id = :supplier_id";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
     ":supplier_id" => $_POST['supplier_id'],
@@ -13,6 +13,7 @@ $res = $stmt->execute([
     ":tel" => $_POST["tel"],
     ":email" => $_POST["email"],
     ":vat_number" => $_POST["vat_number"] ?? null,
+    ":iban" => $_POST["iban"] ?? null
 ]);
 
 if(!$res) {

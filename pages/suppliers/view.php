@@ -31,6 +31,7 @@ $suppliers = $stmt->fetchAll();
                 <th>Telefono</th>
                 <th>E-mail</th>
                 <th>Partita IVA</th>
+                <th>IBAN</th>
                 <th>Azioni</th>
             </tr>
         </thead>
@@ -43,6 +44,7 @@ $suppliers = $stmt->fetchAll();
                 Utils::print_table_row(Utils::format_phone_number($supplier['tel']));
                 Utils::print_table_row($supplier['email']);
                 Utils::print_table_row($supplier['vat_number']);
+                Utils::print_table_row(Utils::format_iban($supplier['iban']));
                 Utils::print_table_row(data: <<<EOD
                 <a href="index.php?page=suppliers_edit&supplier_id={$supplier['supplier_id']}"  class="btn btn-outline-primary btn-sm" title='Modifica'><i class="fa-solid fa-pen"></i></a>
                 <a href="mailto:{$supplier['email']}"  class="btn btn-outline-primary btn-sm" title='Contatta via e-mail'><i class="fa-solid fa-envelope"></i></a>
