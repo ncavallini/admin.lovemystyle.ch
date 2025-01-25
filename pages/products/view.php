@@ -3,8 +3,8 @@ $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $orderBy = $_GET["order_by"]  ?? "name";
 $orderDir = $_GET["order_dir"]  ?? ($orderBy === "name" ? "ASC" : "DESC");
-$searchQuery = Pagination::build_search_query($q, ["product_id", "name"]);
-$sql = "SELECT * FROM products WHERE " . $searchQuery['text'] . " ORDER BY $orderBy $orderDir";
+$searchQuery = Pagination::build_search_query($q, ["product_id", "p.name"]);
+$sql = "SELECT p.*, s.name AS supplier_name FROM products p JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'] . " ORDER BY p.$orderBy $orderDir";
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());
@@ -32,12 +32,41 @@ $products = $stmt->fetchAll();
                 <th>Nome</th>
                 <th>Fornitore</th>
                 <th>Prezzo (CHF)</th>
-                <th>IVA (%)</th>
                 <th>Varianti</th>
                 <th>Azioni</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+            <?php
+                foreach ($products as $product) {
+                    Utils::print_table_row("<span class='tt'>{$product['product_id']}</span>");
+                    Utils::print_table_row($product['name']);
+                    Utils::print_table_row($product['supplier_name']);
+                    Utils::print_table_row(Utils::format_price($product['price']));
+                    Utils::print_table_row("<a href='index.php?page=variants_view&product_id={$product['product_id']}'  class='btn btn-outline-primary btn-sm' title='Varianti'><i class='fa-solid fa-shirt'></i></a>");
+                    Utils::print_table_row(data: <<<EOD
+                    <a href="index.php?page=products_edit&product_id={$product['product_id']}"  class="btn btn-outline-primary btn-sm" title='Modifica'><i class="fa-solid fa-pen"></i></a>
+                    <a onclick="deleteProduct('{$product['product_id']}')" class="btn btn-outline-danger btn-sm" title='Elimina'><i class="fa-solid fa-trash"></i></a>
+    EOD
+                    );
+    
+                }
+            ?>
+        </tbody>
         </table>
         </div>
     
+<script>
+    function deleteProduct(product_id) {
+        bootbox.confirm({
+            title: "Elimina Prodotto",
+            message: "Sei sicuro di voler eliminare il prodotto e tutte le sue varianti?",
+            
+            callback: function(result) {
+                if(result) {
+                    window.location.href = "/actions/products/delete.php?product_id=" + product_id;
+                }
+            }
+        })
+    }
+</script>

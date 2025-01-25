@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . "/MoneyUtils.php";
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberFormat;
 class Utils
@@ -103,6 +103,14 @@ class Utils
     {
         $date = new DateTime($date_mysql);
         return $date->format("d/m/Y");
+    }
+
+    public static function price_to_db(float $price): int {
+        return (int) ($price * 100);
+    }
+
+    public static function format_price(int $price): string {
+        return MoneyUtils::format_price_int($price, "CHF");
     }
 
 }

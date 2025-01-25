@@ -18,4 +18,21 @@ class InternalNumbers
 
         return $candidate;
     }
+
+    public static function get_product_number()
+    {
+        do {
+            $candidate = self::get_random_number(8);
+            $dbconnection = DBConnection::get_db_connection();
+            $sql = "SELECT * FROM products WHERE product_id = ?";
+            $stmt = $dbconnection->prepare($sql);
+            $stmt->execute([$candidate]);
+        } while ($stmt->rowCount() > 0);
+
+        return $candidate;
+    }
+
+    public static function get_sku(int $product_id, int $variant_id) {
+        return $product_id . "-" . $variant_id;
+    }
 }
