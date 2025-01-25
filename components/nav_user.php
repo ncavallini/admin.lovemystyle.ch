@@ -13,6 +13,9 @@
            <a class="nav-link" href="index.php?page=products_view">Prodotti</a>
         </li>
         <li class="nav-item">
+           <a class="nav-link" href="index.php?page=suppliers_view">Fornitori</a>
+        </li>
+        <li class="nav-item">
            <a class="nav-link" href="index.php?page=customers_view">Clienti</a>
         </li>
         

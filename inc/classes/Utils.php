@@ -55,11 +55,15 @@ class Utils
             return "Spettabile";
     }
 
-    public static function format_phone_number(string $phone): string
+    public static function format_phone_number(string $phone, bool $tel_link = false): string
     {
         if (empty($phone))
             return "-";
-        return (PhoneNumber::parse($phone))->format(PhoneNumberFormat::INTERNATIONAL) ?? "-";
+        $formatted = (PhoneNumber::parse($phone))->format(PhoneNumberFormat::INTERNATIONAL) ?? "-";
+        if ($tel_link) {
+            return "<a href='tel:$phone'>$formatted</a>";
+        }
+        return $formatted ;
     }
 
     public static function get_phone_regex() {

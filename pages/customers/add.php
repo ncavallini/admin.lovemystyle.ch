@@ -40,6 +40,7 @@
     </div>
     <br>
 
+    <label for="country">Paese</label>
     <select name="country" class="form-select">
         <option value="" selected disabled>Seleziona Paese</option>
         <option value="CH">Svizzera</option>

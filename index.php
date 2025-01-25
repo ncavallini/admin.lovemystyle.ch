@@ -35,3 +35,7 @@ if (Auth::is_logged()) {
 footer:
 require_once __DIR__ . "/components/footer.php";
 ?>
+
+<script>
+    JsBarcode(".barcode").init();
+</script>

@@ -52,7 +52,8 @@
         </div>
     </div>
     <br>
-
+    
+    <label for="country">Paese</label>
     <select name="country" class="form-select">
         <option value="CH">Svizzera</option>
         <?php 
