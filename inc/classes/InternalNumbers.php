@@ -33,6 +33,7 @@ class InternalNumbers
     }
 
     public static function get_sku(int $product_id, int $variant_id) {
-        return $product_id . "-" . $variant_id;
+        $padded_variant_id = str_repeat("0", 4 - strlen($variant_id)) . $variant_id;
+        return $product_id . "-" . $padded_variant_id;
     }
 }

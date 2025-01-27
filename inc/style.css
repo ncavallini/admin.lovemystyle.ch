@@ -13,3 +13,10 @@ label {
 .tt {
     font-family: "Fira Code", "Consolas", "Courier New", monospace;
 }
+
+.red {
+    color: red;
+}
+.b {
+    font-weight: bold;
+}

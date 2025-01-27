@@ -12,7 +12,7 @@ class BarcodeGenerator {
                 jsbarcode-value="$data"
                 jsbarcode-textmargin="0"
                 jsbarcode-height="$height"
-                "
+                
                 >
                 </svg>
             EOD;

@@ -3,6 +3,7 @@
         "phpmailer/phpmailer": "^6.9",
         "mpdf/mpdf": "^8.2",
         "moneyphp/money": "^4.6",
-        "brick/phonenumber": "^0.6.0"
+        "brick/phonenumber": "^0.6.0",
+        "guzzlehttp/guzzle": "^7.0"
     }
 }

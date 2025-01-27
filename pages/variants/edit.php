@@ -1,37 +1,39 @@
 <?php
     $productId = $_GET['product_id'] ?? "";
+    $variantId = $_GET['variant_id'] ?? "";
     $dbconnection = DBConnection::get_db_connection();
-    $sql = "SELECT * FROM products WHERE product_id = ?";
+    $sql = "SELECT * FROM product_variants WHERE product_id = ? AND variant_id = ?";
     $stmt = $dbconnection->prepare($sql);
-    $stmt->execute([$productId]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute([$productId, $variantId]);
+    $variant = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if(!$product) {
-        Utils::print_error("Prodotto non trovato.");
+    if(!$variant) {
+        Utils::print_error("Variante non trovata.");
         goto end;
     }
 ?>
 
-<h1>Aggiungi Variante <small>(Prodotto: <i><?php echo $product['name'] ?></i> - <span class="tt"><?php echo $product['product_id'] ?></span>)</small> </h1>
+<h1>Modifica Variante <small><span class="tt">(<?php echo InternalNumbers::get_sku($productId, $variantId) ?>)</span></small> </h1>
 
-<form action="actions/variants/add.php" method="POST">
+<form action="actions/variants/edit.php" method="POST">
     <input type="hidden" name="product_id" value="<?php echo $productId ?>">
+    <input type="hidden" name="variant_id" value="<?php echo $variantId ?>">
     
     <label for="color">Colore</label>
-    <input type="text" name="color" class="form-control" placeholder="Colore">
+    <input type="text" name="color" class="form-control" placeholder="Colore" value="<?php echo $variant["color"] ?>">
     <br>
 
     <label for="size">Taglia</label>
     <select name="size" id="size-select" class="form-select">
-        <option></option> <!-- DO NOT REMOVE. FOR PLACEHOLDER -->
+        <option value="<?php echo $variant["size"] ?>"><?php echo $variant["size"] ?></option>
     </select>
     <br>
 
     <label for="stock">Pezzi a magazzino (stock)</label>
-    <input type="number" name="stock" class="form-control" placeholder="Pezzi a magazzino (stock)" min="0" required>
+    <input type="number" name="stock" class="form-control" placeholder="Pezzi a magazzino (stock)" min="0"  value="<?php echo $variant["stock"] ?>" required>
     <br>
 
-    <button type="submit" class="btn btn-primary">Aggiungi variante</button>
+    <button type="submit" class="btn btn-primary">Salva variante</button>
 </form>
 
 <script>
