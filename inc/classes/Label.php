@@ -20,7 +20,21 @@ class Label {
        $this->size = $size;
        $this->sku = $sku;
        $this->price = $price;
-       $this->httpClient = new Client(['base_uri'=> $GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'], "timeout" => 2.0]);
+       $this->httpClient = POSHttpClient::get_http_client();
+   }
+
+   public static function get_from_variant(int|string $productId, int|string $variantId) {
+    $dbconnection = DBConnection::get_db_connection();
+    $sql = "SELECT v.*, p.*, s.name AS supplier_name FROM product_variants v JOIN products p USING(product_id) JOIN suppliers s USING(supplier_id) WHERE product_id = ? AND variant_id = ?";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([$productId, $variantId]);
+    $variant = $stmt->fetch();
+    if(!$variant) {
+        throw new Error("Variante non trovata.");
+    }
+    $sku = InternalNumbers::get_sku($productId, $variantId);
+    $label = new Label($variant['name'], $variant["supplier_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
+    return $label;
    }
 
    private function get_xml() {
@@ -46,12 +60,15 @@ class Label {
    }
 
    public function print() {
-
+    
    }
 
    public function download() {
-
-
+    $xml = $this->get_xml();
+    header("Content-type: application/octet-stream");
+    header("Content-Disposition: attachment; filename=Etichetta-{$this->sku}.dymo");
+    header("Content-Length: " . strlen($xml));
+    echo $xml;
    }
 }
 ?>

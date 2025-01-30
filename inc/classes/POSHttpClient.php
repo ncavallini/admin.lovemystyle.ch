@@ -1,7 +1,7 @@
 <?php
 use GuzzleHttp\Client;
     class POSHttpClient {
-        private $client;
+        private static GuzzleHttp\Client | null $client = null;
 
         public static function get_http_client() {
             if(self::$client) {

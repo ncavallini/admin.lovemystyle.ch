@@ -40,7 +40,7 @@ class Email
             $mail->isHTML($GLOBALS['CONFIG']['SMTP_USE_HTML']);
             $mail->CharSet = 'UTF-8';
 
-            $mail->Subject = "[PCN Group] - " . $subject;
+            $mail->Subject = $subject;
             $mail->Body = $message;
 
             foreach ($file_attachments as $file) {

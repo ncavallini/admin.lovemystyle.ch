@@ -17,12 +17,36 @@ if (!$variant) {
 <p>&nbsp;</p>
 <h2>Anteprima di stampa</h2>
 <?php
-    $label = new Label($variant['name'], $variant["supplier_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
+      $label = Label::get_from_variant($productId, $variantId);
     echo "<div class='d-flex justify-content-center'>";
     echo $label->preview();
     echo "</div>";
 ?>
 <p>&nbsp;</p>
 <h2>Stampa e scarica</h2>
+
+<form action="actions/variants/print_label.php" method="POST">
+    <input type="hidden" name="product_id" value="<?php echo $productId ?>"></input>
+    <input type="hidden" name="variant_id" value="<?php echo $variantId ?>"></input>
+   <div class="row">
+    <div class="col-1">
+    <label for="copies">Copie *</label>
+    <input  type="number" name="copies" min="1" max="100" value="1" placeholder="N. copie" required class="form-control"></input>
+    </div>
+    <div class="col-3">
+        <label for="printer"></label>
+    </div>
+   </div>
+   <br>
+   <table>
+    <tbody>
+        <tr>
+            <td><button type="submit" class="btn btn-primary">Stampa</button></td>
+            <td><a href="actions/variants/download_label.php?product_id=<?php echo $productId ?>&variant_id=<?php echo $variantId ?>" class="btn btn-primary" target="_blank">Scarica</a></td>
+        </tr>
+    </tbody>
+   </table>
+</form>
+<p>&nbsp;</p>
 
 <?php end: ?>

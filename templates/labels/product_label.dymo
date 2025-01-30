@@ -145,7 +145,7 @@
           <Size>AutoFit</Size>
           <TextPosition>Bottom</TextPosition>
           <FontInfo>
-            <FontName>Arial</FontName>
+            <FontName>Consolas</FontName>
             <FontSize>10</FontSize>
             <IsBold>False</IsBold>
             <IsItalic>False</IsItalic>
