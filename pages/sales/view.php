@@ -1,8 +1,8 @@
 <?php
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
-$searchQuery = Pagination::build_search_query($q, ["sales_id", "username", "customer_id"]);
-$sql = "SELECT * FROM sales WHERE " . $searchQuery['text'] . " ORDER BY datetime DESC ";
+$searchQuery = Pagination::build_search_query($q, ["sale_id", "username", "customer_id"]);
+$sql = "SELECT * FROM sales WHERE " . $searchQuery['text'] . " ORDER BY closed_at DESC ";
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());
@@ -22,24 +22,39 @@ $sales = $stmt->fetchAll();
             <br>
             <button type="submit" class="btn btn-secondary "><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
+
     <input type="hidden" name="page" value="<?php echo $_GET['page'] ?>">
 </form>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Data e ora</th>
+                <th>Data e ora chiusura</th>
                 <th>Cliente</th>
                 <th>Totale (CHF)</th>
                 <th>Metodo di pagamento</th>
                 <th>Operatore</th>
-                <th>Visualizza</th>
+                <th>Visualizza / Modifica</th>
             </tr>
         </thead>
         <tbody>
             <?php
                 foreach ($sales as $sale) {
-        }
+                    $saleId = $sale['sale_id'];
+                    echo "<tr>";
+                    Utils::print_table_row(empty($sale['closed_at']) ? "-" : Utils::format_date($sale['closed_at']) );
+                    Utils::print_table_row($sale['customer_id'] ?? "<i>Esterno</i>");
+                    Utils::print_table_row(Utils::format_price($sale['total'] ?? 0));
+                    Utils::print_table_row($sale['payment_method'] ?? "-");
+                    Utils::print_table_row($sale['username']);
+                    if($sale['is_finalized']) {
+                        Utils::print_table_row("<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-primary'><i class='fa fa-eye'></i></a>");
+                    }
+                    else {
+                        Utils::print_table_row("<a href='/index.php?page=sales_add&sale_id=$saleId' class='btn btn-sm btn-primary'><i class='fa fa-edit'></i></a>");
+                    }
+                    echo "</tr>";
+                }
             ?>
         </tbody>
         </table>

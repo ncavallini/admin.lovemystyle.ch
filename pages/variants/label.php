@@ -28,21 +28,30 @@ if (!$variant) {
 <form action="actions/variants/print_label.php" method="POST">
     <input type="hidden" name="product_id" value="<?php echo $productId ?>"></input>
     <input type="hidden" name="variant_id" value="<?php echo $variantId ?>"></input>
-   <div class="row">
-    <div class="col-1">
+    <div class="d-flex align-items-center gap-3">
     <label for="copies">Copie *</label>
-    <input  type="number" name="copies" min="1" max="100" value="1" placeholder="N. copie" required class="form-control"></input>
-    </div>
-    <div class="col-3">
-        <label for="printer"></label>
-    </div>
-   </div>
+    <input type="number" name="copies" min="1" max="100" value="1" placeholder="N. copie" required class="form-control w-auto">
+
+    <label for="printer">Stampante *</label>
+    <select name="printer" class="form-select w-auto" required>
+        <?php
+            $client = POSHttpClient::get_http_client();
+            $printers = json_decode($client->get("/label/printers")->getBody()->getContents(), true)["printers"];
+            foreach ($printers as $printer) {
+                if($printer['IsConnected'] == "False") continue;
+                echo "<option value='" . $printer['Name'] . "'>" . $printer['Name'] . "</option>";
+            }
+        ?>
+    </select>
+</div>
+
+
    <br>
    <table>
     <tbody>
         <tr>
             <td><button type="submit" class="btn btn-primary">Stampa</button></td>
-            <td><a href="actions/variants/download_label.php?product_id=<?php echo $productId ?>&variant_id=<?php echo $variantId ?>" class="btn btn-primary" target="_blank">Scarica</a></td>
+            <td><a href="actions/variants/download_label.php?product_id=<?php echo $productId ?>&variant_id=<?php echo $variantId ?>" class="btn btn-secondary" target="_blank">Scarica</a></td>
         </tr>
     </tbody>
    </table>

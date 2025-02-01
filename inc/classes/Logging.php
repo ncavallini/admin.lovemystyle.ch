@@ -22,7 +22,7 @@ class Logging
      */
     public function __construct(
         string $logName = 'app.log',
-        string $logPath = __DIR__ . '/logs/',
+        string $logPath = __DIR__ . '/../../logs/',
         int $maxFiles = 7,
         int $logLevel = Logger::DEBUG
     ) {
@@ -45,6 +45,8 @@ class Logging
 
         // Attach handler to logger
         $this->logger->pushHandler($handler);
+
+        $this->registerExceptionHandler();
     }
 
     /**
@@ -122,12 +124,12 @@ class Logging
     public function handleException(Throwable $exception): void
     {
         $this->logException($exception);
-        Utils::print_error($exception, true);
-        http_response_code(500);
-        echo json_encode([
-            'error' => 'Internal Server Error',
-            'message' => $exception->getMessage()
-        ]);
+        if(Auth::is_admin()) {
+            Utils::print_error($exception, needs_bootstrap: true);
+        }
+        else {
+            Utils::print_error("Si è verificato un errore imprevisto. Contattare l'Amministratore di Sistema.", true);
+        }
         exit;
     }
 

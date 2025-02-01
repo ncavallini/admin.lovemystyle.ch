@@ -11,4 +11,5 @@ require_once __DIR__ . "/classes/BarcodeGenerator.php";
 require_once __DIR__ . "/classes/MoneyUtils.php";
 require_once __DIR__ . "/classes/Label.php";
 require_once __DIR__ . "/classes/POSHttpClient.php";
+require_once __DIR__ . "/classes/Logging.php";
 ?>

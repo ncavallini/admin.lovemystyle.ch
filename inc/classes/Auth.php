@@ -19,6 +19,10 @@ class Auth
             $sql = "UPDATE users SET last_login_at = NOW() WHERE username = ?";
             $stmt = $connection->prepare($sql);
             $stmt->execute([$username]);
+
+            $sql = "SELECT * FROM users WHERE username = ?";
+            $stmt = $connection->prepare($sql);
+            $stmt->execute([$username]);
             $user = $stmt->fetch();
             $_SESSION['user'] = $user;
 
@@ -32,7 +36,7 @@ class Auth
         $connection = DBConnection::get_db_connection();
         $sql = "INSERT INTO users (username, password_hash, is_admin) VALUES (?, ?, ?)";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([$username, password_hash($password), $is_admin]);
+        $stmt->execute([$username, password_hash($password, PASSWORD_BCRYPT), $is_admin]);
         return $stmt->rowCount() == 1;
     }
 
@@ -49,6 +53,10 @@ class Auth
     public static function get_username(): string
     {
         return $_SESSION['user']['username'];
+    }
+
+    public static function get_fullname(): string {
+        return $_SESSION['user']['first_name'] . " " . $_SESSION['user']['last_name'];
     }
 
     public static function is_page_allowed(string $page): bool

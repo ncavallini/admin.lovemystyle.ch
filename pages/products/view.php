@@ -49,7 +49,7 @@ $products = $stmt->fetchAll();
                     <a onclick="deleteProduct('{$product['product_id']}')" class="btn btn-outline-danger btn-sm" title='Elimina'><i class="fa-solid fa-trash"></i></a>
     EOD
                     );
-    
+    echo "</tr>";
                 }
             ?>
         </tbody>

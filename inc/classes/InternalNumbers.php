@@ -36,4 +36,14 @@ class InternalNumbers
         $padded_variant_id = str_repeat("0", 4 - strlen($variant_id)) . $variant_id;
         return $product_id . "-" . $padded_variant_id;
     }
+
+    public static function parse_sku(string $sku): array {
+        $pieces = explode("-", $sku);
+        $productId = $pieces[0];
+        $variantId = $pieces[1];
+        if(strlen($productId) != 8 || strlen($variantId) != 4) {
+            throw new Exception("Invalid SKU: $sku");
+        }
+        return [$productId, $variantId];
+    }
 }

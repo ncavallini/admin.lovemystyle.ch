@@ -37,7 +37,7 @@ class Label {
     return $label;
    }
 
-   private function get_xml() {
+   private function get_xml(): string {
         $xml = file_get_contents(__DIR__ . "/../../templates/labels/product_label.dymo");
         return Utils::str_replace([
             "%product_name" => $this->name,
@@ -59,7 +59,17 @@ class Label {
     
    }
 
-   public function print() {
+   public function print(string $printerName, int $copies = 1) {
+    $xml = $this->get_xml();
+    for($i = 1; $i <= $copies; $i++) {
+        $this->httpClient->post("/label/print", [
+            "json" => [
+                "xml" => $xml,
+                "printerName" => $printerName,
+                "copies" => $copies
+            ]
+        ]);
+    }
     
    }
 

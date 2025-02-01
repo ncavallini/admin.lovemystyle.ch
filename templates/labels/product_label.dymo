@@ -281,7 +281,7 @@
                 <Text>MARCA: %supplier - TG: %size - COL: %color</Text>
                 <FontInfo>
                   <FontName>Consolas</FontName>
-                  <FontSize>6</FontSize>
+                  <FontSize>8</FontSize>
                   <IsBold>False</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
