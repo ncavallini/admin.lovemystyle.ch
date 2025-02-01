@@ -49,6 +49,13 @@ class Label {
         ], str: $xml);
    }
 
+   public static function get_test_label_xml(): string {
+    $xml = file_get_contents(__DIR__ . "/../../templates/labels/test_label.dymo");
+    return Utils::str_replace([
+        "%datetime" => date("d/m/Y H:i:s"),
+    ], $xml);
+   }
+
    public function preview() {
         
         $base64 = $this->httpClient->request("POST",  "/label/preview", [

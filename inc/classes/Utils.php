@@ -117,5 +117,16 @@ class Utils
         return str_replace(array_keys($kv), array_values($kv), $str);
     }
 
+    public static function print_status_icon(string | int $status) {
+        if($status === "OK" || $status == 0) {
+            echo "<i class='fa-solid fa-check-circle text-success'></i>";
+        } else if($status === "WARN" || $status == 1) {
+            echo '<i class="fa-solid fa-triangle-exclamation text-warning"></i>';
+        } else if($status === "ERROR" || $status == 2) {
+            echo "<i class='fa-solid fa-times-circle text-danger'></i>";
+        }
+        else return;
+    }
+
 }
 ?>

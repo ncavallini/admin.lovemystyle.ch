@@ -36,11 +36,9 @@ if (!$variant) {
     <select name="printer" class="form-select w-auto" required>
         <?php
             $client = POSHttpClient::get_http_client();
-            $printers = json_decode($client->get("/label/printers")->getBody()->getContents(), true)["printers"];
-            foreach ($printers as $printer) {
-                if($printer['IsConnected'] == "False") continue;
-                echo "<option value='" . $printer['Name'] . "'>" . $printer['Name'] . "</option>";
-            }
+            $printer = json_decode($client->get("/label/printers")->getBody()->getContents(), true);
+                if($printer['IsConnected'] == "True") echo "<option value='" . $printer['Name'] . "'>" . $printer['Name'] . "</option>";
+            
         ?>
     </select>
 </div>

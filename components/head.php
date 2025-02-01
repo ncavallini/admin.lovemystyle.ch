@@ -36,5 +36,6 @@
 
 
     <link rel="stylesheet" href="inc/style.css">
+    <script src="/inc/util.js"></script>
 </head>
 <body>
