@@ -20,3 +20,17 @@ label {
 .b {
     font-weight: bold;
 }
+
+.underline {
+    text-decoration: underline;
+}
+
+.double-underline {
+    text-decoration: underline underline;
+}
+
+@media (max-width: 768px) {
+    footer {
+        position: relative !important;
+    }
+}

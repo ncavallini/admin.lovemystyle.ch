@@ -33,11 +33,19 @@ if (Auth::is_logged()) {
     ?>
 </main>
 
+
+
 <?php
 footer:
-require_once __DIR__ . "/components/footer.php";
+if(Auth::is_logged()) {
+    require_once __DIR__ . "/components/footer.php";
+}
 ?>
 
 <script>
+    document.body.setAttribute("data-pos-url", "<?php echo htmlspecialchars($GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'], ENT_QUOTES, 'UTF-8'); ?>")
     JsBarcode(".barcode").init();
 </script>
+<?php if(Auth::is_logged()): ?>
+<script src="/inc/pollPosStatus.js"></script>
+<?php endif; ?>

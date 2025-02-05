@@ -105,12 +105,21 @@ class Utils
         return $date->format("d/m/Y");
     }
 
+    public static function format_datetime(string $date_mysql)
+    {
+        $date = new DateTime($date_mysql);
+        return $date->format("d/m/Y, H:i:s");
+    }
+
     public static function price_to_db(float $price): int {
         return (int) ($price * 100);
     }
 
-    public static function format_price(int $price): string {
-        return MoneyUtils::format_price_int($price, "CHF");
+    public static function format_price(int|float $price): string {
+        if(is_float($price)) {
+            $price = round($price, 2, PHP_ROUND_HALF_UP);
+        }
+        return MoneyUtils::format_price_int((int)$price, "CHF");
     }
 
     public static function str_replace(array $kv, string $str) {

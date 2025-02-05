@@ -18,4 +18,5 @@ if(!$res) {
     die;
 }
 
-header("Location: /index.php?page=variants_view&product_id=$productId");
+header(header: "Location: /index.php?page=variants_view&product_id=$productId");
+?>

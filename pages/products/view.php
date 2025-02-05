@@ -1,10 +1,8 @@
 <?php
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
-$orderBy = $_GET["order_by"]  ?? "name";
-$orderDir = $_GET["order_dir"]  ?? ($orderBy === "name" ? "ASC" : "DESC");
-$searchQuery = Pagination::build_search_query($q, ["product_id", "p.name"]);
-$sql = "SELECT p.*, s.name AS supplier_name FROM products p JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'] . " ORDER BY p.$orderBy $orderDir";
+$searchQuery = Pagination::build_search_query($q, ["product_id", "p.name", "p.price", "s.name"]);
+$sql = "SELECT p.*, s.name AS supplier_name FROM products p JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'] . " ORDER BY last_edit_at DESC"; ;
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());
@@ -13,6 +11,7 @@ $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $products = $stmt->fetchAll();
 ?>
+
 <h1>Prodotti</h1>
 <p></p>
 <a href="/index.php?page=products_add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
@@ -24,10 +23,13 @@ $products = $stmt->fetchAll();
     </div>
     <input type="hidden" name="page" value="<?php echo $_GET['page'] ?>">
 </form>
+<p>&nbsp;</p>
+<a href="javascript:void(0)" id="check-select-all" onclick="toggleSelectAll(event)">Seleziona tutto</a>
 <div class="table-responsive">
-    <table class="table table-striped">
+    <table id="table" class="table table-striped">
         <thead>
             <tr>
+                <th style="width: 50px;">Seleziona</th>
                 <th>ID Prodotto</th>
                 <th>Nome</th>
                 <th>Fornitore</th>
@@ -39,6 +41,8 @@ $products = $stmt->fetchAll();
         <tbody>
             <?php
                 foreach ($products as $product) {
+                    echo "<tr data-product-id='{$product['product_id']}'>";
+                    Utils::print_table_row("<input type='checkbox' onclick='toggleProductSelection(event)' class='form-check-input product-checkbox'>");
                     Utils::print_table_row("<span class='tt'>{$product['product_id']}</span>");
                     Utils::print_table_row($product['name']);
                     Utils::print_table_row($product['supplier_name']);
@@ -55,6 +59,8 @@ $products = $stmt->fetchAll();
         </tbody>
         </table>
         </div>
+        <br>
+        <a class="btn btn-primary disabled" id="btn-apply-discount" href="javascript:void(0)">Applica sconto ai selezionati</a>
     
 <script>
     function deleteProduct(product_id) {
@@ -69,4 +75,74 @@ $products = $stmt->fetchAll();
             }
         })
     }
+
+
+    let selectedProducts = new Set();
+
+    function toggleSelectAll(event) {
+        const checkboxes = document.getElementsByClassName("product-checkbox");
+        for (let i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+            toggleProductSelection({target: checkboxes[i]});
+        }
+    }
+
+    function toggleProductSelection(event) {
+    const selectAll = document.getElementById("check-select-all");
+    selectAll.checked = false;
+    const table = document.getElementById("table");
+    const tr = event.target.closest("tr");
+    const btn = document.getElementById("btn-apply-discount");
+    const productId = tr.getAttribute("data-product-id");
+    if (event.target.checked) {
+        table.classList.remove("table-striped");
+        selectedProducts.add(productId);
+        tr.classList.add("table-primary");
+
+    } else {
+        table.classList.add("table-striped");
+        selectedProducts.delete(productId);
+        tr.classList.remove("table-primary");
+    }
+
+    if(selectedProducts.size > 0) {
+        btn.onclick = applyMassDiscount;
+        btn.classList.remove("disabled");
+    } else {
+        btn.onclick = null;
+        btn.classList.add("disabled");
+    }
+    console.log([...selectedProducts]); // Debug
+}
+
+function applyMassDiscount() {
+    bootbox.prompt({
+    title: "Applica sconto ai prodotti selezionati - Inserisci %",
+    inputType: 'number',
+    min: 0,
+    max: 100,
+    callback: function (result) {
+        if(!result) return;
+        const discount = parseInt(result);
+        fetch("/actions/products/mass_discount.php", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                product_ids: [...selectedProducts],
+                discount: discount
+            })
+
+        }).then(response => {
+            if(response.ok) {
+                window.location.reload();
+            } else {
+                bootbox.alert("<div class='alert alert-danger'>Errore durante l'applicazione dello sconto</div>");  
+            }
+        });
+    }
+});
+}
 </script>

@@ -26,33 +26,15 @@
             <li><b>Porta:</b> <span id="receiptPrinter-port"></span></li>
             <li><b>Cassetto: </b> <span id="drawer" class="badge rounded-pill "></span></li>
         </ul>
-        <a href="actions/pos/open_draw.php" class="btn btn-primary">Apri cassetto</a>
+        <a href="actions/pos/open_draw.php?nextAction=close" class="btn btn-primary">Apri cassetto</a>
         <a href="actions/pos/test_receipt_printer.php" class="btn btn-primary">Test stampante</a>
     </div>
 </div>
 
+<p>&nbsp;</p>
+<p><b>Ultimo aggiornamento: </b> <span id="polling-datetime"></span> </p>
+
 <script>
-    console.log("<?php echo $GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'] ?>/sse/status")
-    const eventSource = new EventSource("<?php echo $GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'] ?>/sse/status");
-
-    eventSource.onopen = () => {
-        console.log("Connected to the SSE server.");
-    };
-
-    eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        updateLabelPrinterUI(data);
-        updateReceiptPrinterUI(data);
-
-    }
-
-    eventSource.onerror = (err) => {
-        bootbox.alert("<div class='alert alert-danger'>Errore di connessione al sistema POS. Ricaricare la pagina.</div>", () => {
-            location.reload();
-        });
-    };
-
-
 
     function updateLabelPrinterUI(data) {
         const labelPrinterIcon = document.getElementById('labelPrinter-icon');
