@@ -70,7 +70,7 @@
             <IsVertical>False</IsVertical>
             <LineTextSpan>
               <TextSpan>
-                <Text>%product_name</Text>
+                <Text>%product_name - %brand</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
                   <FontSize>10</FontSize>
@@ -88,12 +88,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.0279676</X>
-              <Y>0.060000006</Y>
+              <X>0.23000003</X>
+              <Y>0.060000017</Y>
             </DYMOPoint>
             <Size>
-              <Width>1.4440653</Width>
-              <Height>0.1952907</Height>
+              <Width>3.1050947</Width>
+              <Height>0.19529074</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -131,6 +131,8 @@
           <BarcodeFormat>Code128B</BarcodeFormat>
           <Data>
             <MultiDataString>
+              <DataString></DataString>
+              <DataString></DataString>
               <DataString></DataString>
               <DataString></DataString>
               <DataString></DataString>
@@ -278,7 +280,7 @@
             <IsVertical>False</IsVertical>
             <LineTextSpan>
               <TextSpan>
-                <Text>MARCA: %supplier - TG: %size - COL: %color</Text>
+                <Text>TG: %size - COL: %color</Text>
                 <FontInfo>
                   <FontName>Consolas</FontName>
                   <FontSize>8</FontSize>

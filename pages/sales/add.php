@@ -5,7 +5,7 @@ if (!isset($_GET['sale_id']) && !isset($saleId)) {
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([Auth::get_username()]);
 
-    $sql = "SELECT sale_id FROM sales WHERE username = ? AND NOT is_finalized ORDER BY created_at DESC LIMIT 1";
+    $sql = "SELECT sale_id FROM sales WHERE username = ? AND status = 'open' ORDER BY created_at DESC LIMIT 1";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([Auth::get_username()]);
     $saleId = $stmt->fetchColumn(0);
@@ -26,7 +26,7 @@ $sale = $stmt->fetch();
 ?>
 
 <h1>Aggiungi / Modifica vendita</h1>
-<p><b>Operatore:</b> <?php echo Auth::get_username() ?></p>
+<p><b>Operatore:</b> <?php echo Auth::get_fullname() ?></p>
 <form id="form-new-item" action="actions/sales/add_item.php" method="POST">
     <input type="hidden" name="sale_id" value="<?php echo $saleId ?>">
     <label for="sku">Codice Articolo *</label>
@@ -109,6 +109,14 @@ $sale = $stmt->fetch();
     </div>
 </div>
 <p>&nbsp;</p>
+
+<h2>Cliente</h2>
+<p>Scannerizzare la carta cliente se disponibile oppure cercare un cliente per nome e cognome</p>
+
+<label for="customer_number">N. Cliente</label>
+<select name="customer_number" id="customer-select" class="form-control">
+</select>
+
 <hr>
 <p class="display-6 underline b" id="grand-total"></p>
 <p>&nbsp;</p> 
@@ -181,4 +189,43 @@ $sale = $stmt->fetch();
     }
 
     computeGrandTotal();
+
+
+    $(document).ready(() => {
+        $("#customer-select").select2({
+            language: "it",
+            theme: "bootstrap-5",
+            allowClear: true,
+            placeholder: "",
+            ajax: {
+                url: '/actions/customers/list.php',
+                dataType: 'json',
+                processResults: (data) => {
+                    return {
+                        results: data.results.map((customer) => {
+                            return {
+                                id: customer.customer_number,
+                                text: customer.first_name + " " + customer.last_name + " (" + new Date(customer.birth_date).toLocaleDateString() + ")"
+                            }
+                        })
+                    }
+                },
+            },
+        }).on("change", function(e) {
+    console.log(e.target.value);
+    const formData = new FormData();
+    formData.append("sale_id", "<?php echo $saleId ?>");
+    formData.append("customer_number", e.target.value);
+
+    fetch("/actions/sales/update_customer.php", {
+        method: "POST",
+        body: formData,
+        credentials: "include"
+    }).then(res => console.log(res));
+});
+    })
+
+
+
+    
 </script>

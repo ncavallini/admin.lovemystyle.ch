@@ -38,7 +38,11 @@
 
     function updateLabelPrinterUI(data) {
         const labelPrinterIcon = document.getElementById('labelPrinter-icon');
-        labelPrinterIcon.innerHTML = getStatusIcon(data.labelPrinter.isConnected ? "OK" : "ERROR");
+        if(!data.labelPrinter) {
+            labelPrinterIcon.innerHTML = getStatusIcon("ERROR");
+            return;
+        }
+        labelPrinterIcon.innerHTML = getStatusIcon(data.labelPrinter !== null && data.labelPrinter.isConnected !== null ? "OK" : "ERROR");
         const printerNameAndModel = document.getElementById('labelPrinter-printerNameAndModel');
         printerNameAndModel.innerText = data.labelPrinter.printerName + " (" + data.labelPrinter.modelName + ")";
 

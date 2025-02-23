@@ -13,6 +13,9 @@
            <a class="nav-link" href="index.php?page=products_view">Prodotti</a>
         </li>
         <li class="nav-item">
+           <a class="nav-link" href="index.php?page=brands_view">Brand</a>
+        </li>
+        <li class="nav-item">
            <a class="nav-link" href="index.php?page=suppliers_view">Fornitori</a>
         </li>
         <li class="nav-item">
@@ -21,20 +24,21 @@
         <li class="nav-item">
            <a class="nav-link" href="index.php?page=pos_view">Sistema di cassa</a>
         </li>
+        <?php if(Auth::is_owner(true)): ?>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
+            Amministrazione
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <?php if(Auth::is_admin()): ?>
+            <li><a class="dropdown-item" href="index.php?page=admin_logging">Log</a></li>
+            <?php endif ?>
+            <li><a class="dropdown-item" href="index.php?page=users_view">Utenti</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
+        <?php endif ?>
         <li class="nav-item">
           <a class="nav-link" href="actions/auth/logout.php">Logout</a>
         </li>

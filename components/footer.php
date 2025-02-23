@@ -20,6 +20,7 @@
         <div class="card-body d-flex justify-content-between">
             <p class="card-text mb-0">
                 Utente: <?php echo Auth::get_fullname() ?>
+                <a href="actions/auth/logout.php">Cambia utente</a>
             </p>
             <p class="text-end mb-0" id="datetime"></p>
         </div>

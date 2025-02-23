@@ -1,3 +1,7 @@
+body {
+    padding-bottom: 80px; /* Altezza approssimativa del footer */
+}
+
 h1 {
     padding-bottom: 10pt;
 }
@@ -27,6 +31,18 @@ label {
 
 .double-underline {
     text-decoration: underline underline;
+}
+
+.sale-totally_canceled {
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    text-decoration-color: red;
+}
+
+.sale-partially_canceled {
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    text-decoration-color: orange;
 }
 
 @media (max-width: 768px) {

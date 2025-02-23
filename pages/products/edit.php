@@ -3,7 +3,7 @@
     
     $productId = $_GET['product_id'] ?? "";
 
-    $sql = "SELECT p.*, s.supplier_id, s.name  AS supplier_name FROM products p JOIN suppliers s USING(supplier_id) WHERE product_id = ?";
+    $sql = "SELECT p.*, b.name  AS brand_name FROM products p JOIN brands b USING(brand_id) WHERE product_id = ?";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([$productId]);
     $product = $stmt->fetch();
@@ -23,8 +23,8 @@
     <label for="name">Nome</label>
     <input type="text" class="form-control" name="name" placeholder="Nome" value="<?php echo $product['name'] ?>" required>
     <br>
-    <label for="supplier">Fornitore</label>
-    <select name="supplier" id="supplier-select" class="form-select"></select>
+    <label for="brand">Brand</label>
+    <select name="brand" id="brand-select" class="form-select"></select>
     <br>
     <div class="row">
         <div class="col-6">
@@ -56,18 +56,18 @@
 
 <script>
     $(document).ready(() => {
-        $("#supplier-select").select2({
+        $("#brand-select").select2({
             language: "it",
             theme: "bootstrap-5",
             ajax: {
-                url: '/actions/suppliers/list.php',
+                url: '/actions/brand/list.php',
                 dataType: 'json'
             },
            
         })
     })
-    const selectedSupplier = {id: "<?php echo $product['supplier_id'] ?>", text: "<?php echo $product['supplier_name'] ?>"};
-    $("#supplier-select").append(new Option(selectedSupplier.text, selectedSupplier.id, true, true)).trigger('change');
+    const selectedBrand = {id: "<?php echo $product['brand_id'] ?>", text: "<?php echo $product['brand_name'] ?>"};
+    $("#brand-select").append(new Option(selectedBrand.text, selectedBrand.id, true, true)).trigger('change');
 </script>
 
 <?php end: ?>

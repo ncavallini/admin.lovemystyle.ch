@@ -28,7 +28,7 @@ class Logging
     ) {
         $this->logPath = rtrim($logPath, '/') . '/';
         $this->maxFiles = $maxFiles;
-        
+
         // Ensure log directory exists
         if (!file_exists($this->logPath)) {
             mkdir($this->logPath, 0777, true);
@@ -39,7 +39,7 @@ class Logging
 
         // Add RotatingFileHandler for daily log rotation
         $handler = new RotatingFileHandler($this->logPath . $logName, $this->maxFiles, $logLevel);
-        
+
         // Set JSON formatter
         $handler->setFormatter(new JsonFormatter());
 
@@ -97,14 +97,18 @@ class Logging
      * Log an exception.
      *
      * @param Throwable $exception
+     * @return string Correlation ID for the logged exception.
      */
-    public function logException(Throwable $exception): void
+    public function logException(Throwable $exception): string
     {
+        $correlationId = strtoupper(uniqid());
         $this->logger->error($exception->getMessage(), [
+            'correlationId' => $correlationId,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
             'trace' => $exception->getTraceAsString()
         ]);
+        return $correlationId;
     }
 
     /**
@@ -123,12 +127,11 @@ class Logging
      */
     public function handleException(Throwable $exception): void
     {
-        $this->logException($exception);
-        if(Auth::is_admin()) {
-            Utils::print_error($exception, needs_bootstrap: true);
-        }
-        else {
-            Utils::print_error("Si è verificato un errore imprevisto. Contattare l'Amministratore di Sistema.", true);
+        $correlationId = $this->logException($exception);
+        if (Auth::is_admin()) {
+            Utils::print_error($exception . "<hr><b>Correlation ID: </b> $correlationId", needs_bootstrap: true);
+        } else {
+            Utils::print_error("Si è verificato un errore imprevisto. Contattare l'Amministratore di Sistema.<hr><b>Correlation ID: </b> $correlationId", true);
         }
         exit;
     }
@@ -144,5 +147,23 @@ class Logging
     public function handleError(int $severity, string $message, string $file, int $line): void
     {
         throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+
+    public function get_logs(string $date): array
+    {
+        $path = $this->logPath . "app-$date.log";
+        if (!file_exists($path)) {
+            return [];
+        }
+        $logs = [];
+
+        $logs = [];
+        foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            $decoded = json_decode($line, true);
+            if ($decoded !== null) {
+                $logs[] = $decoded;
+            }
+        }
+        return $logs;
     }
 }

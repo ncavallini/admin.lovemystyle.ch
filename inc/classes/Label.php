@@ -6,16 +6,16 @@ use GuzzleHttp\Client;
 class Label {
 
    private string $name;
-   private string $supplier;
+   private string $brand;
    private string $color;
    private string $size;
    private string $sku;
    private int $price;
    private GuzzleHttp\Client $httpClient;
 
-   public function __construct(string $name, string $supplier, string $color, string $size, string $sku, int $price) {
+   public function __construct(string $name, string $brand, string $color, string $size, string $sku, int $price) {
        $this->name = $name;
-       $this->supplier = $supplier;
+       $this->brand = $brand;
        $this->color = $color;
        $this->size = $size;
        $this->sku = $sku;
@@ -25,7 +25,7 @@ class Label {
 
    public static function get_from_variant(int|string $productId, int|string $variantId) {
     $dbconnection = DBConnection::get_db_connection();
-    $sql = "SELECT v.*, p.*, s.name AS supplier_name FROM product_variants v JOIN products p USING(product_id) JOIN suppliers s USING(supplier_id) WHERE product_id = ? AND variant_id = ?";
+    $sql = "SELECT v.*, p.*, b.name AS brand_name FROM product_variants v JOIN products p USING(product_id) JOIN brands b USING(brand_id) WHERE product_id = ? AND variant_id = ?";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([$productId, $variantId]);
     $variant = $stmt->fetch();
@@ -33,7 +33,7 @@ class Label {
         throw new Error("Variante non trovata.");
     }
     $sku = InternalNumbers::get_sku($productId, $variantId);
-    $label = new Label($variant['name'], $variant["supplier_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
+    $label = new Label($variant['name'], $variant["brand_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
     return $label;
    }
 
@@ -41,7 +41,7 @@ class Label {
         $xml = file_get_contents(__DIR__ . "/../../templates/labels/product_label.dymo");
         return Utils::str_replace([
             "%product_name" => $this->name,
-            "%supplier" => $this->supplier,
+            "%brand" => $this->brand,
             "%size" => $this->size,
             "%color" => $this->color,
             "%sku" => $this->sku,

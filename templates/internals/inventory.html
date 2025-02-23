@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", "Arial", sans-serif;
+      }
+      h1.title {
+        text-align: center;
+        text-decoration: underline;
+        text-transform: uppercase;
+      }
+
+      .barcode {
+        padding: 1.5mm;
+        margin: 0;
+        vertical-align: top;
+        color: #000000;
+      }
+      .barcodecell {
+        text-align: center;
+        vertical-align: middle;
+        padding: 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse; /* Ensures borders don't double up */
+      }
+      th,
+      td {
+        border: 1px solid black; /* Adds border to each cell */
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2; /* Optional: Adds background color to headers */
+      }
+
+      .stock-0 {
+        color: #ff0000;
+        font-weight: bold;
+      }
+    </style>
+    <title>Inventario</title>
+  </head>
+  <body>
+    <h1 class="title">Inventario</h1>
+    %content
+
+    <htmlpagefooter name="footer">
+        Pagina {PAGENO} di {nb}
+    </htmlpagefooter>
+
+  </body>
+</html>

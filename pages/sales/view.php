@@ -1,12 +1,12 @@
 <?php
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
-$searchQuery = Pagination::build_search_query($q, ["sale_id", "username", "customer_id"]);
+$searchQuery = Pagination::build_search_query($q, ["sale_id", "username", "s.customer_id", "c.first_name", "c.last_name"]);
 $sql = "DELETE FROM sales WHERE sale_id NOT IN (SELECT DISTINCT sale_id FROM sales_items)";
 $stmt = $connection->prepare($sql);
 $stmt->execute([]);
 
-$sql = "SELECT * FROM sales WHERE " . $searchQuery['text'] . " ORDER BY closed_at DESC, created_at DESC";
+$sql = "SELECT s.*, c.first_name, c.last_name FROM sales s  LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY closed_at DESC, created_at DESC";
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());
@@ -39,25 +39,49 @@ $sales = $stmt->fetchAll();
                 <th>Totale (CHF)</th>
                 <th>Metodo di pagamento</th>
                 <th>Operatore</th>
-                <th>Visualizza / Modifica</th>
+                <th>Azioni</th>
             </tr>
         </thead>
         <tbody>
             <?php
                 foreach ($sales as $sale) {
                     $saleId = $sale['sale_id'];
-                    echo "<tr>";
+                    $total = 0;
+                    $sql = "SELECT SUM(quantity * price) FROM sales_items WHERE sale_id = ?";
+                    $stmt = $connection->prepare($sql);
+                    $stmt->execute([$saleId]);
+                    $total = $stmt->fetchColumn(0);
+                    $total = Utils::compute_discounted_price($total, $sale['discount'], $sale['discount_type']);
+                  
+                    echo "<tr class='sale-{$sale['status']}'>";
+
                     Utils::print_table_row(Utils::format_datetime($sale["created_at"]));
-                    Utils::print_table_row(empty($sale['closed_at']) ? "-" : "<b>" . Utils::format_date($sale['closed_at'])  . "</b>");
-                    Utils::print_table_row($sale['customer_id'] ?? "<i>Esterno</i>");
-                    Utils::print_table_row(data: '-');
-                    Utils::print_table_row($sale['payment_method'] ?? "-");
-                    Utils::print_table_row($sale['username']);
-                    if($sale['is_finalized']) {
-                        Utils::print_table_row("<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-primary'><i class='fa fa-eye'></i></a>");
+                    Utils::print_table_row(empty($sale['closed_at']) ? "-" : "<b>" . Utils::format_datetime($sale['closed_at'])  . "</b>");
+                    Utils::print_table_row(($sale['first_name'] != null) ? $sale['first_name'] . " " . $sale['last_name'] : "<i>Esterno</i>");
+                    Utils::print_table_row(Utils::format_price($total));
+                    Utils::print_table_row(strtoupper($sale['payment_method'] ?? "-") ?? "-");
+                    Utils::print_table_row(Auth::get_fullname_by_username($sale['username']));
+                    
+                    if($sale['status'] == "completed") {
+                        Utils::print_table_row(
+                            "<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Visualizza'>
+                                <i class='fa fa-eye'></i>
+                            </a> 
+                            &nbsp; 
+                            <a href='javascript:void(0)' onclick='askCancelType(\"{$saleId}\")' class='btn btn-sm btn-outline-danger' title='Storna'>
+                                <i class='fa fa-trash'></i>
+                            </a>"
+                        );
+                        
+                    }
+                    else if($sale['status'] == "open") {
+                        Utils::print_table_row("<a href='/index.php?page=sales_add&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Modifica'><i class='fa fa-edit'></i></a>");
                     }
                     else {
-                        Utils::print_table_row("<a href='/index.php?page=sales_add&sale_id=$saleId' class='btn btn-sm btn-primary'><i class='fa fa-edit'></i></a>");
+                        Utils::print_table_row(
+                            "<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Visualizza'>
+                                <i class='fa fa-eye'></i>
+                            </a> ");
                     }
                     echo "</tr>";
                 }
@@ -65,3 +89,34 @@ $sales = $stmt->fetchAll();
         </tbody>
         </table>
         </div>
+
+<script>
+    function askCancelType(sale_id) {
+        bootbox.prompt({
+            title: "Selezionare il tipo di storno",
+            message: "<div class='alert alert-primary'><i class='fa-solid fa-circle-info'></i> Lo storno parziale cancella la vendita in questione e ne crea una nuova copia modificabile.</div>",
+            size: "lg",
+            inputType: 'radio',
+            inputOptions: [
+                {
+                    text: 'Totale',
+                    value: 'total',
+                },
+                {
+                    text: 'Parziale',
+                    value: 'partial',
+                }
+            ],
+            callback: function (result) {
+                if (result) {
+                    if (result == "total") {
+                        window.location.href = "/actions/sales/cancel_total.php?sale_id=" + sale_id;
+                    }
+                    else {
+                        window.location.href = "/actions/sales/cancel_partial.php?sale_id=" + sale_id;
+                    }
+                }
+            }
+        })
+    }
+</script>

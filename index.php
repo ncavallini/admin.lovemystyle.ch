@@ -31,6 +31,8 @@ if (Auth::is_logged()) {
 
     require_once $pagePath;
     ?>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
 </main>
 
 
@@ -46,6 +48,6 @@ if(Auth::is_logged()) {
     document.body.setAttribute("data-pos-url", "<?php echo htmlspecialchars($GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'], ENT_QUOTES, 'UTF-8'); ?>")
     JsBarcode(".barcode").init();
 </script>
-<?php if(Auth::is_logged()): ?>
+<?php if(false && Auth::is_logged()): ?>
 <script src="/inc/pollPosStatus.js"></script>
 <?php endif; ?>

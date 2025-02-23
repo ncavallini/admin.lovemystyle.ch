@@ -2,7 +2,7 @@
 $productId = $_GET['product_id'] ?? "";
 $variantId = $_GET['variant_id'] ?? "";
 $dbconnection = DBConnection::get_db_connection();
-$sql = "SELECT v.*, p.*, s.name AS supplier_name FROM product_variants v JOIN products p USING(product_id) JOIN suppliers s USING(supplier_id) WHERE product_id = ? AND variant_id = ?";
+$sql = "SELECT v.*, p.*, b.name AS brand_name FROM product_variants v JOIN products p USING(product_id) JOIN brands b USING(brand_id) WHERE product_id = ? AND variant_id = ?";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$productId, $variantId]);
 $variant = $stmt->fetch();

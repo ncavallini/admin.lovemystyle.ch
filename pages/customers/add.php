@@ -13,13 +13,7 @@
     </div>
     
     <br>
-    <label for="gender">Genere *</label>
-    <select id="gender" name="gender" class="form-select" required>
-        <option selected value="" disabled>Scegli</option>
-        <option value="M">M</option>
-        <option value="F">F</option>
-    </select>
-    <br>
+    
 
     <label for="birth_date">Data di nascita</label>
     <input type="date" name="birth_date" class="form-control" max="<?php echo date("Y-m-d") ?>">
@@ -31,17 +25,17 @@
     <div class="row">
         <div class="col-4">
             <label for="postcode">CAP</label>
-            <input type="text" name="postcode" class="form-control" placeholder="CAP">
+            <input type="text" name="postcode" id="postcode-input" class="form-control" placeholder="CAP">
         </div>
         <div class="col-8">
             <label for="city">Città</label>
-            <input type="text" name="city" class="form-control" placeholder="Città">
+            <input type="text" name="city" id="city-input" class="form-control" placeholder="Città">
         </div>
     </div>
     <br>
 
     <label for="country">Paese</label>
-    <select name="country" class="form-select">
+    <select name="country" class="form-select" id="country-select">
         <option value="" selected disabled>Seleziona Paese</option>
         <option value="CH">Svizzera</option>
         <?php 
@@ -71,3 +65,18 @@
 
     <button type="submit" class="btn btn-primary">Aggiungi Cliente</button>
 </form>
+
+
+<script src="inc/postcode.js"></script>
+<script>
+    const postcodeInput = document.getElementById("postcode-input");
+    const cityInput = document.getElementById("city-input");
+    const countrySelect = document.getElementById("country-select");
+    postcodeInput.addEventListener("change", async function() {
+        const postcode = postcodeInput.value;
+        if (postcode.length < 4 || !(["CH", ""].includes(countrySelect.value))) {
+            return;
+        }
+       cityInput.value = await fetchCityFromPostCode(postcode);
+    });
+</script>

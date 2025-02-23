@@ -27,13 +27,7 @@
     </div>
     
     <br>
-    <label for="gender">Genere *</label>
-    <select id="gender" name="gender" class="form-select" required>
-        <option <?php if($customer['gender'] === "M") echo "selected" ?> value="M">M</option>
-        <option <?php if($customer['gender'] === "F") echo "selected" ?> value="F">F</option>
-    </select>
-    <br>
-
+    
     <label for="birth_date">Data di nascita</label>
     <input type="date" name="birth_date" class="form-control" max="<?php echo date("Y-m-d") ?>" value="<?php echo $customer['birth_date'] ?>">
     <br>

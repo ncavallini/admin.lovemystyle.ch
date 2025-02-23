@@ -1,5 +1,6 @@
 const POS_MIDDLEWARE_URL = document.body.getAttribute("data-pos-url");
 const SSE_URL = `${POS_MIDDLEWARE_URL}/status/sse`;
+console.log("SSE_URL:", SSE_URL);
 const MAX_RETRIES = 5
 let retryCount = 0;
 
@@ -17,6 +18,7 @@ function connectToSSE() {
         let posStatus;
         try {
              posStatus = JSON.parse(event.data);
+
 
             if(posStatus.errorLevel === 2 && sessionStorage.getItem('posAlertShown') !== 'true') {
                 sessionStorage.setItem('posAlertShown', 'true');

@@ -11,10 +11,16 @@ if( $stmt->rowCount() == 0 ) {
     die;
 }
 
-$sql = "INSERT INTO product_variants (product_id, color, size, stock) VALUES (:product_id, :color, :size, :stock)";
+$sql = "SELECT MAX(variant_id) FROM product_variants WHERE product_id = ?";
+$stmt = $dbconnection->prepare($sql);
+$stmt->execute([$productId]);
+$variantId = $stmt->fetchColumn() + 1;
+
+$sql = "INSERT INTO product_variants (product_id, variant_id, color, size, stock) VALUES (:product_id, :variant_id, :color, :size, :stock)";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([
     ":product_id" => $productId, 
+    ":variant_id" => $variantId,
     ":color" => $_POST['color'] ?? null, 
     ":size" => $_POST['size'] ?? null, 
     ":stock" => $_POST['stock'],

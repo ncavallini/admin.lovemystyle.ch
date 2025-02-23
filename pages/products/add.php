@@ -11,8 +11,8 @@
     <label for="name">Nome</label>
     <input type="text" class="form-control" name="name" placeholder="Nome" required>
     <br>
-    <label for="supplier">Fornitore</label>
-    <select name="supplier" id="supplier-select" class="form-select"></select>
+    <label for="brand">Brand</label>
+    <select name="brand" id="brand-select" class="form-select"></select>
     <br>
     <div class="row">
         <div class="col-6">
@@ -43,11 +43,11 @@
 
 <script>
     $(document).ready(() => {
-        $("#supplier-select").select2({
+        $("#brand-select").select2({
             language: "it",
             theme: "bootstrap-5",
             ajax: {
-                url: '/actions/suppliers/list.php',
+                url: '/actions/brands/list.php',
                 dataType: 'json'
             }
         })

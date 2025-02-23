@@ -1,8 +1,8 @@
 <?php
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
-$searchQuery = Pagination::build_search_query($q, ["product_id", "p.name", "p.price", "s.name"]);
-$sql = "SELECT p.*, s.name AS supplier_name FROM products p JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'] . " ORDER BY last_edit_at DESC"; ;
+$searchQuery = Pagination::build_search_query($q, ["product_id", "p.name", "p.price", "b.name"]);
+$sql = "SELECT p.*, b.name AS brand_name FROM products p JOIN brands b USING(brand_id) WHERE " . $searchQuery['text'] . " ORDER BY last_edit_at DESC"; ;
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());
@@ -15,6 +15,9 @@ $products = $stmt->fetchAll();
 <h1>Prodotti</h1>
 <p></p>
 <a href="/index.php?page=products_add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+<a href="/actions/products/print_inventory.php" class="btn btn-secondary"><i class="fa-solid fa-print"></i></a>
+<a href="/index.php?page=products_add" class="btn" style="background-color: #1D6F42; color: white;"><i class="fa-solid fa-file-excel"></i></a>
+
 <p>&nbsp;</p>
 <form action="/index.php" method="GET" style="display: flex; align-items: center;">
     <div class="input-group mb-3">
@@ -32,7 +35,7 @@ $products = $stmt->fetchAll();
                 <th style="width: 50px;">Seleziona</th>
                 <th>ID Prodotto</th>
                 <th>Nome</th>
-                <th>Fornitore</th>
+                <th>Brand</th>
                 <th>Prezzo (CHF)</th>
                 <th>Varianti</th>
                 <th>Azioni</th>
@@ -45,7 +48,7 @@ $products = $stmt->fetchAll();
                     Utils::print_table_row("<input type='checkbox' onclick='toggleProductSelection(event)' class='form-check-input product-checkbox'>");
                     Utils::print_table_row("<span class='tt'>{$product['product_id']}</span>");
                     Utils::print_table_row($product['name']);
-                    Utils::print_table_row($product['supplier_name']);
+                    Utils::print_table_row($product['brand_name']);
                     Utils::print_table_row(Utils::format_price($product['price']));
                     Utils::print_table_row("<a href='index.php?page=variants_view&product_id={$product['product_id']}'  class='btn btn-outline-primary btn-sm' title='Varianti'><i class='fa-solid fa-shirt'></i></a>");
                     Utils::print_table_row(data: <<<EOD

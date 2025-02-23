@@ -137,5 +137,62 @@ class Utils
         else return;
     }
 
+
+    public static function compute_discounted_price(int $subtotal, float $discount, string $discountType) {
+        if($discountType === "CHF") {
+            return $subtotal - $discount;
+        }
+        else {
+            return $subtotal * (1 - $discount / 100);
+        }
+    }
+
+    public static function format_pos(string $text): string {
+        return self::str_replace([
+            "à" => "a'",
+            "è" => "e'",
+            "ì", "i'",
+            "ò" => "o'",
+            "ù" => "u'",
+            "á" => "a'",
+            "é" => "e'",
+            "í" => "i'",
+            "ó" => "o'",
+            "ú" => "u'",
+            "À" => "A'",
+            "È" => "E'",
+            "Ì" => "I'",
+            "Ò" => "O'",
+            "Ù" => "U'",
+            "Á" => "A'",
+            "É" => "E'",
+            "Í" => "I'",
+            "Ó" => "O'",
+            "Ú" => "U'",
+            "ä" => "ae",
+            "ë" => "e",
+            "ï" => "i",
+            "ö" => "oe",
+            "ü" => "ue",
+            "Ä" => "Ae",
+            "Ë" => "E",
+            "Ï" => "I",
+            "Ö" => "Oe",
+            "Ü" => "Ue",
+
+        ], $text);
+    }
+
+    public static function uuidv4(): string {
+        $data = random_bytes(16);
+    // Set version to 0100
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    // Set bits 6-7 to 10
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    // Output the 36 character UUID.
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
 }
 ?>
