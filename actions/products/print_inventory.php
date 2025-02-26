@@ -7,7 +7,7 @@ $sql = "SELECT p.*, v.*, b.name AS brand_name
         FROM products p 
         JOIN product_variants v USING(product_id) 
         JOIN brands b ON p.brand_id = b.brand_id
-        ORDER BY b.name ASC, p.name ASC";
+        ORDER BY b.name ASC, p.name ASC, size ASC, color ASC";
 
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute();
@@ -60,7 +60,7 @@ $html = str_replace("%content", $content, $html);
 $mpdf = new \Mpdf\Mpdf(["orientation" => "L"]);
 
 // --- ADD FOOTER CORRECTLY ---
-$footer = '<div style="font-size: 10px;"><span style="text-align: left">' . date("d/m/Y / H:i:s") . '</span> -  <span style="text-align: right;">Pagina {PAGENO} di {nb}</span></div>';
+$footer = '<div style="font-size: 10px; text-align: right;">' . date("d/m/Y / H:i:s") . ' - Pagina {PAGENO} di {nb}</div>';
 $mpdf->SetHTMLFooter($footer); // Set the footer globally
 $mpdf->WriteHTML($html);
 $mpdf->Output("Inventario.pdf", "I");

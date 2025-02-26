@@ -1,21 +1,22 @@
 <script src="/inc/zxcvbn.js"></script>
 
-<h1>Aggiungi Utente</h1>
-<form action="actions/users/add.php" method="POST" id="add-user-form">
-    <div class="row">
-        <div class="col-6">
-            <label for="first_name">Nome</label>
-            <input id="first_name-input" type="text" name="first_name" class="form-control" required>
-        </div>
-        <div class="col-6">
-            <label for="last_name">Cognome</label>
-            <input id="last_name-input" type="text" name="last_name" class="form-control" required>
-        </div>
-    </div>
-    <br>
-    <label for="username">Nome utente</label>
-    <input id="username-input" type="text" name="username" required class="form-control tt">
-    <br>
+<h1>Resetta Password</h1>
+
+<?php
+$dbconnection = DBConnection::get_db_connection();
+$username = $_GET['username'] ?? null;
+$sql = "SELECT * FROM users WHERE username = ?";
+$stmt = $dbconnection->prepare($sql);
+$stmt->execute([$username]);
+$user = $stmt->fetch();
+if (!$user) {
+    Utils::print_error("Utente non trovato");
+    goto end;
+}
+?>
+
+<form action="actions/users/reset_password.php" method="POST" id="reset-password-form">
+    <input type="hidden" name="username" value="<?php echo $user['username'] ?>">
     <div class="row">
         <div class="col-4">
             <label for="password">Password</label>
@@ -38,49 +39,11 @@
     <div class="row">
         <div class="alert alert-primary">La barra "Sicurezza Password" si deve colorare di verde!</div>
     </div>
-
     <br>
-
-    <div class="row">
-        <div class="col-6">
-            <label for="tel">Telefono</label>
-            <input type="tel" name="tel" class="form-control" required pattern="<?php echo Utils::get_phone_regex() ?>">
-        </div>
-        <div class="col-6">
-            <label for="email">E-mail</label>
-            <input type="email" name="email" class="form-control" required>
-        </div>
-    </div>
-    <br>
-    <label for="role">Ruolo</label>
-    <select name="role" class="form-select">
-        <option value="STANDARD">Utente standard</option>
-        <option value="OWNER">Proprietario</option>
-        <?php if(Auth::is_admin()): ?>
-        <option value="ADMIN">Amministratore IT</option>
-        <?php endif; ?>
-    </select>
-    <br>
-
-    <button type="submit" class="btn btn-primary">Aggiungi</button>
+    <button type="submit" class="btn btn-primary">Resetta Password</button>
 </form>
 
 <script>
-    function suggestUsername() {
-        const first_name = document.getElementById('first_name-input').value;
-        const last_name = document.getElementById('last_name-input').value;
-        if (first_name === '' || last_name === '') {
-            return;
-        }
-        let username = first_name[0] + '.' + last_name;
-        username = username.toLowerCase();
-        document.getElementById('username-input').value = username;
-    }
-
-    document.getElementById("username-input").addEventListener("focus", (e) => {
-        suggestUsername();
-    });
-
     function checkPasswords() {
         const password = document.getElementById('password-input').value;
         const confirm_password = document.getElementById('confirm_password-input').value;
@@ -119,7 +82,7 @@
     });
 
 
-    const form = document.getElementById('add-user-form');
+    const form = document.getElementById('reset-password-form');
 
     form.addEventListener("submit", (e) => {
         const strength = checkPasswordStrength();
@@ -132,3 +95,5 @@
         }
     })
 </script>
+
+<?php end: ?>

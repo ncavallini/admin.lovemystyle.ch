@@ -99,14 +99,16 @@ class Utils
         return $str;
     }
 
-    public static function format_date(string $date_mysql)
+    public static function format_date(string|null $date_mysql)
     {
+        if(empty($date_mysql) || $date_mysql === NULL) return "-";
         $date = new DateTime($date_mysql);
         return $date->format("d/m/Y");
     }
 
-    public static function format_datetime(string $date_mysql)
+    public static function format_datetime(string|null $date_mysql)
     {
+        if(empty($date_mysql) || $date_mysql === NULL) return "-";
         $date = new DateTime($date_mysql);
         return $date->format("d/m/Y, H:i:s");
     }
