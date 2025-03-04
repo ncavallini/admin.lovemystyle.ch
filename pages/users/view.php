@@ -65,6 +65,8 @@ $users = $stmt->fetchAll();
                 echo "<a href='/index.php?page=users_reset-password&username={$user['username']}' title='Resetta Password' class='btn btn-sm btn-outline-primary'><i class='fa-solid fa-asterisk'></i><i class='fa-solid fa-asterisk'></i><i class='fa-solid fa-asterisk'></i></a>";
                 echo "&nbsp;";
                 echo "<a href='javascript:void(0);' onclick=\"confirmDelete('{$user['username']}', '{$user['first_name']}', '{$user['last_name']}')\" title='Elimina' class='btn btn-sm btn-outline-danger'><i class='fa-solid fa-trash'></i></a>";
+                echo "&nbsp;";
+                echo "<a href='/index.php?page=clockings_view&username={$user['username']}' title='Timbrature' class='btn btn-sm btn-outline-secondary'><i class='fa-solid fa-clock'></i></a>";
                 echo "</td>";
 
                 echo "</tr>";

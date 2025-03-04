@@ -19,6 +19,18 @@ $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$saleId]);
 $items = $stmt->fetchAll();
 
+$subtotal = array_reduce($items, function($carry, $item) {
+    return $carry + $item['price'] * $item['quantity'];
+}, 0);  
+$total = Utils::compute_discounted_price($subtotal, $sale['discount'], $sale['discount_type']);
+
+
+if(strtoupper($sale['payment_method']) == "CASH") {
+    $sql = "UPDATE cash_content SET content = content - ?, last_updated_at = NOW(), last_updated_by = ? WHERE id = 1";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([$total, Auth::get_username()]);
+}
+
 if($sale['status'] !== "open") {
     foreach ($items as $item) {
         $sql = "UPDATE product_variants SET stock = stock + ? WHERE product_id = ? AND variant_id = ?";

@@ -10,7 +10,7 @@ $res = $stmt->execute([
     'username' => $_POST['username']
 ]);
 if(!$res) {
-    Utils::print_error("Errore durante il salvataggio delle modifiche.", true);
+    Utils::print_error("Errore durante il salvataggio delle modifiche.", needs_bootstrap: true);
     die;
 }
 header("Location: /index.php?page=users_view");

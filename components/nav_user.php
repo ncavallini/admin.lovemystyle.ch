@@ -21,8 +21,14 @@
         <li class="nav-item">
            <a class="nav-link" href="index.php?page=customers_view">Clienti</a>
         </li>
-        <li class="nav-item">
-           <a class="nav-link" href="index.php?page=pos_view">Sistema di cassa</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Sistema di cassa
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="index.php?page=pos_view">Stato sistema</a></li>
+            <li><a class="dropdown-item" href="index.php?page=pos_closings">Chiusura di cassa</a></li>
+          </ul>
         </li>
         <?php if(Auth::is_owner(true)): ?>
         <li class="nav-item dropdown">
@@ -35,7 +41,7 @@
             <?php endif ?>
             <li><a class="dropdown-item" href="index.php?page=users_view">Utenti</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li><a class="dropdown-item" href="index.php?page=admin_cash">Contenuto cassa</a></li>
           </ul>
         </li>
         <?php endif ?>

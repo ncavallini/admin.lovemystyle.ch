@@ -3,7 +3,6 @@ require_once __DIR__ . "/components/head.php";
 require_once __DIR__ . "/components/header.php";
 require_once __DIR__ . "/inc/inc.php";
 
-$GLOBALS['LOGGER'] = new Logging();
 
 
 $page = $_GET['page'] ?? "home";

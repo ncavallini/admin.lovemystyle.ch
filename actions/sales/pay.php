@@ -72,5 +72,15 @@ try {
 $sql = "UPDATE sales SET status = 'completed' WHERE sale_id = ?";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$saleId]);
+
+if(strtoupper($paymentMethod) == "CASH") {
+    $stmt = "UPDATE cash_content SET content = content + :content, last_updated_at = NOW(), last_updated_by = :username WHERE id = 1";
+    $stmt = $dbconnection->prepare($stmt);
+    $stmt->execute([
+    ':content' => $total,
+    ':username' => Auth::get_username()
+]);
+}
+
 header("Location: /index.php?page=sales_view");
 ?>

@@ -1,4 +1,6 @@
 <?php
+
+
 Auth::require_admin();
 
 $date = $_GET['date'] ?? date('Y-m-d');
@@ -15,7 +17,8 @@ $date = $_GET['date'] ?? date('Y-m-d');
 <hr>
 
 <?php
-$logs = $GLOBALS['LOGGER']->get_logs($date);
+$logs = Logging::get_logger()->get_logs($date);
+$logs = array_reverse($logs);
 ?>
 <?php if ($logs === []): ?>
     <div class="alert alert-success">Nessun log per la data selezionata.</div>
@@ -25,17 +28,27 @@ $i = 0;
     foreach ($logs as $log) {
         $badge = get_badge($log['level_name']);
         $short_message = substr($log['message'], 0, 50) . (strlen($log['message']) > 50 ? '...' : '');
-
+        $message = $log['message'];
+        $datetime = (new DateTime($log['datetime']))->format('d/m/Y, H:i:s');
+        $context = $log['context'] ?? []; // Ensure context exists
+        $values = array_values($context) + ['', '', '', '']; // Fallback default values
+        list($correlationId, $file, $line, $trace) = $values;
         echo <<<EOD
-            <div class="accordion-item">
+            <div class="accordion-item" id="accordion-item-$i">
                 <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-$i">
-                    {$badge} &nbsp; &nbsp; {$short_message}
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-$i" href="#accordion-item-$i">
+                    {$badge} &nbsp; &nbsp; <b>{$correlationId }</b> &nbsp; &mdash; {$short_message}
                 </button>
                 </h2>
                 <div id="collapse-$i" class="accordion-collapse collapse" data-bs-parent="#accordion">
                 <div class="accordion-body">
-                    
+                    $message
+                    <ul>
+                    <li>File: $file</li>
+                    <li>Linea: $line</li>
+                    <li>Data e Ora: $datetime</li>
+                    </ul>
+                    <br>
                 </div>
                 </div>
             </div>

@@ -23,7 +23,7 @@ class Logging
     public function __construct(
         string $logName = 'app.log',
         string $logPath = __DIR__ . '/../../logs/',
-        int $maxFiles = 7,
+        int $maxFiles = 90,
         int $logLevel = Logger::DEBUG
     ) {
         $this->logPath = rtrim($logPath, '/') . '/';
@@ -147,6 +147,16 @@ class Logging
     public function handleError(int $severity, string $message, string $file, int $line): void
     {
         throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+
+    public static function get_logger(): Logging
+    {
+        if(isset($GLOBALS['LOGGER'])) {
+            return $GLOBALS['LOGGER'];
+        }
+        $GLOBALS['LOGGER'] = new Logging();
+        return $GLOBALS['LOGGER'];
+
     }
 
     public function get_logs(string $date): array
