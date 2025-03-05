@@ -117,7 +117,6 @@ for ($i = 0; $i < count($clockings); $i += 2) {
     }
     $out = new DateTimeImmutable($clockings[$i + 1]["datetime"]);
     $sum += $out->getTimestamp() - $in->getTimestamp();
-
 }
 $isWorking = count($clockings) % 2 == 1;
 ?>
@@ -128,11 +127,44 @@ $isWorking = count($clockings) % 2 == 1;
     <?php endif; ?>
 </p>
 
+<br>
+
+<button <?php echo $isWorking ? "disabled" : "" ?> onclick="printReport()" class="btn btn-secondary">Stampa foglio ore</button>
+<p>&nbsp;</p>
+<?php 
+if ($isWorking) {
+    echo "<div class='alert alert-warning'>Attenzione: impossibile produrre il foglio ore mentre l'utente è in servizio.</div>";
+}
+?>
+
 <script>
     function confirmDelete(clocking_id) {
         bootbox.confirm("<div class='alert alert-danger'>Eliminare questa timbratura?</div>", function(res) {
             if (res) {
                 window.location.href = `/actions/clockings/delete.php?clocking_id=${clocking_id}`;
+            }
+        });
+    }
+
+    function printReport() {
+        bootbox.prompt({
+            title: "Stampa foglio ore",
+            message: '<p>Scegli il tipo di foglio ore</p>',
+            inputType: 'radio',
+            inputOptions: [{
+                    text: 'Rendiconto semplice',
+                    value: 'simple'
+                },
+                {
+                    text: 'Rendiconto dettagliato',
+                    value: 'details'
+                }
+            ],
+            callback: function(result) {
+                if (!result) {
+                    return;
+                }
+                window.location.href = `/actions/clockings/print_report.php?username=<?php echo $username ?>&year=<?php echo $year ?>&month=<?php echo $month ?>&type=${result}`;
             }
         });
     }

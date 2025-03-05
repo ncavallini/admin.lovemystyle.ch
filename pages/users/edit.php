@@ -38,6 +38,37 @@ if (!$user) {
     </select>
     <br>
 
+    <div class="row">
+        <div class="col-3">
+            <label for="street">Via</label>
+            <input type="text" name="street" class="form-control" value="<?php echo $user["street"] ?>" required>
+        </div>
+        <div class="col-3">
+            <label for="postcode">CAP</label>
+            <input type="text" name="postcode" class="form-control" value="<?php echo $user['postcode'] ?>" required>
+        </div>
+        <div class="col-3">
+            <label for="city">Città</label>
+            <input type="text" name="city" class="form-control" value="<?php echo $user['city'] ?>" required>
+        </div>
+        <div class="col-3">
+            <label for="country">Paese</label>
+            <select name="country" class="form-select" required>
+                <option value="CH">Svizzera</option>
+                <?php
+                    Country::options($user['country']);
+                ?>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+    <label for="iban">IBAN</label>
+    <input type="text" name="iban" class="form-control" value="<?php echo $user['iban'] ?>" required>
+
+    <br>
+
     <input type="hidden" name="username" value="<?php echo $user['username'] ?>">
     <button type="submit" class="btn btn-primary">Salva</button>
 </form>

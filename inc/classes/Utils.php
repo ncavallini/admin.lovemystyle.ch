@@ -196,5 +196,31 @@ class Utils
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
+    public static function roundToQuarterHour($timestamp) {
+        // Estrarre i minuti dal timestamp
+        $minutes = date('i', $timestamp);
+        $seconds = date('s', $timestamp);
+        
+        // Calcolare il numero di quarti d'ora
+        $quarter = floor($minutes / 15);
+        
+        // Determinare la soglia per arrotondare verso l'alto
+        $threshold = 7.5; // Minuti per decidere l'arrotondamento
+    
+        // Calcolare quanti minuti sono passati dall'inizio dell'ultimo quarto d'ora
+        $minutesInQuarter = $minutes % 15 + ($seconds > 0 ? 1 : 0);
+    
+        if ($minutesInQuarter > $threshold) {
+            // Arrotondare al quarto d'ora successivo
+            $newMinutes = ($quarter + 1) * 15;
+        } else {
+            // Arrotondare al quarto d'ora precedente
+            $newMinutes = $quarter * 15;
+        }
+    
+        // Creare il nuovo timestamp arrotondato
+        return mktime(date('H', $timestamp), $newMinutes, 0, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
+    }
+
 }
 ?>

@@ -52,7 +52,7 @@ $users = $stmt->fetchAll();
                 Utils::print_table_row(Utils::format_phone_number($user['tel']));
                 Utils::print_table_row($user['email']);
                 Utils::print_table_row(Utils::format_datetime($user['last_login_at']));
-                echo "<td>";
+                echo "<td class='text-nowrap'>";
                 $href = $user['role'] === "ADMIN" ? "#" : "/actions/users/toggle_status.php?username={$user['username']}";
                 if ($user['is_enabled']) {
                     echo "<a href='$href' title='Disabilita' class='btn btn-sm btn-outline-warning'><i class='fa-solid fa-user-slash'></i></a>";

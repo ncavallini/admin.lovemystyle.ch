@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "times", "Times New Roman", Times, serif;
+        font-size: 10pt;
+        --accent-color: rgb(7, 29, 73);
+      }
+
+      .quiche {
+        font-family: "quiche", serif;
+      }
+
+      .container {
+        width: 100%;
+      }
+
+      .logo {
+        height: 3.9cm;
+        width: 5.73cm;
+        margin-bottom: 1rem;
+        display: block;
+        margin-left: auto;
+        margin-right: -1cm;
+        margin-bottom: -0.5cm;
+      }
+
+      .link-nostyle {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Table layout for stable alignment in mPDF */
+      .content-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .content-table td {
+        vertical-align: top;
+        padding: 5px;
+        font-family: "quiche", serif;
+      }
+
+      .left-column {
+        font-size: 16px;
+        line-height: 1.2;
+        width: 50%;
+        text-align: left;
+      }
+
+      .right-column {
+        text-align: right;
+        line-height: 1.2;
+        width: 50%;
+      }
+
+      #company-name {
+        font-size: 16pt;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      .right-column p {
+        margin: 3px 0;
+      }
+
+      h1 {
+        font-family: "quiche", serif;
+        font-weight: bold;
+        font-size: 16pt;
+        text-decoration: underline;
+        color: rgb(7, 29, 73);
+        text-transform: uppercase;
+      }
+
+      h2 {
+        font-family: "quiche", serif;
+        font-weight: bold;
+        font-size: 14pt;
+        color: rgb(7, 29, 73);
+      }
+
+      h3 h4 h5 h6 {
+        font-family: "quiche", serif;
+        font-weight: bold;
+        font-size: 12pt;
+        color: rgb(7, 29, 73);
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse; /* Ensures borders don't double up */
+        text-align: left;
+        overflow: hidden;
+        border: 1px solid #ddd; /* Outer border */
+      }
+
+      .table-header,
+      .table-data {
+        border: 1px solid #ddd; /* Adds both vertical and horizontal borders */
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .table-body tr:hover {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Logo in Center -->
+      <div style="text-align: right">
+        <img
+          src="../../assets/logo/logo_white.svg"
+          class="logo"
+          alt="Love My Style Logo"
+        />
+        <!-- Replace with actual logo path -->
+      </div>
+
+      <!-- Name and Company Title on the Same Line (AFTER the logo) -->
+      <table class="content-table">
+        <tr>
+          <td class="left-column">
+            <p>%full_name</p>
+          </td>
+          <td class="right-column">
+            <!--  <div id="company-name">LOVE MY STYLE</div> -->
+          </td>
+        </tr>
+      </table>
+
+      <!-- Address on Left, Contact Details on Right -->
+      <table class="content-table">
+        <tr>
+          <td class="left-column">
+            <p>%street</p>
+            <p>%postcode %city</p>
+            <p>%country</p>
+          </td>
+          <td class="right-column">
+            <p>Via dal Bagn 52</p>
+            <p>7500 St. Moritz</p>
+            <p>Svizzera</p>
+            <br />
+            <p>+41 81 833 36 36</p>
+            <p>
+              <a class="link-nostyle" href="mailto:info@lovemystyle.ch"
+                >info@lovemystyle.ch</a
+              >
+            </p>
+            <p>
+              <a
+                class="link-nostyle"
+                href="https://www.lovemystyle.ch"
+                target="_blank"
+                >www.lovemystyle.ch</a
+              >
+            </p>
+          </td>
+        </tr>
+      </table>
+      <br />
+      <h1 class="title">%title</h1>
+      <table class="table">
+        <thead class="table-head">
+          <tr class="table-row">
+            <th class="table-header">Data</th>
+            <th class="table-header">Ore Totali</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          %rows
+        </tbody>
+      </table>
+    </div>
+    <br>
+
+    <p style="text-align: right;"><b><u>Totale mese <small>(arrotondamento a 15 min.)</small>: %total</u></b></p>
+
+    <br>
+
+    %details
+
+    
+    <htmlpagefooter name="custom-footer">
+        <hr>
+      <table width="100%">
+        <tr style="font-size: 8pt">
+          <td width="50%" class="quiche">{DATE d/m/Y}</td>
+          <td width="50%" class="quiche" style="text-align: right">
+            Pag. {PAGENO} di {nbpg}
+          </td>
+        </tr>
+      </table>
+    </htmlpagefooter>
+    <sethtmlpagefooter name="custom-footer" value="on" />
+  </body>
+</html>

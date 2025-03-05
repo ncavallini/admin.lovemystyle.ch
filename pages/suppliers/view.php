@@ -40,7 +40,7 @@ $suppliers = $stmt->fetchAll();
             foreach ($suppliers as $supplier) { 
                 echo "<tr>";
                 Utils::print_table_row($supplier['name']);
-                Utils::print_table_row(Utils::format_address($supplier['street'], $supplier['city'], $supplier['postcode'], $supplier['country']));
+                Utils::print_table_row(Utils::format_address($supplier['street'], $supplier['postcode'], $supplier['city'], $supplier['country']));
                 Utils::print_table_row(Utils::format_phone_number($supplier['tel']));
                 Utils::print_table_row($supplier['email']);
                 Utils::print_table_row($supplier['vat_number']);

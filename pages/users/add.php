@@ -51,6 +51,38 @@
             <input type="email" name="email" class="form-control" required>
         </div>
     </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-3">
+            <label for="street">Via</label>
+            <input type="text" name="street" class="form-control" required>
+        </div>
+        <div class="col-3">
+            <label for="postcode">CAP</label>
+            <input type="text" name="postcode" class="form-control" required>
+        </div>
+        <div class="col-3">
+            <label for="city">Città</label>
+            <input type="text" name="city" class="form-control" required>
+        </div>
+        <div class="col-3">
+            <label for="country">Paese</label>
+            <select name="country" class="form-select" required>
+                <option value="CH">Svizzera</option>
+                <?php
+                    Country::options();
+                ?>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+    <label for="iban">IBAN</label>
+    <input type="text" name="iban" class="form-control" required>
+
     <br>
     <label for="role">Ruolo</label>
     <select name="role" class="form-select">

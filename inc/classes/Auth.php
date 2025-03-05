@@ -1,5 +1,7 @@
 <?php
-session_start(['cookie_lifetime' => 43200,'cookie_secure' => true,'cookie_httponly' => true]);
+ini_set('session.gc_maxlifetime', 24 * 60 * 60);
+ini_set('session.cookie_lifetime', 24 * 60 * 60);
+session_start(['cookie_secure' => true,'cookie_httponly' => true]);
 require_once __DIR__ . "/DBConnection.php";
 class Auth
 {
