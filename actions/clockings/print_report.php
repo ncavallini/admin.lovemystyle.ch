@@ -57,6 +57,8 @@ $stmt->execute([
 
 $clockings = $stmt->fetchAll();
 
+
+
 $days = [];
 foreach ($clockings as $clocking) {
     $day = date("j", strtotime($clocking['datetime']));
@@ -65,14 +67,14 @@ foreach ($clockings as $clocking) {
 
 $sums = [];
 
-foreach($days as $day => $clockings) {
+foreach($days as $day => $dayClockings) {
     $sums[$day] = 0;
-    for ($i = 0; $i < count($clockings); $i += 2) {
-        $in = new DateTimeImmutable($clockings[$i]["datetime"]);
-        if ($i + 1 >= count($clockings)) {
+    for ($i = 0; $i < count($dayClockings); $i += 2) {
+        $in = new DateTimeImmutable($dayClockings[$i]["datetime"]);
+        if ($i + 1 >= count($dayClockings)) {
             break;
         }
-        $out = new DateTimeImmutable($clockings[$i + 1]["datetime"]);
+        $out = new DateTimeImmutable($dayClockings[$i + 1]["datetime"]);
         $sums[$day] += $out->getTimestamp() - $in->getTimestamp();
     }
 }
@@ -106,6 +108,7 @@ if($_GET["type"] === "details") {
     $details .= "</thead>";
     $details .= "<tbody>";
 
+    
     foreach($clockings as $clocking) {
         $details .= "<tr class='table-row'>";
         $details .= "<td class='table-data'>" . Utils::format_date($clocking['date']) . "</td>";

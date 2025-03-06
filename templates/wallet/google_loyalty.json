@@ -1,0 +1,50 @@
+{
+    "id": "BCR2DN4T76OOPQ2W.%OBJECT_ID",
+    "classId": "1",
+    "logo": {
+      "sourceUri": {
+        "uri": "https://admin.lovemystyle.ch/assets/logo/logo_color.png"
+      },
+      "contentDescription": {
+        "defaultValue": {
+          "language": "en-US",
+          "value": "LOGO_IMAGE_DESCRIPTION"
+        }
+      }
+    },
+    "cardTitle": {
+      "defaultValue": {
+        "language": "it-CH",
+        "value": "Love My Style"
+      }
+    },
+    "subheader": {
+      "defaultValue": {
+        "language": "it-CH",
+        "value": "Cliente"
+      }
+    },
+    "header": {
+      "defaultValue": {
+        "language": "it-CH",
+        "value": "%FULL_NAME"
+      }
+    },
+    "barcode": {
+      "type": "CODE_128",
+      "value": "%CUSTOMER_NUMBER",
+      "alternateText": "%CUSTOMER_NUMBER"
+    },
+    "hexBackgroundColor": "#c3d7ee",
+    "heroImage": {
+      "sourceUri": {
+        "uri": "https://admin.lovemystyle.ch/assets/logo/google_hero.png"
+      },
+      "contentDescription": {
+        "defaultValue": {
+          "language": "it-CH",
+          "value": "Logo Love My Style"
+        }
+      }
+    }
+  }

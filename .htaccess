@@ -6,3 +6,4 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 # Disable file listing
 IndexIgnore *
 Options -Indexes
+

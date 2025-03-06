@@ -46,14 +46,13 @@
       }
 
       .left-column {
-        font-size: 16px;
         line-height: 1.2;
         width: 50%;
         text-align: left;
       }
 
       .right-column {
-        text-align: right;
+        text-align: left;
         line-height: 1.2;
         width: 50%;
       }
@@ -126,47 +125,40 @@
       </div>
 
       <!-- Name and Company Title on the Same Line (AFTER the logo) -->
-      <table class="content-table">
-        <tr>
-          <td class="left-column">
-            <p>%full_name</p>
-          </td>
-          <td class="right-column">
-            <!--  <div id="company-name">LOVE MY STYLE</div> -->
-          </td>
-        </tr>
-      </table>
+     
 
       <!-- Address on Left, Contact Details on Right -->
-      <table class="content-table">
+      <table class="content-table" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
         <tr>
-          <td class="left-column">
-            <p>%street</p>
-            <p>%postcode %city</p>
-            <p>%country</p>
-          </td>
-          <td class="right-column">
-            <p>Via dal Bagn 52</p>
-            <p>7500 St. Moritz</p>
-            <p>Svizzera</p>
-            <br />
-            <p>+41 81 833 36 36</p>
-            <p>
-              <a class="link-nostyle" href="mailto:info@lovemystyle.ch"
-                >info@lovemystyle.ch</a
-              >
-            </p>
-            <p>
-              <a
-                class="link-nostyle"
-                href="https://www.lovemystyle.ch"
-                target="_blank"
-                >www.lovemystyle.ch</a
-              >
-            </p>
-          </td>
+            <!-- Left Column: Takes up more space -->
+            <td class="left-column" width="99%" style="text-align: left;">
+                <p>%full_name</p>
+                <p>%street</p>
+                <p>%postcode %city</p>
+                <p>%country</p>
+            </td>
+            
+            <!-- Right Column: Forced to far right but text stays left-aligned -->
+            <td class="right-column" width="1%" style="text-align: left; padding-left: 5.2cm;">
+                <p>Via dal Bagn 52</p>
+                <p>7500 St. Moritz</p>
+                <p>Svizzera</p>
+                <br />
+                <p>+41 81 833 36 36</p>
+                <p>
+                    <a class="link-nostyle" href="mailto:info@lovemystyle.ch">info@lovemystyle.ch</a>
+                </p>
+                <p>
+                    <a class="link-nostyle" href="https://www.lovemystyle.ch" target="_blank">www.lovemystyle.ch</a>
+                </p>
+            </td>
         </tr>
-      </table>
+    </table>
+    
+    
+    
+    
+    
       <br />
       <h1 class="title">%title</h1>
       <table class="table">
