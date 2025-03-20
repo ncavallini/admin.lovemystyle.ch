@@ -5,7 +5,7 @@
     <input type="text" class="form-control" name="name" placeholder="Nome" required>
     <br>
     <label for="supplier">Fornitore</label>
-    <select id="supplier-select" class="form-control" name="supplier">
+    <select id="supplier-select" class="form-control" name="supplier" required>
 </select>
 <br>
 <button type="submit" class="btn btn-primary">Aggiungi Brand</button>

@@ -19,7 +19,7 @@
     <input type="text" class="form-control" name="name" placeholder="Nome" value="<?php echo $brand['name']; ?>" required>
     <br>
     <label for="supplier">Fornitore</label>
-    <select id="supplier-select" class="form-control" name="supplier">
+    <select id="supplier-select" class="form-control" name="supplier" required>
         <option value="<?php echo $brand['supplier_id'] ?>"><?php echo $brand['supplier_name'] ?></option>
 </select>
 <br>

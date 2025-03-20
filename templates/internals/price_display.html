@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "times", "Times New Roman", Times, serif;
+        font-size: 7pt;
+        --accent-color: rgb(7, 29, 73);
+        --background-color: #c3d5ed;
+        color: var(--accent-color);
+      }
+      @page {
+       /* background-color: #c3d5ed; */
+        margin-top: 1cm;
+        margin-bottom: 1cm;
+        header: custom-header;
+        color: var(--accent-color);
+      }
+
+      .quiche {
+        font-family: "quiche", serif;
+      }
+
+      .container {
+        width: 100%;
+      }
+
+      .logo {
+        height: 2.6cm;
+        width: 3.82cm;
+        margin-bottom: 1rem;
+        display: block;
+        margin-left: auto;
+        margin-right: -1cm;
+        margin-bottom: -0.5cm;
+      }
+
+      .link-nostyle {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Table layout for stable alignment in mPDF */
+      .content-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .right-column {
+        text-align: left;
+        line-height: 1.2;
+        width: 50%;
+      }
+
+      .right-column p {
+        margin: 3px 0;
+      }
+
+      h1 {
+        font-family: "quiche", serif;
+        font-weight: bold;
+        font-size: 16pt;
+        text-decoration: underline;
+        color: rgb(7, 29, 73);
+        text-transform: uppercase;
+      }
+
+      h2 {
+        font-family: "quiche", serif;
+        font-weight: bold;
+        font-size: 14pt;
+        color: rgb(7, 29, 73);
+      }
+
+      h3 h4 h5 h6 {
+        font-family: "quiche", serif;
+        font-weight: bold;
+        font-size: 12pt;
+        color: rgb(7, 29, 73);
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse; /* merges borders */
+      }
+
+      .table th,
+      .table td {
+        border-bottom: 1px solid var(--accent-color); /* bottom border for each cell */
+        padding: 5px; /* spacing inside cells */
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      td {
+        font-family: "quiche", serif !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Logo in Center -->
+      <htmlpageheader name="custom-header">
+        <div style="text-align: center">
+        
+          <img
+            src="../../assets/logo/logo_color.svg"
+            class="logo"
+            alt="Love My Style Logo"
+          />
+          <p>&nbsp;</p>
+        </div>
+      </htmlpageheader>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th><!-- name --></th>
+            <th><!-- brand --></th>
+            <th><!-- price --></th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          %tbody_it
+        </tbody>
+      </table>
+      <pagebreak />
+      <table class="table">
+        <thead>
+          <tr>
+            <th><!-- name --></th>
+            <th><!-- brand --></th>
+            <th><!-- price --></th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          %tbody_de
+        </tbody>
+      </table>
+      <pagebreak />
+      <table class="table">
+        <thead>
+          <tr>
+            <th><!-- name --></th>
+            <th><!-- brand --></th>
+            <th><!-- price --></th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          %tbody_en
+        </tbody>
+      </table>
+    </div>
+    
+  </body>
+</html>

@@ -89,6 +89,7 @@ $sales = $stmt->fetchAll();
         </tbody>
         </table>
         </div>
+        <?php echo $pagination->get_page_links(); ?>
 
 <script>
     function askCancelType(sale_id) {

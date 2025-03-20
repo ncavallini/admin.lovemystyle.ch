@@ -4,118 +4,163 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-      body {
-        font-family: "times", "Times New Roman", Times, serif;
-        font-size: 10pt;
-        --accent-color: rgb(7, 29, 73);
-      }
+      /* Base Styles */
+body {
+  font-family: times;
+  font-size: var(--default-font-size); /* Global base font size */
+  line-height: 1.2;
+  --default-font-size: 7pt;
+  --accent-color: rgb(7, 29, 73);
+}
 
-      .quiche {
-        font-family: "quiche", serif;
-      }
+/* Reset font-size across elements */
+body, p, td, th, li, span, div {
+  font-size: var(--default-font-size);
+}
 
-      .container {
-        width: 100%;
-      }
+/* Ensure everything defaults to 7pt unless overridden */
+* {
+  font-size: var(--default-font-size);
+}
 
-      .logo {
-        height: 3.9cm;
-        width: 5.73cm;
-        margin-bottom: 1rem;
-        display: block;
-        margin-left: auto;
-        margin-right: -1cm;
-        margin-bottom: -0.5cm;
-      }
+/* Page Settings */
+@page {
+  margin-top: 1.25cm;
+  margin-bottom: 1.25cm;
+  font-family: times;
+  header: custom-header;
+  footer: custom-footer;
+  
+}
 
-      .link-nostyle {
-        color: inherit;
-        text-decoration: none;
-      }
+/* Utility Classes */
+.quiche {
+  font-family: "quiche", serif;
+}
 
-      /* Table layout for stable alignment in mPDF */
-      .content-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+.link-nostyle {
+  color: inherit;
+  text-decoration: none;
+}
 
-      .content-table td {
-        vertical-align: top;
-        padding: 5px;
-        font-family: "quiche", serif;
-      }
+.container {
+  width: 100%;
+}
 
-      .left-column {
-        line-height: 1.2;
-        width: 50%;
-        text-align: left;
-      }
+/* Logo */
+.logo {
+  height: 2.87cm;
+  width: 3.6cm;
+  padding-bottom: 0.1cm;
+  display: block;
+  padding-left: -0.55cm;
+}
 
-      .right-column {
-        text-align: left;
-        line-height: 1.2;
-        width: 50%;
-      }
+/* Content Table Layout */
+.content-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-      #company-name {
-        font-size: 16pt;
-        font-weight: bold;
-        margin: 0;
-      }
+.content-table td {
+  vertical-align: top;
+  padding: 5px;
+  font-family: "quiche", serif;
+}
 
-      .right-column p {
-        margin: 3px 0;
-      }
+/* Columns Layout */
+.left-column {
+  width: 50%;
+  text-align: left;
+  padding-left: -1cm;
+}
 
-      h1 {
-        font-family: "quiche", serif;
-        font-weight: bold;
-        font-size: 16pt;
-        text-decoration: underline;
-        color: rgb(7, 29, 73);
-        text-transform: uppercase;
-      }
+.right-column {
+  width: 50%;
+  text-align: left;
+}
 
-      h2 {
-        font-family: "quiche", serif;
-        font-weight: bold;
-        font-size: 14pt;
-        color: rgb(7, 29, 73);
-      }
+.right-column p {
+  margin: 3px 0;
+}
 
-      h3 h4 h5 h6 {
-        font-family: "quiche", serif;
-        font-weight: bold;
-        font-size: 12pt;
-        color: rgb(7, 29, 73);
-      }
+/* Typography - Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "quiche", serif;
+  font-weight: bold;
+  color: rgb(7, 29, 73);
+}
 
-      .table {
-        width: 100%;
-        border-collapse: collapse; /* Ensures borders don't double up */
-        text-align: left;
-        overflow: hidden;
-        border: 1px solid #ddd; /* Outer border */
-      }
+h1 {
+  font-size: 12pt;
+  text-align: center;
+  text-decoration: underline;
+  text-transform: uppercase;
+  padding-bottom: 5pt;
+}
 
-      .table-header,
-      .table-data {
-        border: 1px solid #ddd; /* Adds both vertical and horizontal borders */
-      }
+h2 {
+  font-size: 10pt;
+}
 
-      .text-right {
-        text-align: right;
-      }
+h3, h4, h5, h6 {
+  font-size: 8pt;
+}
 
-      .table-body tr:hover {
-        background-color: #ddd;
-      }
+/* Typography - Paragraphs */
+p {
+  font-size: var(--default-font-size); /* Changed to 7pt for consistency with body text */
+}
+
+/* Tables */
+.table, .content-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  overflow: hidden;
+  border: 1px solid #ddd; /* Outer border */
+}
+
+.table-header,
+.table-data {
+  border: 1px solid #ddd;
+}
+
+.table-body tr:hover {
+  background-color: #ddd;
+}
+
+/* Alignments */
+.text-right {
+  text-align: right;
+}
+
+/* td and th sizes, centralized */
+td, th {
+  font-size: var(--default-font-size);
+}
+
+/* Lists */
+ul {
+  list-style: none;
+  padding-left: 0; /* Remove default padding */
+}
+
+ul li::before {
+  content: "-"; /* Bullet symbol */
+  font-size: 7pt; /* Match your body font size */
+  margin-right: 5px;
+  display: inline-block;
+  width: 10px; /* Align with text */
+}
+
     </style>
   </head>
-  <body>
+  <body style="font-size: 7pt;">
+    <htmlpageheader name="custom-header">
     <div class="container">
-      <!-- Logo in Center -->
-      <div style="text-align: right">
+      <!-- Logo  -->
+      <div style="text-align: left;">
         <img
           src="../../assets/logo/logo_white.svg"
           class="logo"
@@ -123,44 +168,44 @@
         />
         <!-- Replace with actual logo path -->
       </div>
-
+      </htmlpageheader>
       <!-- Name and Company Title on the Same Line (AFTER the logo) -->
      
 
       <!-- Address on Left, Contact Details on Right -->
-      <table class="content-table" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
+      <table class="content-table" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed; border: none;">
         <tr>
             <!-- Left Column: Takes up more space -->
-            <td class="left-column" width="99%" style="text-align: left;">
-                <p>%full_name</p>
-                <p>%street</p>
-                <p>%postcode %city</p>
-                <p>%country</p>
-            </td>
-            
-            <!-- Right Column: Forced to far right but text stays left-aligned -->
-            <td class="right-column" width="1%" style="text-align: left; padding-left: 5.2cm;">
+            <td class="left-column" width="40%" style="text-align: left; ">
+              <p>&nbsp;</p>
                 <p>Via dal Bagn 52</p>
                 <p>7500 St. Moritz</p>
                 <p>Svizzera</p>
-                <br />
-                <p>+41 81 833 36 36</p>
-                <p>
-                    <a class="link-nostyle" href="mailto:info@lovemystyle.ch">info@lovemystyle.ch</a>
-                </p>
-                <p>
-                    <a class="link-nostyle" href="https://www.lovemystyle.ch" target="_blank">www.lovemystyle.ch</a>
-                </p>
+                
+            </td>
+            
+            <!-- Right Column: Forced to far right but text stays left-aligned -->
+            <td class="right-column" width="60%" style="text-align: left; padding-left: 2.5cm;">
+              <p>%full_name</p>
+              <p>%street</p>
+              <p>%postcode %city</p>
+              <p>%country</p>
+              <p>&nbsp;</p>
+              <p>St. Moritz, %date</p>
             </td>
         </tr>
     </table>
-    
+    </div>
     
     
     
     
       <br />
       <h1 class="title">%title</h1>
+      <ul>
+        <li><b>Collaboratore:</b> %full_name</li>
+        <li><b>Mese/anno:</b> %month/%year</li>
+      </ul>
       <table class="table">
         <thead class="table-head">
           <tr class="table-row">
@@ -185,14 +230,14 @@
     <htmlpagefooter name="custom-footer">
         <hr>
       <table width="100%">
-        <tr style="font-size: 8pt">
-          <td width="50%" class="quiche">{DATE d/m/Y}</td>
-          <td width="50%" class="quiche" style="text-align: right">
-            Pag. {PAGENO} di {nbpg}
-          </td>
+        <tr>
+          <td width="33%" class="quiche">+41 81 833 36 36</td>
+          <td width="33%" class="quiche" style="text-align: center;"><a href="mailto:info@lovemystyle.ch" class="link-nostyle">info@lovemystyle.ch</a></td>
+          <td width="33%" class="quiche" style="text-align: right"><a href="www.lovemystyle.ch" class="link-nostyle">www.lovemystyle.ch</a></td>
         </tr>
       </table>
     </htmlpagefooter>
+    <sethtmlpageheader name="custom-header" value="on" show-this-page="1"/>
     <sethtmlpagefooter name="custom-footer" value="on" />
   </body>
 </html>

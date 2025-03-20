@@ -9,6 +9,7 @@
         "bjeavons/zxcvbn-php": "^1.4",
         "phpoffice/phpspreadsheet": "^4.0",
         "google/apiclient": "^2.18",
-        "firebase/php-jwt": "^6.11"
+        "firebase/php-jwt": "^6.11",
+        "pkpass/pkpass": "^2.3"
     }
 }

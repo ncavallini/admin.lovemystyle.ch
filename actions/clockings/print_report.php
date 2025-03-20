@@ -16,33 +16,8 @@ $stmt->execute([$username]);
 $user = $stmt->fetch();
 $stmt->execute();
 
-$defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-$fontDirs = $defaultConfig['fontDir'];
 
-$defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-$fontData = $defaultFontConfig['fontdata'];
-
-$mpdf = new \Mpdf\Mpdf([
-    'fontDir' => array_merge($fontDirs, [
-        __DIR__ . "/../../assets/fonts",
-    ]),
-    'fontdata' => $fontData + [ // lowercase letters only in font key
-        'quiche' => [
-            'R' => 'QuicheDisplay-Light.ttf',
-            'I' => 'QuicheDisplay-LightItalic.ttf',
-        ],
-        "times" => [
-            'R' => 'times.ttf',
-            'B' => 'timesbd.ttf',
-            'I' => 'timesi.ttf',
-        ],
-        "default_font" => "times"
-    ],
-    
-]);
-
-$mpdf->charset_in = "utf-8";
-
+$mpdf = Utils::get_mpdf(debug: true);
 $mpdf->title = "Foglio ore {$name} {$month}-{$year}";
 
 $html = file_get_contents(__DIR__ . "/../../templates/internals/clockings_report.html");
@@ -84,7 +59,7 @@ $rows = "";
 foreach($sums as $d => $sum) {
     $rows .= "<tr class='table-row'>";
     $rows .= "<td class='table-data'>" . Utils::format_date("{$year}-{$month}-{$d}") . "</td>";
-    $rows .= "<td class='table-data text-right'>" . gmdate("H:i:s", $sum) . "</td>";
+    $rows .= "<td class='table-data text-right'>" . Utils::format_duration($sum) . "</td>";
     $rows .= "</tr>";
 }
 
@@ -128,9 +103,12 @@ $html = Utils::str_replace([
     "%postcode" => $user['postcode'],
     "%city" => $user['city'],
     "%country" => Country::iso2name($user['country']),
-    "%title" => "Foglio ore {$name} &mdash; {$month}/{$year}",
+    "%title" => "Foglio ore",
+    "%month" => $month,
+    "%year" => $year,
+    "%date" => date("d/m/Y"),
     "%rows" => $rows,
-    "%total" => gmdate("G", $total) . "h " . gmdate("i", $total) . "min.",
+    "%total" => Utils::format_duration($total, print_seconds: false),
     "%details" => $details
 
 ], $html);

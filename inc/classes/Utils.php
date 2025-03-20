@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . "/MoneyUtils.php";
+
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberFormat;
+
 class Utils
 {
 
@@ -40,7 +42,7 @@ class Utils
 
     public static function format_address(string $street = "", string $postcode = "", string $city = "", string | null $country = ""): string
     {
-        if(empty($country)) return "";
+        if (empty($country)) return "";
         return "$street, $postcode $city, " . Country::iso2name($country);
     }
 
@@ -63,21 +65,23 @@ class Utils
         if ($tel_link) {
             return "<a href='tel:$phone'>$formatted</a>";
         }
-        return $formatted ;
+        return $formatted;
     }
 
-    public static function format_iban(string | null $iban) : string {
-        if(empty($iban)) return "-";
+    public static function format_iban(string | null $iban): string
+    {
+        if (empty($iban)) return "-";
         $cleanedIban = preg_replace('/[^A-Za-z0-9]/', '', $iban);
 
-    // Group the IBAN into chunks of 4 characters separated by spaces
-    $formattedIban = trim(chunk_split($cleanedIban, 4, ' '));
+        // Group the IBAN into chunks of 4 characters separated by spaces
+        $formattedIban = trim(chunk_split($cleanedIban, 4, ' '));
 
-    return $formattedIban;
+        return $formattedIban;
     }
 
-    public static function get_phone_regex() {
-            return "\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$";
+    public static function get_phone_regex()
+    {
+        return "\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$";
     }
 
     public static function dropdown(array $items, string $divClass = 'dropdown', string $button = "<i class='fa-solid fa-gear'></i>")
@@ -101,59 +105,72 @@ class Utils
 
     public static function format_date(string|null $date_mysql)
     {
-        if(empty($date_mysql) || $date_mysql === NULL) return "-";
+        if (empty($date_mysql) || $date_mysql === NULL) return "-";
         $date = new DateTime($date_mysql);
         return $date->format("d/m/Y");
     }
 
     public static function format_datetime(string|null $date_mysql)
     {
-        if(empty($date_mysql) || $date_mysql === NULL) return "-";
+        if (empty($date_mysql) || $date_mysql === NULL) return "-";
         $date = new DateTime($date_mysql);
         return $date->format("d/m/Y, H:i:s");
     }
 
-    public static function price_to_db(float $price): int {
+    public static function format_duration(int $seconds, bool $print_seconds = true): string
+    {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $secs = $seconds % 60;
+
+        return $print_seconds ? sprintf('%d:%02d:%02d', $hours, $minutes, $secs) : sprintf('%d:%02d', $hours, $minutes);
+    }
+
+    public static function price_to_db(float $price): int
+    {
         return (int) ($price * 100);
     }
 
-    public static function format_price(int|float $price): string {
-        if(is_float($price)) {
+    public static function format_price(int|float $price): string
+    {
+        if (is_float($price)) {
             $price = round($price, 2, PHP_ROUND_HALF_UP);
         }
         return MoneyUtils::format_price_int((int)$price, "CHF");
     }
 
-    public static function str_replace(array $kv, string $str) {
+    public static function str_replace(array $kv, string $str)
+    {
         return str_replace(array_keys($kv), array_values($kv), $str);
     }
 
-    public static function print_status_icon(string | int $status) {
-        if($status === "OK" || $status == 0) {
+    public static function print_status_icon(string | int $status)
+    {
+        if ($status === "OK" || $status == 0) {
             echo "<i class='fa-solid fa-check-circle text-success'></i>";
-        } else if($status === "WARN" || $status == 1) {
+        } else if ($status === "WARN" || $status == 1) {
             echo '<i class="fa-solid fa-triangle-exclamation text-warning"></i>';
-        } else if($status === "ERROR" || $status == 2) {
+        } else if ($status === "ERROR" || $status == 2) {
             echo "<i class='fa-solid fa-times-circle text-danger'></i>";
-        }
-        else return;
+        } else return;
     }
 
 
-    public static function compute_discounted_price(int $subtotal, float $discount, string $discountType) {
-        if($discountType === "CHF") {
+    public static function compute_discounted_price(int $subtotal, float $discount, string $discountType)
+    {
+        if ($discountType === "CHF") {
             return $subtotal - $discount;
-        }
-        else {
+        } else {
             return $subtotal * (1 - $discount / 100);
         }
     }
 
-    public static function format_pos(string $text): string {
+    public static function format_pos(string $text): string
+    {
         return self::str_replace([
             "à" => "a'",
             "è" => "e'",
-            "ì", "i'",
+            "ì" => "i'",
             "ò" => "o'",
             "ù" => "u'",
             "á" => "a'",
@@ -185,31 +202,33 @@ class Utils
         ], $text);
     }
 
-    public static function uuidv4(): string {
+    public static function uuidv4(): string
+    {
         $data = random_bytes(16);
-    // Set version to 0100
-    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-    // Set bits 6-7 to 10
-    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        // Set version to 0100
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        // Set bits 6-7 to 10
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
 
-    // Output the 36 character UUID.
-    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        // Output the 36 character UUID.
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
-    public static function roundToQuarterHour($timestamp) {
+    public static function roundToQuarterHour($timestamp)
+    {
         // Estrarre i minuti dal timestamp
         $minutes = date('i', $timestamp);
         $seconds = date('s', $timestamp);
-        
+
         // Calcolare il numero di quarti d'ora
         $quarter = floor($minutes / 15);
-        
+
         // Determinare la soglia per arrotondare verso l'alto
         $threshold = 7.5; // Minuti per decidere l'arrotondamento
-    
+
         // Calcolare quanti minuti sono passati dall'inizio dell'ultimo quarto d'ora
         $minutesInQuarter = $minutes % 15 + ($seconds > 0 ? 1 : 0);
-    
+
         if ($minutesInQuarter > $threshold) {
             // Arrotondare al quarto d'ora successivo
             $newMinutes = ($quarter + 1) * 15;
@@ -217,10 +236,46 @@ class Utils
             // Arrotondare al quarto d'ora precedente
             $newMinutes = $quarter * 15;
         }
-    
+
         // Creare il nuovo timestamp arrotondato
         return mktime(date('H', $timestamp), $newMinutes, 0, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
     }
 
+    public static function get_mpdf(array $config = [], $debug = false)
+    {
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $mpdf = new \Mpdf\Mpdf(array_replace_recursive([
+            "format" => [148, 210],
+            "default_font_size" => 7,
+            'fontDir' => array_merge($fontDirs, [
+                __DIR__ . "/../../assets/fonts",
+            ]),
+            'fontdata' => $fontData + [ // lowercase letters only in font key
+                'quiche' => [
+                    'R' => 'QuicheDisplay-Light.ttf',
+                    'I' => 'QuicheDisplay-LightItalic.ttf',
+                ],
+                'times' => [
+                    'R' => 'times.ttf',
+                    'B' => 'timesbd.ttf',
+                    'I' => 'timesi.ttf',
+                    'BI' => 'timesbi.ttf',
+                ],
+            ],
+            "default_font" => 'times'
+
+        ], $config));
+        $mpdf->setAutoBottomMargin = 'stretch';
+        $mpdf->setAutoTopMargin = 'stretch';
+        $mpdf->charset_in = 'UTF-8';
+        $mpdf->allow_charset_conversion = true;
+        $mpdf->dpi = 72;
+        $mpdf->debug = $debug;
+        return $mpdf;
+    }
 }
-?>

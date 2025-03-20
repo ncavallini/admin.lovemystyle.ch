@@ -1,5 +1,9 @@
 <?php
-require_once __DIR__ . "/../actions/actions_init.php";
+
+// Cron: every saturday at 01:00
+
+
+require_once __DIR__ . "/../inc/inc.php";
 
 if(!isset($_GET['key']) || $_GET['key'] != $CONFIG['CRON_KEY']) {
     echo "Invalid key!";

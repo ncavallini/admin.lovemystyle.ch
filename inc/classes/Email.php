@@ -3,8 +3,7 @@
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once __DIR__ . "/../utils/functions.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 class Email
 {
 
@@ -62,16 +61,4 @@ class Email
             return false;
         }
     }
-
-    /* public static function get_file_as_string(string $path): string {
-         $http = HttpClient::get_client();
-
-         $response = $http->get($path, [
-             'headers' => [
-                 'Cookie' => "PHPSESSID=" . session_id()
-             ]
-         ]);
-         return $response->getBody()->getContents();
-     }
- */
 }

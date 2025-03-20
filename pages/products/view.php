@@ -14,9 +14,11 @@ $products = $stmt->fetchAll();
 
 <h1>Prodotti</h1>
 <p></p>
-<a href="/index.php?page=products_add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-<a href="/actions/products/print_inventory.php" class="btn btn-secondary"><i class="fa-solid fa-print"></i></a>
-<a href="/actions/products/export_inventory.php" class="btn" style="background-color: #1D6F42; color: white;"><i class="fa-solid fa-file-excel"></i></a>
+<a href="/index.php?page=products_add" class="btn btn-primary" title="Aggiungi Prodotto"><i class="fa-solid fa-plus"></i></a>
+<a href="/actions/products/print_inventory.php" class="btn btn-secondary" title="Stampa inventario"><i class="fa-solid fa-print"></i></a>
+<a href="/actions/products/export_inventory.php" class="btn" style="background-color: #1D6F42; color: white;" title="Esporta inventario in Excel"><i class="fa-solid fa-file-excel"></i></a>
+<a class="btn btn-secondary disabled" id="btn-apply-discount" href="javascript:void(0)" title="Applica sconto"><i class="fas fa-percent"></i></a>
+<a onclick="printDisplay()" class="btn btn-secondary" title="Stampa cartello display prezzi"><i class="fa-solid fa-list"></i></a>
 
 <p>&nbsp;</p>
 <form action="/index.php" method="GET" style="display: flex; align-items: center;">
@@ -64,7 +66,7 @@ $products = $stmt->fetchAll();
     </table>
 </div>
 <br>
-<a class="btn btn-primary disabled" id="btn-apply-discount" href="javascript:void(0)">Applica sconto ai selezionati</a>
+<?php echo $pagination->get_page_links(); ?>
 
 <script>
     function deleteProduct(product_id) {
@@ -118,7 +120,6 @@ $products = $stmt->fetchAll();
             btn.onclick = null;
             btn.classList.add("disabled");
         }
-        console.log([...selectedProducts]); // Debug
     }
 
     function applyMassDiscount() {
@@ -150,5 +151,22 @@ $products = $stmt->fetchAll();
                 });
             }
         });
+    }
+
+    function printDisplay() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'index.php?page=products_price-display';
+
+        // Pass the same products again (or any data you want)
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'products';
+            input.value = JSON.stringify([...selectedProducts]);
+            form.appendChild(input);
+        
+
+        document.body.appendChild(form);
+        form.submit(); // 🚀 This triggers a POST and navigates!
     }
 </script>

@@ -65,9 +65,9 @@
     </div>
 </div>
 
-<a href="/actions/customers/send_loyalty_email.php" class="btn btn-primary">Invia mail</a>
+<a href="/actions/customers/send_new_customer_email.php?customer_id=<?php echo $_GET['customer_id'] ?>" class="btn btn-primary">Invia mail</a>
 <img onclick="window.location.href='<?php echo $googlePassLink ?>'" src="/assets/components/it_add_to_google_wallet_wallet-button.png" alt="Aggiungi a Google Wallet" style="cursor: pointer;" />
-
+<a href="/actions/customers/get_apple_pass.php?customer_id=<?php echo $_GET['customer_id'] ?>" class="btn btn-primary">Aggiungi ad Apple Wallet</a>
 
 
 <?php

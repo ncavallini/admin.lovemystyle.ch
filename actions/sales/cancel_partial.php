@@ -66,5 +66,29 @@ foreach($items as $item) {
     ]);
 }
 
+$receipt = [
+    "saleId" => $saleId,
+    "subtotal" => Utils::format_price($subtotal),
+    "total" => Utils::format_price($total),
+    "discount" => ($sale['discount']) != 0 ? $sale['discount'] . " " . $sale['discount_type'] : "",
+    "paymentMethod" => $paymentMethod,
+    "username" => Auth::get_fullname_by_username($sale['username']),
+    "customer" => ($sale['customer_id']) !== null ? $sale['first_name'] . " " . $sale['last_name'] : "Esterno",
+    "datetime" => $sale['closed_at'],
+    "items" => $receiptItems,
+    "type" => "return",
+];
+
+$posClient = POSHttpClient::get_http_client();
+try {
+    $posClient->post("/receipt/print", [
+        "json" => [
+            "receipt" => $receipt
+        ]
+        ]);
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
 header("Location: /index.php?page=sales_add&sale_id=" . $newSaleId);
 ?>

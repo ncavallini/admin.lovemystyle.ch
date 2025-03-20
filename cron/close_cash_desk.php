@@ -1,7 +1,7 @@
 <?php
 // Cron: every day at 23:59
 
-require_once __DIR__ . "/../actions/actions_init.php";
+require_once __DIR__ . "/../inc/inc.php";
 $dbconnection = DBConnection::get_db_connection();
 
 if(!isset($_GET['key']) || $_GET['key'] != $CONFIG['CRON_KEY']) {
@@ -50,7 +50,7 @@ $posClient = POSHttpClient::get_http_client();
 $posClient->post('/receipt/close', [
     'json' => [
         'date' => $today,
-        'content' => $content,
-        'income' => $income
+        'content' => Utils::format_price($content),
+        'income' => Utils::format_price($income)
     ]
 ]);

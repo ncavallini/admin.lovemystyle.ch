@@ -129,7 +129,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             customer: "<?php echo ($sale['customer_id']) !== null ? $customer['first_name'] . " " . $customer['last_name'] : "Esterno" ?>",
             datetime: "<?php echo $sale['closed_at'] ?>",
             items: <?php echo json_encode($receiptItems) ?>,
-            isCopy: true
+            type: "copy"
         };
         formData.append("receipt", JSON.stringify(receipt));
 

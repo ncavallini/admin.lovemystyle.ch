@@ -1,7 +1,7 @@
 <?php
 // Cron: every day at 23:59
 
-require_once __DIR__ . "/../actions/actions_init.php";
+require_once __DIR__ . "/../inc/inc.php";
 $dbconnection = DBConnection::get_db_connection();
 
 if(!isset($_GET['key']) || $_GET['key'] != $CONFIG['CRON_KEY']) {
@@ -18,9 +18,9 @@ $stmt->execute();
 $users = $stmt->fetchAll();
 
 foreach($users as $user) {
-    $sql = "SELECT COUNT(*) FROM clockings WHERE username = ? AND DATE(datetime) = ?";
+    $sql = "SELECT COUNT(*) FROM clockings WHERE username = ?";
     $stmt = $dbconnection->prepare($sql);
-    $stmt->execute([$user['username'], $today]);
+    $stmt->execute([$user['username']]);
     $count = $stmt->fetchColumn();
     if($count % 2 == 1) {
         $sql = "INSERT INTO clockings (username, datetime, type) VALUES (?, ?, 'out')";

@@ -1,8 +1,12 @@
 <?php
 class BarcodeGenerator {
-    public static function generateBarcode(string $data, int $height = 22, int $font = 5, bool $ssr = false): string {
+    public static function generateBarcode(string $data, int $height = 22, int $font = 5, bool $ssr = false, bool $url_only = false): string {
         if($ssr) {
-            return "<img src='https://barcodeapi.org/api/128/$data?height=$height&font=$font' alt='$data' />";
+            $url = "https://barcodeapi.org/api/128/$data?height=$height&font=$font";
+            if($url_only) {
+                return $url;
+            }
+            return "<img src='' alt='$data' />";
         }
         else {
             $height = $height * 100/22;

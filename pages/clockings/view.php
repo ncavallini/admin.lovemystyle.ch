@@ -122,7 +122,7 @@ $isWorking = count($clockings) % 2 == 1;
 ?>
 
 
-<p class="lead">Totale mese: <?php echo gmdate("H:i:s", $sum); ?> <?php if ($isWorking): ?>
+<p class="lead">Totale mese: <?php echo Utils::format_duration($sum); ?> <?php if ($isWorking): ?>
         <span class="badge bg-success">In corso</span>
     <?php endif; ?>
 </p>

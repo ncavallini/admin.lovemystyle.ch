@@ -55,7 +55,7 @@ $receipt = [
     "customer" => ($sale['customer_id']) !== null ? $sale['first_name'] . " " . $sale['last_name'] : "Esterno",
     "datetime" => $sale['closed_at'],
     "items" => $receiptItems,
-    "isCopy" => false,
+    "type" => "sale",
 ];
 
 $posClient = POSHttpClient::get_http_client();
