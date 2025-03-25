@@ -7,7 +7,7 @@ $pass = new LoyaltyCard($customer_id);
 header('Content-Type: application/vnd.apple.pkpass');
 header('Content-Disposition: attachment; filename="pass.pkpass"');
 
-$str = $pass->get_apple_pass_debug();
+$str = $pass->get_apple_pass();
 
 header("Content-Length: " . strlen($str));
 

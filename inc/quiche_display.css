@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'QuicheDisplay-Light';
+    src: url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Light.eot');
+    src: url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Light.eot?#iefix') format('embedded-opentype'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Light.woff2') format('woff2'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Light.woff') format('woff'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Light.ttf') format('truetype'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Light.svg#QuicheDisplay-Light') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'QuicheDisplay-Regular';
+    src: url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Regular.eot');
+    src: url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Regular.eot?#iefix') format('embedded-opentype'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Regular.woff2') format('woff2'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Regular.woff') format('woff'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Regular.ttf') format('truetype'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Regular.svg#QuicheDisplay-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'QuicheDisplay-Medium';
+    src: url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Medium.eot');
+    src: url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Medium.eot?#iefix') format('embedded-opentype'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Medium.woff2') format('woff2'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Medium.woff') format('woff'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Medium.ttf') format('truetype'),
+         url('https://admin.lovemystyle.ch/assets/fonts/QuicheDisplay-Medium.svg#QuicheDisplay-Medium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

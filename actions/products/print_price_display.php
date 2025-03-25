@@ -73,7 +73,6 @@ foreach($products as $product) {
 $html = Utils::str_replace(["%tbody_en" => $tbody], $html);
 
 
-
 $mpdf->WriteHTML($html);
 
 $mpdf->Output("Display prezzi.pdf", "I");

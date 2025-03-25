@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
-$sql = "INSERT INTO products VALUES (:product_id, :name, :brand_id, :price, :vat, NOW())";
+$sql = "INSERT INTO products VALUES (:product_id, :name, :brand_id, :price, :vat, NOW(), FALSE)";
 $stmt = $dbconnection->prepare($sql);
 $productId = InternalNumbers::get_product_number();
 $res = $stmt->execute([

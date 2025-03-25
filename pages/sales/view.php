@@ -6,7 +6,7 @@ $sql = "DELETE FROM sales WHERE sale_id NOT IN (SELECT DISTINCT sale_id FROM sal
 $stmt = $connection->prepare($sql);
 $stmt->execute([]);
 
-$sql = "SELECT s.*, c.first_name, c.last_name FROM sales s  LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY closed_at DESC, created_at DESC";
+$sql = "SELECT s.*, c.first_name, c.last_name FROM sales s  LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY created_at DESC, closed_at DESC, created_at DESC";
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());

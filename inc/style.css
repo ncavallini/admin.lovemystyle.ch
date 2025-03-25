@@ -1,9 +1,25 @@
+:root {
+    --bs-primary: #071d49;
+
+}
+
 body {
+
+    --bg-color: #c3d5ed;
+    --accent-color: #071d49;
     padding-bottom: 80px; /* Altezza approssimativa del footer */
 }
 
 h1 {
     padding-bottom: 10pt;
+    font-family: "QuicheDisplay-Light", serif;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+h2 {
+    font-family: "QuicheDisplay-Light", serif;
+    color: var(--accent-color);
 }
 
 a {
@@ -12,6 +28,10 @@ a {
 
 label {
     font-weight: bold;
+}
+
+th, td {
+    text-align: center;
 }
 
 .tt {
@@ -33,6 +53,14 @@ label {
     text-decoration: underline underline;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
+.numeric {
+    text-align: right;
+}
+
 .sale-totally_canceled {
     text-decoration: line-through;
     text-decoration-thickness: 3px;
@@ -44,6 +72,14 @@ label {
     text-decoration-thickness: 3px;
     text-decoration-color: orange;
 }
+
+.special {
+    font-family: "QuicheDisplay-Light", serif;
+    color: var(--accent-color);
+
+}
+
+
 
 @media (max-width: 768px) {
     footer {

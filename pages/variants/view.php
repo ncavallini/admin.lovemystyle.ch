@@ -31,7 +31,8 @@ $product = $stmt->fetch();
     foreach ($variants as $variant) {
         $variantId = $variant["variant_id"];
         $sku = InternalNumbers::get_sku($productId, $variant['variant_id']);
-        $stock_class = $variant['stock'] == 0 ? "b red" : "";
+        $stock = $product["is_infinite"] ? "&infin;" : $variant['stock'];
+        $stock_class = $stock == 0 ? "b red" : "";
         $barcode = BarcodeGenerator::generateBarcode($sku, 11);
         echo <<<EOD
 <div class="card">
@@ -40,7 +41,7 @@ $product = $stmt->fetch();
   </div>
   <div class="card-body">
    <ul>
-        <li>Stock: <span class='$stock_class'>{$variant['stock']}</span></li>
+        <li>Stock: <span class='$stock_class'>{$stock}</span></li>
     </ul>
     $barcode
     <br>

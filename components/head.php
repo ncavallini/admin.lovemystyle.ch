@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,7 @@
     </script>
 
     <!-- BarcodeJS -->
-     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/barcodes/JsBarcode.code128.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/barcodes/JsBarcode.code128.min.js"></script>
 
     <!-- Select2JS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -37,7 +38,39 @@
 
 
     <link rel="stylesheet" href="inc/style.css">
+    <link rel="stylesheet" href="inc/quiche_display.css">
     <script src="/inc/util.js"></script>
 
+    <!-- Favicon -->
+
+    <link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Love My Style" />
+    <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+
+    <!-- Metatags -->
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Love My Style" />
+    <meta name="description" content="Boutique" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://metatags.io/" />
+    <meta property="og:title" content="Love My Style" />
+    <meta property="og:description" content="Boutique" />
+    <meta property="og:image" content="/assets/logo/metadata_base.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://metatags.io/" />
+    <meta property="twitter:title" content="Love My Style" />
+    <meta property="twitter:description" content="Boutique" />
+    <meta property="twitter:image" content="/assets/logo/metadata_base.png" />
+
+    <!-- Meta Tags Generated with https://metatags.io -->
 </head>
+
 <body>

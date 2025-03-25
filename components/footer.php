@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col"><b>&copy; <?php echo date("Y") ?> &mdash;
                         <a style="color: black;" href="https://www.pcngroup.ch" target="_blank">PCN Group</a>
-                        &times; Love My Style
+                        &times; <span class="special uppercase">Love My Style</span>
                     </b></div>
                 <div class="col"> 
                     <a href="/index.php?page=pos_view" style="color: black;">
@@ -33,5 +33,14 @@
         const date = new Date();
         datetime.innerHTML = date.toLocaleTimeString() + "<br>" + date.toLocaleDateString();
     }, 1000);
+
+
+
+    const tds = Array.from(document.getElementsByTagName("td"));
+    tds.forEach(td => {
+    if (!isNaN(td.textContent.trim()) && td.textContent.trim() !== "" && td.children.length == 0) {
+        td.classList.add("numeric");
+    }
+});
 
 </script>

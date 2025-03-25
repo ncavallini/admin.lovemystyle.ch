@@ -7,13 +7,13 @@ class Label {
 
    private string $name;
    private string $brand;
-   private string $color;
-   private string $size;
+   private string|null $color;
+   private string|null $size;
    private string $sku;
    private int $price;
    private GuzzleHttp\Client $httpClient;
 
-   public function __construct(string $name, string $brand, string $color, string $size, string $sku, int $price) {
+   public function __construct(string $name, string $brand, string|null $color, string|null $size, string $sku, int $price) {
        $this->name = $name;
        $this->brand = $brand;
        $this->color = $color;
@@ -42,8 +42,8 @@ class Label {
         return Utils::str_replace([
             "%product_name" => $this->name,
             "%brand" => $this->brand,
-            "%size" => $this->size,
-            "%color" => $this->color,
+            "%size" => $this->size ?? "",
+            "%color" => $this->color ?? "",
             "%sku" => $this->sku,
             "%price" => Utils::format_price($this->price)
         ], str: $xml);

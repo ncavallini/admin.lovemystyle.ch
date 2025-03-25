@@ -108,7 +108,12 @@ $sale = $stmt->fetch();
         </div>
     </div>
 </div>
+
+<a href="#" onclick="window.open('index.php?page=giftcards_redeem&sale_id=<?php echo $saleId; ?>', 'GiftcardPopup', 'width=600,height=600,scrollbars=yes,resizable=yes'); return false;" class="btn btn-sm btn-secondary">Usa Carta Regalo</a>
+
 <p>&nbsp;</p>
+
+
 
 <h2>Cliente</h2>
 <p>Scannerizzare la carta cliente se disponibile oppure cercare un cliente per nome e cognome</p>

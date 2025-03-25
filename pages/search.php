@@ -45,6 +45,11 @@
     $stmt->execute([":query" => "%$query%"]);
     $customers = $stmt->fetchAll();
 
+    $sql = "SELECT * FROM gift_cards WHERE card_id LIKE :query ORDER BY card_id asc";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([":query" => "%$query%"]);
+    $gift_cards = $stmt->fetchAll();
+
 ?>
 <p>Termine di ricerca: <i><?php echo htmlspecialchars($query) ?></i> </p>
 
@@ -125,6 +130,23 @@
     <li class="list-group-item">
       <a href="index.php?page=customers_view&q=<?php echo $customer['customer_number'] ?>">
       <i class="fa-solid fa-arrow-right"></i> <?php echo $customer["first_name"] . " " . $customer['last_name'] . ", " . Utils::format_date($customer['birth_date']) ?> (<span class="tt"><?php echo $customer["customer_number"] ?></span>)
+      </a>
+    </li>
+    <?php endforeach ?>
+  </ul>
+</div>
+
+<p>&nbsp;</p>
+
+<div class="card">
+  <div class="card-header">
+    <p class="h5">Carte Regalo (<?php echo count($gift_cards)  ?>)</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <?php foreach($gift_cards as $gift_card): ?>
+    <li class="list-group-item">
+      <a href="index.php?page=giftcards_view&q=<?php echo $gift_card['card_id'] ?>">
+      <i class="fa-solid fa-arrow-right"></i> <?php echo $gift_card['card_id'] ?>
       </a>
     </li>
     <?php endforeach ?>

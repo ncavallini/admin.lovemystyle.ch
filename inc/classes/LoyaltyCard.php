@@ -105,7 +105,7 @@ class LoyaltyCard
     }
 
 
-    public function get_apple_pass_debug() {
+    public function get_apple_pass() {
         $CONFIG = $GLOBALS['CONFIG'];
         $pass = new PKPass($CONFIG["PKPASS_CERTIFICATE_FILE_PATH"] , $CONFIG["PKPASS_CERTIFICATE_PASSWORD"]);
 
@@ -169,6 +169,7 @@ class LoyaltyCard
     $pass->addFile(__DIR__ . '/../../assets/logo/apple/logo@2x.png');
     $pass->addFile(__DIR__ . '/../../assets/logo/apple/logo@3x.png');
     $pass->addFile(__DIR__ . '/../../assets/logo/apple/strip.png');
+    $pass->addFile(__DIR__ . '/../../assets/logo/apple/strip@2x.png');
 
     
     
@@ -176,64 +177,4 @@ class LoyaltyCard
     return $pass->create(false);
     }
     
-    
-    public function get_apple_pass() {
-        $CONFIG = $GLOBALS['CONFIG'];
-        $pass = new PKPass($CONFIG["PKPASS_CERTIFICATE_FILE_PATH"], $CONFIG["PKPASS_CERTIFICATE_PASSWORD"]);
-
-        global $dbconnection;
-
-        $sql = "SELECT * FROM customers WHERE customer_id = ?";
-        $stmt = $dbconnection->prepare($sql);
-        $stmt->execute([$this->customer_id]);
-        $customer = $stmt->fetch();
-        if (!$customer) {
-            Utils::print_error("Cliente non trovato.", true);
-            die;
-        }
-
-        // Pass content
-        $data = [
-            'description' => 'Love My Style',
-            'formatVersion' => 1,
-            'organizationName' => 'Love My Style',
-            'passTypeIdentifier' => 'pass.ch.lovemystyle.loyalty',
-            'serialNumber' => strval($customer['customer_number']),
-            'teamIdentifier' => '22UG3QMHJ7',
-            'foregroundColor' => 'rgb(7,29,73)',
-            'backgroundColor' => 'rgb(195,215,238)',
-            'barcode' => [
-                'format' => 'PKBarcodeFormatCode128',
-                'message' => strval($customer['customer_number']),
-                'messageEncoding' => 'iso-8859-1',
-                'altText' => strval($customer['customer_number']),
-            ],
-            'logoText' => 'Love My Style',
-        
-            // The correct top-level key for a loyalty/store card pass:
-            'storeCard' => [
-                'primaryFields' => [
-                    [
-                        'key' => 'full_name',
-                        'label' => 'Cliente',
-                        'value' => $customer['first_name'] . ' ' . $customer['last_name']
-                    ]
-                ]
-            ]
-        ];
-        
-        $pass->setData($data);
-
-        
-        
-        // Add files to the pass package
-        $pass->addFile(__DIR__ . '/../../assets/logo/apple/icon.png');
-        $pass->addFile(__DIR__ . '/../../assets/logo/apple/icon@2x.png');
-        $pass->addFile(__DIR__ . '/../../assets/logo/apple/icon@3x.png');
-
-        
-        
-        // Create and output the pass
-        return $pass->create(false);
-    }
 }

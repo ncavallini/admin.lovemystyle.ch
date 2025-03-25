@@ -38,6 +38,7 @@ class Email
 
             $mail->isHTML($GLOBALS['CONFIG']['SMTP_USE_HTML']);
             $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'quoted-printable';
 
             $mail->Subject = $subject;
             $mail->Body = $message;
