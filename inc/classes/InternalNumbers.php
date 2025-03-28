@@ -22,12 +22,12 @@ class InternalNumbers
     public static function get_gift_card_number()
     {
         do {
-            $candidate = self::get_random_number(digits: 8);
+            $candidate = self::get_random_number(digits: 4);
             $dbconnection = DBConnection::get_db_connection();
             $sql = "SELECT * FROM gift_cards WHERE card_id = ?";
             $stmt = $dbconnection->prepare($sql);
             $stmt->execute([$candidate]);
-        } while ($stmt->rowCount() > 0);
+        } while ($stmt->rowCount() > 0 || $candidate === "0000");
 
         return $candidate;
     }

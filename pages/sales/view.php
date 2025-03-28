@@ -61,10 +61,12 @@ $sales = $stmt->fetchAll();
                     Utils::print_table_row(Utils::format_price($total));
                     Utils::print_table_row(strtoupper($sale['payment_method'] ?? "-") ?? "-");
                     Utils::print_table_row(Auth::get_fullname_by_username($sale['username']));
-                    
-                    if($sale['status'] == "completed") {
+
+                switch ($sale['status']) {
+                    case "completed":
                         Utils::print_table_row(
-                            "<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Visualizza'>
+                            class: "text-start",
+                            data: "<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Visualizza'>
                                 <i class='fa fa-eye'></i>
                             </a> 
                             &nbsp; 
@@ -72,17 +74,19 @@ $sales = $stmt->fetchAll();
                                 <i class='fa fa-trash'></i>
                             </a>"
                         );
-                        
-                    }
-                    else if($sale['status'] == "open") {
-                        Utils::print_table_row("<a href='/index.php?page=sales_add&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Modifica'><i class='fa fa-edit'></i></a>");
-                    }
-                    else {
+                        break;
+                    case "open":
+                        Utils::print_table_row(class: "text-start", data: "<a href='/index.php?page=sales_add&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Modifica'><i class='fa fa-edit'></i></a>");
+                        break;
+                    default:
                         Utils::print_table_row(
-                            "<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Visualizza'>
+                            class: "text-start",
+                            data: "<a href='/index.php?page=sales_details&sale_id=$saleId' class='btn btn-sm btn-outline-primary' title='Visualizza'>
                                 <i class='fa fa-eye'></i>
-                            </a> ");
-                    }
+                            </a> "
+                        );
+                        break;
+                }
                     echo "</tr>";
                 }
             ?>

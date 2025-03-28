@@ -17,7 +17,7 @@ if (!$variant) {
 <p>&nbsp;</p>
 <h2>Anteprima di stampa</h2>
 <?php
-      $label = Label::get_from_variant($productId, $variantId);
+      $label = ProductTagLabel::get_from_variant($productId, $variantId);
     echo "<div class='d-flex justify-content-center'>";
     echo $label->preview();
     echo "</div>";

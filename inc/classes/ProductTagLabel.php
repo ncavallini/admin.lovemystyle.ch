@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . "/DBConnection.php";
+require_once __DIR__ . "/DYMOLabel.php";
+require_once __DIR__ . "/DYMOUtils.php";
 $CONFIG = $GLOBALS['CONFIG'];
 
 use GuzzleHttp\Client;
-class Label {
+class ProductTagLabel implements DYMOLabel {
 
    private string $name;
    private string $brand;
@@ -33,14 +35,14 @@ class Label {
         throw new Error("Variante non trovata.");
     }
     $sku = InternalNumbers::get_sku($productId, $variantId);
-    $label = new Label($variant['name'], $variant["brand_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
+    $label = new ProductTagLabel($variant['name'], $variant["brand_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
     return $label;
    }
 
-   private function get_xml(): string {
+   public function get_xml(): string {
         $xml = file_get_contents(__DIR__ . "/../../templates/labels/product_label.dymo");
         return Utils::str_replace([
-            "%product_name" => $this->name,
+            "%product_name" => substr($this->name, 0, 12),
             "%brand" => $this->brand,
             "%size" => $this->size ?? "",
             "%color" => $this->color ?? "",
@@ -56,36 +58,19 @@ class Label {
     ], $xml);
    }
 
-   public function preview() {
-        
-        $base64 = $this->httpClient->request("POST",  "/label/preview", [
-            "json" => ["xml" => $this->get_xml()]
-        ])->getBody()->getContents();
-
-        return "<img style='border-style: solid' src='data:image/png;base64,$base64'>";
-    
+   public function preview(): string {
+    $xml = $this->get_xml();
+    return DYMOUtils::preview($xml);
    }
 
-   public function print(string $printerName, int $copies = 1) {
+   public function print(string $printerName, int $copies = 1): void {
     $xml = $this->get_xml();
-    for($i = 1; $i <= $copies; $i++) {
-        $this->httpClient->post("/label/print", [
-            "json" => [
-                "xml" => $xml,
-                "printerName" => $printerName,
-                "copies" => $copies
-            ]
-        ]);
-    }
-    
+    DYMOUtils::print($printerName, $xml, $copies);
    }
 
-   public function download() {
+   public function download(): void {
     $xml = $this->get_xml();
-    header("Content-type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=Etichetta-{$this->sku}.dymo");
-    header("Content-Length: " . strlen($xml));
-    echo $xml;
+    DYMOUtils::download($xml, "Etichetta-{$this->sku}");
    }
 }
 ?>

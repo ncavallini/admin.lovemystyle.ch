@@ -27,7 +27,7 @@ if (!$sale) {
 
 <script>
     document.getElementById("card_id-input").addEventListener("change", (e) => {
-        if (e.target.value.length != 8) return;
+        if (e.target.value.length != 4) return;
 
         const formData = new FormData();
         formData.append("card_id", e.target.value);
@@ -42,7 +42,7 @@ if (!$sale) {
                     // Risposta HTTP 400, 404, ecc.
                     return res.json().then(err => {
                         console.error("Errore server:", err);
-                        bootbox.alert(err.error || "Carta non trovata.");
+                        bootbox.alert(err.error || "Carta non trovata o scaduta.");
                     }).catch(() => {
                         bootbox.alert("Errore sconosciuto nel server.");
                     });
