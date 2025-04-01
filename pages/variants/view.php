@@ -21,6 +21,33 @@ $product = $stmt->fetch();
 <br>
 <a href="/index.php?page=variants_add&product_id=<?php echo $productId ?>" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
 <p>&nbsp;</p>
+<form action="/actions/variants/print_bulk_labels.php" method="POST">
+    <div class="row">
+        <div class="col-6">
+            <label for="printerName">Stampante</label>
+            <select name="printerName" class="form-select" required>
+    <?php
+    $canPrint = true;
+    try {
+        $client = POSHttpClient::get_http_client();
+        $printer = json_decode($client->get("/label/printers")->getBody()->getContents(), true);
+        if($printer['IsConnected'] == "True") echo "<option value='" . $printer['Name'] . "'>" . $printer['Name'] . "</option>";
+    } catch (Exception $e) {
+        echo "<option value=''>Nessuna stampante trovata</option>";
+        $canPrint = false;
+    }
+        ?>
+    </select>
+        </div>
+        <div class="col-6">
+            <p>&nbsp;</p>
+            <button type="submit" <?php if(!$canPrint) echo "disabled" ?> class="btn btn-secondary">Stampa tutte le etichette</button>
+        </div>
+    </div>
+    <input type="hidden" name="product_id" value="<?php echo $productId ?>">
+    
+</form>
+<p>&nbsp;</p>
 <?php
     if(count($variants) == 0) {
         echo "<div class='alert alert-primary' role='alert'>Nessuna variante trovata. Creane una con il pulsante + sopra.</div>";

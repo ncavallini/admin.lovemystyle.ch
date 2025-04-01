@@ -32,7 +32,7 @@ class Email
             $mail->Port = $GLOBALS['CONFIG']['SMTP_PORT'];
             $mail->SMTPDebug = $GLOBALS['CONFIG']['SMTP_DEBUG'];
 
-            $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], html_entity_decode($_SESSION['user']['first_name']) . ' ' . html_entity_decode($_SESSION['user']['last_name']));
+            $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
             $mail->addAddress($to);
             $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
 

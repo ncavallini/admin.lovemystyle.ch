@@ -139,8 +139,13 @@ class Utils
         return MoneyUtils::format_price_int((int)$price, "CHF");
     }
 
-    public static function str_replace(array $kv, string $str)
+    public static function str_replace(array $kv, string $str, bool $escape_html_entities = false)
     {
+        if($escape_html_entities) {
+            foreach($kv as $key => $value) {
+                $kv[$key] = htmlentities($value);
+            }
+        }
         return str_replace(array_keys($kv), array_values($kv), $str);
     }
 

@@ -41,11 +41,15 @@ $customers = $stmt->fetchAll();
         <tbody>
             <?php
             foreach ($customers as $customer) {
+                $birthDate = "-";
+                if($customer['birth_date'] != "0000-00-00") {
+                    $birthDate = Utils::format_date($customer['birth_date']);
+                }
                 echo "<tr>";    
                 Utils::print_table_row(data: $customer['last_name']);
                 Utils::print_table_row(data: $customer['first_name']);
                 Utils::print_table_row(data: "<span class='tt'>" . $customer['customer_number'] . "</span>");
-                Utils::print_table_row(data: Utils::format_date($customer['birth_date']));
+                Utils::print_table_row(data: $birthDate);
                 Utils::print_table_row(data: Utils::format_address($customer['street'], $customer['postcode'], $customer['city'], $customer['country']));
                 Utils::print_table_row(data: Utils::format_phone_number($customer['tel']));
                 Utils::print_table_row(data: $customer['email'] . ($customer['is_newsletter_allowed'] ? " <i class='fa-solid fa-envelope-open-text' title='Newsletter: Sì'></i>" : ""));
@@ -63,6 +67,7 @@ EOD
         </tbody>
     </table>
 </div>
+<small class="text-body-secondary"><?php echo $pagination->get_total_rows() ?> risultati.</small>
 <br>
 <?php echo $pagination->get_page_links(); ?>
 

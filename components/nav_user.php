@@ -1,3 +1,7 @@
+<?php
+  if(isset($_GET['tablet'])) return;
+?> 
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand special uppercase" href="index.php?page=home">Love My Style</a>

@@ -66,6 +66,8 @@ $products = $stmt->fetchAll();
     </table>
 </div>
 <br>
+<small class="text-body-secondary"><?php echo $pagination->get_total_rows() ?> risultati.</small>
+
 <?php echo $pagination->get_page_links(); ?>
 
 <script>

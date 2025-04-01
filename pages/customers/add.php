@@ -1,3 +1,14 @@
+<?php if($tablet = isset($_GET['tablet'])): ?>
+
+    <style>
+        body {
+            background-color: #c3d5ed;
+        }
+    </style>
+
+<?php endif ?>
+
+
 <h1>Aggiungi Cliente</h1>
 <p>I campi contrassegnati con * sono obbligatori.</p>
 <form action="actions/customers/add.php" method="POST">
@@ -56,14 +67,15 @@
     </div>
     <br>
     <div class="form-check">
-    <input type="checkbox" name="is_newsletter_allowed" class="form-check-input">
+    <input type="checkbox" checked name="is_newsletter_allowed" class="form-check-input">
     <label for="is_newsletter_allowed" class="form-check-label">Desidera ricevere la newsletter?</label>
     </div>
 
 
             <br>
+    <input type="hidden" name="tablet" value="<?php echo $tablet ? "1" : "0" ?>">
 
-    <button type="submit" class="btn btn-primary">Aggiungi Cliente</button>
+    <button type="submit" class="btn btn-primary"><?php echo $tablet ? "Registrati" : "Aggiungi Cliente" ?></button>
 </form>
 
 

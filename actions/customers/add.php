@@ -7,7 +7,7 @@ $res = $stmt->execute([
     ":customer_number" => InternalNumbers::get_customer_number(),
     ":first_name" => $_POST['first_name'],
     ":last_name" => $_POST["last_name"],
-    ":birth_date" => $_POST["birth_date"],
+    ":birth_date" => $_POST["birth_date"] ?? null,
     ":street" => $_POST["street"] ?? null,
     ":postcode" => $_POST["postcode"] ?? null,
     ":city" => $_POST["city"] ?? null,
@@ -22,5 +22,27 @@ if(!$res) {
     die;
 }
 
-header(header: "Location: /index.php?page=customers_view")
+$sql = "SELECT customer_id FROM customers ORDER BY created_at DESC LIMIT 1";
+$stmt = $dbconnection->prepare($sql);
+$stmt->execute();
+$customer_id = $stmt->fetchColumn();
+
+?>
+
+<script>
+    fetch("/actions/customers/send_new_customer_email.php?tablet=1&customer_id=<?php echo $customer_id ?>", {
+        method: "GET"
+    })
+</script>
+
+
+<?php
+
+if($_POST['tablet'] == 1) {
+    Utils::redirect("/index.php?page=customers_add-success&tablet=1");
+} 
+else {
+    Utils::redirect("/index.php?page=customers_view");
+}
+
 ?>

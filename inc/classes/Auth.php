@@ -6,7 +6,7 @@ require_once __DIR__ . "/DBConnection.php";
 class Auth
 {
 
-    private static array $allowedPages = ['login', 'forgot_password'];
+    private static array $allowedPages = ['login', 'forgot_password', 'customers_add', 'customers_add-success', 'customers_view', 'products_view', 'products_add', 'products_edit', 'variants_view', 'variants_add', 'variants_edit', 'actions_view', 'actions_add', 'actions_edit', 'actions_delete', 'actions_print_labels', 'actions_print_labels_bulk'];
     public static function login(string $username, string $password): bool
     {
         $connection = DBConnection::get_db_connection();

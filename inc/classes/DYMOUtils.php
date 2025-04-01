@@ -14,10 +14,9 @@ class DYMOUtils {
             "json" => ["xml" => $xml]
         ])->getBody()->getContents();
 
-        if (!base64_decode($base64, true)) {
-            throw new Exception("La risposta non è un'immagine base64 valida: " . substr($base64, 0, 200));
-        }
 
+
+        
         return "<img style='border-style: solid' src='data:image/png;base64,$base64'>";
     }
 

@@ -41,14 +41,18 @@ class ProductTagLabel implements DYMOLabel {
 
    public function get_xml(): string {
         $xml = file_get_contents(__DIR__ . "/../../templates/labels/product_label.dymo");
-        return Utils::str_replace([
-            "%product_name" => substr($this->name, 0, 12),
+        $bom = "\xEF\xBB\xBF";
+if (substr($xml, 0, 3) === $bom) {
+    $xml= substr($xml, 3);
+} 
+        return Utils::str_replace(kv: [
+            "%product_name" => substr($this->name, 0, 16),
             "%brand" => $this->brand,
             "%size" => $this->size ?? "",
             "%color" => $this->color ?? "",
             "%sku" => $this->sku,
             "%price" => Utils::format_price($this->price)
-        ], str: $xml);
+        ], str: $xml, escape_html_entities: true);
    }
 
    public static function get_test_label_xml(): string {

@@ -53,6 +53,8 @@ foreach ($brands_products as $brand_name => $products) {
     }
 
     $content .= "</tbody></table>"; // Chiusura corretta della tabella
+    // newpage
+    $content .= "<div style='page-break-after: always;'></div>";
 }
 
 $html = str_replace("%content", $content, $html);

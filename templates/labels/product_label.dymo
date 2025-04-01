@@ -72,7 +72,7 @@
               <TextSpan>
                 <Text>%product_name - %brand</Text>
                 <FontInfo>
-                  <FontName>Quiche Display Light</FontName>
+                  <FontName>Segoe UI</FontName>
                   <FontSize>10</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
@@ -358,10 +358,10 @@
               <TextSpan>
                 <Text>LOVE MY STYLE</Text>
                 <FontInfo>
-                  <FontName>Quiche Display Light</FontName>
+                  <FontName>Segoe UI</FontName>
                   <FontSize>8</FontSize>
-                  <IsBold>False</IsBold>
-                  <IsItalic>False</IsItalic>
+                  <IsBold>True</IsBold>
+                  <IsItalic>True</IsItalic>
                   <IsUnderline>False</IsUnderline>
                   <FontBrush>
                     <SolidColorBrush>
