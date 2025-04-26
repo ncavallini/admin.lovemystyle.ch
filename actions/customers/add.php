@@ -1,10 +1,12 @@
 <?php
+error_reporting(E_ALL & ~E_DEPRECATED); // Suppress deprecated warnings (Brevo's fault)
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
 $sql = "INSERT INTO customers VALUES (UUID(), :customer_number, :first_name, :last_name, :birth_date, :street, :postcode, :city, :country, :tel, :email, NOW(), NOW(), :is_newsletter_allowed)";
 $stmt = $dbconnection->prepare($sql);
+$customer_number = InternalNumbers::get_customer_number();
 $res = $stmt->execute([
-    ":customer_number" => InternalNumbers::get_customer_number(),
+    ":customer_number" => $customer_number,
     ":first_name" => $_POST['first_name'],
     ":last_name" => $_POST["last_name"],
     ":birth_date" => $_POST["birth_date"] ?? null,
@@ -17,23 +19,50 @@ $res = $stmt->execute([
     ":is_newsletter_allowed" => $_POST["is_newsletter_allowed"] === "on"
 ]);
 
+if($_POST['is_newsletter_allowed'] === "on") {
+     Brevo::add_customer(
+        InternalNumbers::get_customer_number(),
+        $_POST['first_name'],
+        $_POST['last_name'],
+        $_POST['email'],
+    );
+    
+}
+
 if(!$res) {
     Utils::print_error("Errore durante l'inserimento del cliente. " . $stmt->errorInfo()[2], true);
     die;
 }
 
-$sql = "SELECT customer_id FROM customers ORDER BY created_at DESC LIMIT 1";
+$sql = "SELECT * FROM customers ORDER BY created_at DESC LIMIT 1";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute();
-$customer_id = $stmt->fetchColumn();
+$customer = $stmt->fetch();
+
+$to = $customer['email'];
+
+$loyalty = new LoyaltyCard($customer['customer_id']);
+$google_wallet_url = $loyalty->get_google_pass_link();
+$apple_wallet_url = "https://admin.lovemystyle.ch/actions/customers/get_apple_pass.php?customer_id=" . $_GET['customer_id'];    
+
+
+$html = file_get_contents(__DIR__ . "/../../templates/emails/new_customer.html");
+$html = Utils::str_replace([
+    "%first_name" => $customer['first_name'],
+    "%last_name" => $customer['last_name'],
+    "%google_wallet_url" => $google_wallet_url,
+    "%apple_wallet_url" => $apple_wallet_url,
+    "%barcode" => BarcodeGenerator::generateBarcode($customer['customer_number'], ssr: true, url_only: true)
+], $html);
+
+$res = Email::send($to, "Benvenuto in Love My Style", $html);
+
+if(!$res) {
+    Utils::print_error("Errore durante l'invio dell'email.", true);
+}
 
 ?>
 
-<script>
-    fetch("/actions/customers/send_new_customer_email.php?tablet=1&customer_id=<?php echo $customer_id ?>", {
-        method: "GET"
-    })
-</script>
 
 
 <?php

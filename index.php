@@ -50,3 +50,4 @@ if(Auth::is_logged()) {
 <?php if(false && Auth::is_logged()): ?>
 <script src="/inc/pollPosStatus.js"></script>
 <?php endif; ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toaster/5.1.0/js/bootstrap-toaster.min.js" integrity="sha512-LKHDVlxKQ+ChADdnDsXJYU7LaUdGJk1X+Ab2rbFU11cqm+vhp2PGOWQIrl6K1NRZxHAdwPOYLPINPvUIEyBtVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

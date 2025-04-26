@@ -10,6 +10,18 @@ $sql .= $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $products = $stmt->fetchAll();
+
+$items = 0;
+if(!empty($q)) {
+    foreach ($products as $product) {
+        $sql = "SELECT SUM(stock) FROM product_variants WHERE product_id = :product_id";
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(['product_id' => $product['product_id']]);
+        $stock = $stmt->fetchColumn();
+        if($stock <= 1e6) $items += $stock;
+    }
+}
+
 ?>
 
 <h1>Prodotti</h1>
@@ -66,7 +78,7 @@ $products = $stmt->fetchAll();
     </table>
 </div>
 <br>
-<small class="text-body-secondary"><?php echo $pagination->get_total_rows() ?> risultati.</small>
+<small class="text-body-secondary"><?php echo $pagination->get_total_rows() ?> risultati <?php if($q !== "") echo "(" . $items . " pezzi)" ?>.</small>
 
 <?php echo $pagination->get_page_links(); ?>
 

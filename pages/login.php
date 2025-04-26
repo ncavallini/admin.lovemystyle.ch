@@ -14,6 +14,6 @@
     <br>
     <button type="submit" class="btn btn-outline-primary">Accedi</button>
     <br><p>&nbsp;</p>
-    <a href="index.php?page=forgot_password">Password dimenticata?</a>
+    <a href="index.php?page=forgot-password">Password dimenticata?</a>
 
 </form>

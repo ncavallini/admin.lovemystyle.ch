@@ -30,8 +30,8 @@ $html = Utils::str_replace([
 $res = Email::send($to, "Benvenuto in Love My Style", $html);
 
 if($res) {
+    Utils::create_toast("Email inviata con successo.", "Email inviata a " . $to, "success");
     echo "<script>window.history.back();</script>";
-    die;
 }
 else {
     Utils::print_error("Errore durante l'invio dell'email.", true);

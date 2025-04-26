@@ -10,6 +10,7 @@
         "phpoffice/phpspreadsheet": "^4.0",
         "google/apiclient": "^2.18",
         "firebase/php-jwt": "^6.11",
-        "pkpass/pkpass": "^2.3"
+        "pkpass/pkpass": "^2.3",
+        "getbrevo/brevo-php": "1.x.x"
     }
 }

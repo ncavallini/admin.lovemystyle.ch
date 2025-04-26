@@ -96,7 +96,7 @@ class Utils
             if ($value === "DIVIDER") {
                 $str .= "<li><hr class='dropdown-divider'></li>";
             } else
-                $str .= "<li><a class='dropdown-item' href='$value'>$key</a></li>";
+                $str .= "<li><a class='dropdown-item' href='$value' target='_blank'>$key</a></li>";
         }
 
         $str .= "</div>";
@@ -283,4 +283,30 @@ class Utils
         $mpdf->debug = $debug;
         return $mpdf;
     }
+
+    public static function create_toast(string $title, string $message, string $type = "INFO", int $timeout = 3000) {
+        $type = trim(strtoupper($type));
+        $typeMapping = [
+            "SUCCESS" => 1,
+            "DANGER" => 2,
+            "WARNING" => 3,
+            "INFO" => 4,
+        ];
+        
+        if(!array_key_exists($type, $typeMapping)) {
+            $type = "INFO";
+        }
+        $json = json_encode([
+            "title" => $title,
+            "message" => $message,
+            "type" => $typeMapping[$type],
+            "timeout" => $timeout
+        ]);
+        echo <<<EOD
+            <script>
+                setToast($json);
+            </script>
+        EOD;
+    }
+    
 }

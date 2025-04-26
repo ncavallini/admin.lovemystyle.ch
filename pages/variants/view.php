@@ -11,6 +11,15 @@ if(!$res) {
 }
 $variants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$items = 0;
+foreach ($variants as $variant) {
+    $sql = "SELECT stock FROM product_variants WHERE product_id = ? AND variant_id = ?";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([$productId, $variant['variant_id']]);
+    $stock = $stmt->fetchColumn();
+    if($stock <= 1e6) $items += $stock;
+}
+
 $sql = "SELECT * FROM products WHERE product_id = ?";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([$productId]);
@@ -18,6 +27,7 @@ $product = $stmt->fetch();
 
 ?>
 <h1>Varianti &mdash; <small><i><?php echo $product['name'] . "</i> (<span class='tt'>" . $productId . "</span>)" ?></small> </h1>
+<p><?php echo $items ?> pezzi.</p>
 <br>
 <a href="/index.php?page=variants_add&product_id=<?php echo $productId ?>" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
 <p>&nbsp;</p>

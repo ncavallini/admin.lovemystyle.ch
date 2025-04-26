@@ -47,7 +47,21 @@ function stopBeeping() {
         beepInterval = null;
     }
     beepInterrupted = true
-
-   
-    
 }
+
+
+function setToast(toast) {
+    localStorage.setItem("toast", JSON.stringify(toast))
+}
+
+function displayToast() {
+    if(localStorage.getItem("toast") === null) return
+    const toast = localStorage.getItem("toast")
+    Toast.create(JSON.parse(toast))
+    localStorage.removeItem("toast")
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    displayToast()
+})

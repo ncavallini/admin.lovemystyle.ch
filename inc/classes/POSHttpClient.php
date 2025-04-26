@@ -7,7 +7,9 @@ use GuzzleHttp\Client;
             if(self::$client) {
                 return self::$client;
             }
-            self::$client = new Client(['base_uri'=> $GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'], "timeout" => 2.0]);
+            self::$client = new Client(['base_uri'=> $GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'], "timeout" => 10.0, "headers" => [
+                "x-api-key" => $GLOBALS['CONFIG']['POS_MIDDLEWARE_API_KEY']
+            ]]);
             return self::$client;
         }
     }

@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
+if(substr($_POST["tel"], 0, 2) == "00") {
+    $_POST["tel"] = "+" . substr($_POST["tel"], 2);
+}
 $sql = "INSERT INTO suppliers VALUES (UUID(), :name, :street, :postcode, :city, :country, :tel, :email, :vat_number, :iban)";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([

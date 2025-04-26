@@ -15,10 +15,7 @@ class Email
         array $file_attachments = [],  // [[ 'path' => 'path/to/file', 'name' => 'filename', 'type' => 'application/pdf']]
         array $string_attachments = [] // [[ 'content' => 'string', 'name' => 'filename', 'type' => 'application/pdf']]
     ): bool {
-        if (!isset($_SESSION['user'])) {
-            Utils::print_error("Errore invio email: utente non loggato");
-            return false;
-        }
+        
 
         $mail = new PHPMailer;
 
@@ -34,7 +31,10 @@ class Email
 
             $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
             $mail->addAddress($to);
-            $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
+            if(Auth::is_logged()) {
+                $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
+            }
+             
 
             $mail->isHTML($GLOBALS['CONFIG']['SMTP_USE_HTML']);
             $mail->CharSet = 'UTF-8';

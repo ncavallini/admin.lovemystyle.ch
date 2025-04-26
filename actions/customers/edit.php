@@ -1,6 +1,16 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
+
+$sql = "SELECT customer_number, email FROM customers WHERE customer_id = :customer_id";
+$stmt = $dbconnection->prepare($sql);
+$stmt->execute([
+    ":customer_id" => $_POST['customer_id']
+]);
+$oldData = $stmt->fetch();
+$oldEmail = $oldData['email'];
+$customer_number = $oldData['customer_number'];
+
 $sql = "UPDATE customers SET first_name = :first_name, last_name = :last_name, birth_date = :birth_date, street = :street, postcode = :postcode, city = :city, country = :country, tel = :tel, email = :email, is_newsletter_allowed = :is_newsletter_allowed WHERE customer_id = :customer_id";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
@@ -20,6 +30,19 @@ $res = $stmt->execute([
 if(!$res) {
     Utils::print_error("Errore durante la modifica del cliente. " . $stmt->errorInfo()[2], true);
     die;
+}
+
+
+
+
+if($_POST['is_newsletter_allowed'] === "off") {
+    Brevo::delete_customer($oldEmail);
+}
+else {
+    if($oldEmail !== $_POST['email']) {
+        Brevo::delete_customer($oldEmail);
+        Brevo::add_customer($customer_number, $_POST['first_name'], $_POST['last_name'], $_POST['email']);
+    }
 }
 
 header(header: "Location: /index.php?page=customers_view")

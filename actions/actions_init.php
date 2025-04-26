@@ -9,6 +9,7 @@ if (!Auth::is_logged() && !(isset($_POST['tablet']) || isset($_GET['tablet']))) 
     header("Location: /index.php?page=login");
     exit;
 }
-
-
 ?>
+<?php if(isset($_GET["include_scripts"]) || isset($_POST["include_scripts"])):?> 
+<script src="/inc/util.js"></script>
+<?php endif;?>

@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
+if(substr($_POST["tel"], 0, 2) == "00") {
+    $_POST["tel"] = "+" . substr($_POST["tel"], 2);
+}
 $sql = "UPDATE suppliers SET name = :name, street = :street, postcode = :postcode, city = :city, country = :country, tel = :tel, email = :email, vat_number = :vat_number, iban = :iban WHERE supplier_id = :supplier_id";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
