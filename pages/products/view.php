@@ -11,6 +11,22 @@ $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $products = $stmt->fetchAll();
 
+$sql = "SELECT product_id FROM products";
+$stmt = $connection->prepare($sql);
+$stmt->execute();
+$all_products_id = $stmt->fetchAll();
+$all_products_count = 0;
+
+foreach($all_products_id as $product_id) {
+    $sql = "SELECT SUM(stock) FROM product_variants WHERE product_id = :product_id";
+    $stmt = $connection->prepare($sql);
+    $stmt->execute(['product_id' => $product_id['product_id']]);
+    $stock = $stmt->fetchColumn();
+    if($stock <= 1e6) $all_products_count += $stock;
+}
+
+
+
 $items = 0;
 if(!empty($q)) {
     foreach ($products as $product) {
@@ -25,6 +41,8 @@ if(!empty($q)) {
 ?>
 
 <h1>Prodotti</h1>
+<p></p>
+<small><p><?php echo $all_products_count ?> pezzi.</p></small>
 <p></p>
 <a href="/index.php?page=products_add" class="btn btn-primary" title="Aggiungi Prodotto"><i class="fa-solid fa-plus"></i></a>
 <a href="/actions/products/print_inventory.php" class="btn btn-secondary" title="Stampa inventario"><i class="fa-solid fa-print"></i></a>
