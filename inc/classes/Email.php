@@ -13,7 +13,8 @@ class Email
         string $subject,
         string $message,
         array $file_attachments = [],  // [[ 'path' => 'path/to/file', 'name' => 'filename', 'type' => 'application/pdf']]
-        array $string_attachments = [] // [[ 'content' => 'string', 'name' => 'filename', 'type' => 'application/pdf']]
+        array $string_attachments = [], // [[ 'content' => 'string', 'name' => 'filename', 'type' => 'application/pdf']]
+        string|null $from = null
     ): bool {
         
 
@@ -29,7 +30,8 @@ class Email
             $mail->Port = $GLOBALS['CONFIG']['SMTP_PORT'];
             $mail->SMTPDebug = $GLOBALS['CONFIG']['SMTP_DEBUG'];
 
-            $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
+           if($from === null) $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
+           else $mail->setFrom($from);
             $mail->addAddress($to);
             if(Auth::is_logged()) {
                 $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);

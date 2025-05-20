@@ -2,9 +2,14 @@
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $searchQuery = Pagination::build_search_query($q, ["sale_id", "username", "s.customer_id", "c.first_name", "c.last_name"]);
-$sql = "DELETE FROM sales WHERE sale_id NOT IN (SELECT DISTINCT sale_id FROM sales_items)";
-$stmt = $connection->prepare($sql);
-$stmt->execute([]);
+try {
+    $sql = "DELETE FROM sales WHERE sale_id NOT IN (SELECT DISTINCT sale_id FROM sales_items)";
+    $stmt = $connection->prepare($sql);
+    $stmt->execute([]);
+} catch (PDOException $e) {
+    // Handle error if needed
+}
+
 
 $sql = "SELECT s.*, c.first_name, c.last_name FROM sales s  LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY created_at DESC, closed_at DESC, created_at DESC";
 $stmt = $connection->prepare($sql);

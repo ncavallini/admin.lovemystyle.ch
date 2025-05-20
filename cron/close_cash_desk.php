@@ -24,7 +24,7 @@ $sales = $stmt->fetchAll();
 $income = 0;
 
 foreach($sales as $sale) {
-    $sql = "SELECT * FROM sale_items WHERE sale_id = ?";
+    $sql = "SELECT * FROM sales_items WHERE sale_id = ?";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([$sale['sale_id']]);
     $items = $stmt->fetchAll();

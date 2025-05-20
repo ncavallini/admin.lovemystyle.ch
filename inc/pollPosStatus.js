@@ -20,16 +20,16 @@ function connectToSSE() {
              posStatus = JSON.parse(event.data);
 
 
-            if(posStatus.errorLevel === 2 && sessionStorage.getItem('posAlertShown') !== 'true') {
+            /*if(posStatus.errorLevel === 2 && sessionStorage.getItem('posAlertShown') !== 'true') {
                 sessionStorage.setItem('posAlertShown', 'true');
                 bootbox.dialog({
                     "title": "Errore nel sistema di cassa",
                     "message": "<div class='alert alert-danger'><p>Il sistema di cassa ha riscontrato un errore critico. È possibile che la connessione con uno o più dispositivi, o con il server sia fallita.</p><p>Cliccare <a href='index.php?page=pos_view' class='alert-link'>qui</a> per verificare lo stato del sistema.</p><p>Controllare i dispositivi e la connessione di rete. Se il problema persiste, <b>contattare l'Amministratore di Sistema</b>.</p><p>Finché il problema non sarà risolto, non sarà possibile effettuare o stornare vendite e stampare etichette.</div>",
                 })
             }
-
+*/
             if(posStatus.timeSinceCashdrawOpened >= 30) {
-                startBeeping();
+                // startBeeping();
             }
             
             if(!posStatus.receiptPrinter.isCashdrawOpen) stopBeeping();

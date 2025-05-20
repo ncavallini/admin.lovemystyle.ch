@@ -38,6 +38,33 @@
 
     <!-- Toaster -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toaster/5.1.0/css/bootstrap-toaster.min.css" integrity="sha512-613efYxCWhUklTCFNFaiPW4q6XXoogGNsn5WZoa0bwOBlVM02TJ/JH7o7SgWBnJIQgz1MMnmhNEcAVGb/JDefw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
+   
+    <!-- Datatables -->
+<link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/b-print-3.2.3/date-1.5.5/r-3.0.4/sc-2.4.3/sb-1.8.2/sp-2.3.3/sr-1.4.1/datatables.min.css" rel="stylesheet" integrity="sha384-mXxDhEZpXJ1YrR8nGHywsjUQu9LLOhuGlHKxwqotoR/EYKqsOx/I/TCwOilSJ15k" crossorigin="anonymous">
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/b-print-3.2.3/date-1.5.5/r-3.0.4/sc-2.4.3/sb-1.8.2/sp-2.3.3/sr-1.4.1/datatables.min.js" integrity="sha384-9ydJn/veoHOUtkA39WebwtVwiM8Vl3NJt7LAXxhQYylZvdH/fZF0/AQW6RBXvPr+" crossorigin="anonymous"></script>
+
+<script>
+      $.fn.dataTable.ext.type.order['date-eu-pre'] = function (dateStr) {
+      if (!dateStr) return 0;
+      var parts = dateStr.split('/');
+      return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+  };
+  $.fn.dataTable.ext.type.order['date-eu-asc'] = function (a, b) {
+      return a - b;
+  };
+  $.fn.dataTable.ext.type.order['date-eu-desc'] = function (a, b) {
+      return b - a;
+  };
+</script>
+
+
+<!-- Chart.js -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <link rel="stylesheet" href="inc/style.css">
     <link rel="stylesheet" href="inc/quiche_display.css">

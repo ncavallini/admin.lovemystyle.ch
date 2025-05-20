@@ -28,7 +28,7 @@
     </select>
     <br>
     <label for="tel">Telefono *</label>
-    <input type="text" class="form-control" name="tel" placeholder="Telefono">
+    <input type="text" class="form-control" name="tel" id="tel-input" placeholder="Telefono">
     <br>
     <label for="email">E-mail *</label>
     <input type="email" class="form-control" name="email" placeholder="E-mail" required>
@@ -51,4 +51,15 @@
 
     <button type="submit" class="btn btn-primary">Aggiungi Fornitore</button>
 
+    <script>
+          const telInput = document.getElementById('tel-input');
+  telInput.addEventListener("change", function() {
+    if(telInput.value.startsWith("00")) {
+        telInput.value = telInput.value.replace(/^00/, "+");
+    }
+    else if(telInput.value.startsWith("0")) {
+        telInput.value = telInput.value.replace(/^0/, "+41");
+    }
+  });
+    </script>
 <?php end: ?>

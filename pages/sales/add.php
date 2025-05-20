@@ -32,7 +32,7 @@ $sale = $stmt->fetch();
     <label for="sku">Codice Articolo *</label>
     <div class="input-group mb-3">
         <span class="input-group-text"><i class="fa-solid fa-barcode"></i></span>
-        <input type="text" minlength="13" maxlength="13" name="sku" class="form-control tt" style="font-size: 150%;" required id="sku-input"></input>
+        <input type="text" minlength="13" maxlength="13" name="sku" class="form-control tt" style="font-size: 150%;" required id="sku-input" autocomplete="off"></input>
         <span class="input-group-text"><button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button></span>
     </div>
     </form>
@@ -54,6 +54,7 @@ $sale = $stmt->fetch();
             <tbody>
                 <?php
                 $subtotal = 0;
+                $pieces = 0;
                 foreach ($items as $item) {
                     $sku = InternalNumbers::get_sku($item["product_id"], $item["variant_id"]);
                     $sql = "SELECT color, size FROM product_variants WHERE product_id = ? AND variant_id = ?";
@@ -61,6 +62,7 @@ $sale = $stmt->fetch();
                     $stmt->execute([$item['product_id'], $item['variant_id']]);
                     $variantData = $stmt->fetch();
                     $subtotal += $item['price'] * $item['quantity'];
+                    $pieces += $item['quantity'];
                     echo "<tr>";
                     Utils::print_table_row(InternalNumbers::get_sku($item['product_id'], $item['variant_id']));
                     Utils::print_table_row($item['name']);
@@ -81,6 +83,7 @@ $sale = $stmt->fetch();
             </tbody>
         </table>
     </div>
+    <p><?php echo $pieces ?> pezzi.</p>
     <hr>
     <p class="display-6 underline">Subtotale: <?php echo Utils::format_price($subtotal) ?> CHF</p>
     <p>&nbsp;</p>

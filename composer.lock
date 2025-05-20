@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afa41c132d5d83605278d821978431e0",
+    "content-hash": "ace45a61c872b44630be3f26c5e56ca8",
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -192,6 +192,66 @@
                 }
             ],
             "time": "2024-11-12T16:29:46+00:00"
+        },
+        {
+            "name": "everapi/freecurrencyapi-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/everapihq/freecurrencyapi-php.git",
+                "reference": "61514ca4124b6c5e4de823a546fe08a3dd8c3c9e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/everapihq/freecurrencyapi-php/zipball/61514ca4124b6c5e4de823a546fe08a3dd8c3c9e",
+                "reference": "61514ca4124b6c5e4de823a546fe08a3dd8c3c9e",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.4",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "pestphp/pest": "^1.20",
+                "spatie/ray": "^1.28"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FreeCurrencyApi\\FreeCurrencyApi\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dominik Kukacka",
+                    "email": "office@everapi.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP wrapper for the freecurrencyapi.com API",
+            "homepage": "https://github.com/everapihq/freecurrencyapi-php",
+            "keywords": [
+                "api",
+                "currency api",
+                "exchange rates data",
+                "foreign exchange rates API",
+                "free currency api ",
+                "free currency conversion API",
+                "freecurrencyapi-php",
+                "freecurrencyapi.com",
+                "rates API"
+            ],
+            "support": {
+                "issues": "https://github.com/everapihq/freecurrencyapi-php/issues",
+                "source": "https://github.com/everapihq/freecurrencyapi-php/tree/master"
+            },
+            "time": "2023-05-26T09:26:01+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -1504,16 +1564,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.13.0",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "024473a478be9df5fdaca2c793f2232fe788e414"
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/024473a478be9df5fdaca2c793f2232fe788e414",
-                "reference": "024473a478be9df5fdaca2c793f2232fe788e414",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
                 "shasum": ""
             },
             "require": {
@@ -1552,7 +1612,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.0"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
             },
             "funding": [
                 {
@@ -1560,7 +1620,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-12T12:17:51+00:00"
+            "time": "2025-04-29T12:36:36+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -2534,19 +2594,20 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.31.0",
+            "version": "v1.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "85181ba99b2345b0ef10ce42ecac37612d9fd341"
+                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/85181ba99b2345b0ef10ce42ecac37612d9fd341",
-                "reference": "85181ba99b2345b0ef10ce42ecac37612d9fd341",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
+                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493",
                 "shasum": ""
             },
             "require": {
+                "ext-iconv": "*",
                 "php": ">=7.2"
             },
             "provide": {
@@ -2594,7 +2655,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.31.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.32.0"
             },
             "funding": [
                 {
@@ -2610,13 +2671,15 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-09T11:45:10+00:00"
+            "time": "2024-12-23T08:48:59+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "everapi/freecurrencyapi-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},

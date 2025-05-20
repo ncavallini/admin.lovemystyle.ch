@@ -1,12 +1,29 @@
 <?php
-ini_set('session.gc_maxlifetime', 24 * 60 * 60);
-ini_set('session.cookie_lifetime', 24 * 60 * 60);
+const ONE_DAY = 24 * 60 * 60;
+ini_set('session.gc_maxlifetime', ONE_DAY); // 24 hours in seconds
+ini_set('session.cookie_lifetime', ONE_DAY); // 24 hours in seconds
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 1000); // Lower probability of garbage collection
+
+// Set session cookie parameters
+session_set_cookie_params([
+    'lifetime' => 24 * 60 * 60, // 24 hours in seconds
+    'path' => '/',
+    'domain' => '', // Use your domain if needed
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Lax' // Or 'Strict' depending on your needs
+]);
+
 session_start(['cookie_secure' => true,'cookie_httponly' => true]);
+
+
+
 require_once __DIR__ . "/DBConnection.php";
 class Auth
 {
 
-    private static array $allowedPages = ['login', 'forgot-password', 'customers_add', 'customers_add-success'];
+    private static array $allowedPages = ['login', 'forgot-password', 'customers_add', 'customers_add-success', 'languagepicker'];
     public static function login(string $username, string $password): bool
     {
         $connection = DBConnection::get_db_connection();
@@ -79,7 +96,7 @@ class Auth
         }
     }
 
-    public static function get_username(): string
+    public static function get_username(): string|null
     {
         return $_SESSION['user']['username'];
     }
@@ -104,3 +121,4 @@ class Auth
     }
 
 }
+?>

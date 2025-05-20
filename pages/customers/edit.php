@@ -59,7 +59,7 @@
     <div class="row">
         <div class="col-4">
             <label for="tel">Telefono</label>
-            <input type="text" name="tel" class="form-control" placeholder="Telefono" value="<?php echo $customer['tel'] ?? "" ?>" pattern="<?php echo Utils::get_phone_regex() ?>">
+            <input type="text" name="tel" id="tel-input" class="form-control" placeholder="Telefono" value="<?php echo $customer['tel'] ?? "" ?>" pattern="<?php echo Utils::get_phone_regex() ?>">
         </div>
         <div class="col-8">
             <label for="email">E-mail *</label>
@@ -78,7 +78,17 @@
     <button type="submit" class="btn btn-primary">Salva Cliente</button>
 </form>
 
-
+<script>
+      const telInput = document.getElementById('tel-input');
+  telInput.addEventListener("change", function() {
+    if(telInput.value.startsWith("00")) {
+        telInput.value = telInput.value.replace(/^00/, "+");
+    }
+    else if(telInput.value.startsWith("0")) {
+        telInput.value = telInput.value.replace(/^0/, "+41");
+    }
+  });
+</script>
 <?php
 end:
 ?>

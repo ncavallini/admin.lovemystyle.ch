@@ -35,6 +35,7 @@ if (isset($_GET['tablet'])) return;
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="index.php?page=pos_view">Stato sistema</a></li>
             <li><a class="dropdown-item" href="index.php?page=pos_closings">Chiusura di cassa</a></li>
+            <li><a class="dropdown-item" href="index.php?page=admin_cash">Contenuto cassa</a></li>
           </ul>
         </li>
 
@@ -43,13 +44,13 @@ if (isset($_GET['tablet'])) return;
             Strumenti
           </a>
           <ul class="dropdown-menu">
-          <?php if(Auth::is_owner(true)): ?><li><a class="dropdown-item" href="https://myportal.nexi.swiss" target="_blank">Nexi MyPortal (statistiche carta di credito)</a></li> <?php endif ?>
-            <li><a class="dropdown-item" href="https://portal.nexi.de" target="_blank">Nexi Merchant Portal (gestione transazioni)</a></li>
+          <li><a class="dropdown-item" href="index.php?page=stats_view">Statistiche</a></li>
+          <li><a class="dropdown-item" href="https://myportal.nexi.swiss" target="_blank">Nexi MyPortal (statistiche carta di credito)</a></li>
             <li><hr class='dropdown-divider'></li>
             <?php if(Auth::is_owner(true)): ?> <li><a class="dropdown-item" href="https://portal.twint.ch/" target="_blank">TWINT Merchant Portal</a></li> <?php endif ?>
             <?php if(Auth::is_owner(true)): ?> <li><a class="dropdown-item" href="https://gioia.portal.gkb.ch/a" target="_blank">E-banking BCG</a></li> <?php endif ?>
             <li><hr class='dropdown-divider'></li>
-            <li><a class="dropdown-item" href="#" target="_blank">Global Blue (tax free)</a></li>
+            <li><a class="dropdown-item" href="https://ic2.globalblue.com" target="_blank">Global Blue (tax free)</a></li>
             <li><hr class='dropdown-divider'></li>
             <li><a class="dropdown-item" href="https://app.brevo.com/" target="_blank">Brevo (newsletter)</a></li>
             <li><hr class='dropdown-divider'></li>
@@ -74,14 +75,6 @@ if (isset($_GET['tablet'])) return;
                 <li><a class="dropdown-item" href="index.php?page=admin_logging">Log</a></li>
               <?php endif ?>
               <li><a class="dropdown-item" href="index.php?page=users_view">Utenti</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="index.php?page=admin_cash">Contenuto cassa</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="index.php?page=stats_view">Statistiche</a></li>
             </ul>
           </li>
         <?php endif ?>

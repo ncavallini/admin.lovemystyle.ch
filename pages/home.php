@@ -35,7 +35,7 @@ $isWorking = count($clockings) % 2 == 1;
   <div class="card-body">
   
     <?php if ($nextType == 'in'): ?>
-      <h3 class="card-title">Timbra entrata - Utente <?php echo Auth::get_fullname(); ?> </h3>
+      <h3 class="card-title">Timbra entrata - Utente <i><?php echo Auth::get_fullname(); ?></i> </h3>
       <form action="actions/clockings/add.php" method="POST">
         <input type="hidden" name="type" value="in">
         <button type="submit" class="btn btn-success">Timbra entrata</button>

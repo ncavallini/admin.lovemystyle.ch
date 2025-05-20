@@ -53,6 +53,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tbody>
                 <?php
                 $subtotal = 0;
+                $pieces = 0;
                 $receiptItems = [];
                 foreach ($items as $item) {
                     $receiptItems[] = [
@@ -69,6 +70,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $stmt->execute([$item['product_id'], $item['variant_id']]);
                     $variantData = $stmt->fetch();
                     $subtotal += $item['price'] * $item['quantity'];
+                    $pieces += $item['quantity'];
                     echo "<tr>";
                     Utils::print_table_row(InternalNumbers::get_sku($item['product_id'], $item['variant_id']));
                     Utils::print_table_row($item['name']);
@@ -82,6 +84,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
     </div>
+        <p><?php echo $pieces ?> pezzi.</p>
     <hr>
     <p class="display-6 underline">Subtotale: <?php echo Utils::format_price($subtotal) ?> CHF</p>
     <p>&nbsp;</p>
@@ -92,7 +95,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="input-group mb-3">
             <input readonly type="number" class="form-control" value="<?php echo number_format( $sale["discount"] ?? 0, 2) ?>" min="0" step="0.01" name="discount" id="discount-input" required oninput="computeGrandTotal()">
-            <span class="input-group-text" id="discount-input-group-text">CHF</span>
+            <span class="input-group-text" id="discount-input-group-text"><?php echo $sale['discount_type'] ?></span>
         </div>
     </div>
 </div>

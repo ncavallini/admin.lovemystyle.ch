@@ -15,6 +15,14 @@
 <p class="h3 special text-center">La tua registrazione è avvenuta con successo!</p>
 <p class="h3 special text-center">Controlla la tua mail, dove sarà presente a breve la tua carta cliente.</p>
 <p class="h2 special text-center">GRAZIE!</p>
+<br>
+<p class="h3 special text-center">Deine Registrierung war erfolgreich!</p>
+<p class="h3 special text-center">Überprüfe deine E-Mail – deine Kundenkarte wird in Kürze dort verfügbar sein.</p>
+<p class="h2 special text-center">DANKE!</p>
+<br>
+<p class="h3 special text-center">Your registration was successful!</p>
+<p class="h3 special text-center">Check your email – your customer card will be available there shortly.</p>
+<p class="h2 special text-center">THANK YOU!</p>
 
 <script>
     setTimeout(() => {

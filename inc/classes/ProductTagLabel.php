@@ -46,10 +46,10 @@ if (substr($xml, 0, 3) === $bom) {
     $xml= substr($xml, 3);
 } 
         return Utils::str_replace(kv: [
-            "%product_name" => substr($this->name, 0, 16),
-            "%brand" => $this->brand,
+            "%product_name" => Utils::format_pos(substr($this->name, 0, 16)),
+            "%brand" => Utils::format_pos($this->brand),
             "%size" => $this->size ?? "",
-            "%color" => $this->color ?? "",
+            "%color" => !empty($this->color) ? Utils::format_pos($this->color) : "",
             "%sku" => $this->sku,
             "%price" => Utils::format_price($this->price)
         ], str: $xml, escape_html_entities: true);

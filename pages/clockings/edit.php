@@ -23,7 +23,7 @@ if (!$clocking) {
     <div class="row">
         <div class="col-6">
             <label for="datetime">Data e ora</label>
-            <input type="datetime-local" name="datetime" class="form-control" required value="<?php echo $clocking["datetime"] ?>" max="<?php echo date("Y-m-d\TH:i:s") ?>">
+            <input type="datetime-local" name="datetime" class="form-control" required value="<?php echo $clocking["datetime"] ?>" max="<?php echo date("Y-m-d\TH:i") ?>">
         </div>
         <div class="col-6">
             <label for="clocking_type">Tipo</label>

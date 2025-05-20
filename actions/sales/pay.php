@@ -51,7 +51,7 @@ $receipt = [
     "total" => Utils::format_price($total),
     "discount" => ($sale['discount']) != 0 ? $sale['discount'] . " " . $sale['discount_type'] : "",
     "paymentMethod" => $paymentMethod,
-    "username" => Auth::get_fullname_by_username($sale['username']),
+    "username" => Utils::format_pos(Auth::get_fullname_by_username($sale['username'])),
     "customer" => ($sale['customer_id']) !== null ? $sale['first_name'] . " " . $sale['last_name'] : "Esterno",
     "datetime" => $sale['closed_at'],
     "items" => $receiptItems,

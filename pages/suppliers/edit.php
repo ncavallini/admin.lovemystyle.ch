@@ -42,7 +42,7 @@ if(!$res) {
     </select>
     <br>
     <label for="tel">Telefono *</label>
-    <input type="text" class="form-control" name="tel" placeholder="Telefono" value="<?php echo $supplier['tel'] ?>">
+    <input type="text" class="form-control" name="tel" id="tel-input" placeholder="Telefono" value="<?php echo $supplier['tel'] ?>">
     <br>
     <label for="email">E-mail *</label>
     <input type="email" class="form-control" name="email" placeholder="E-mail" value="<?php echo $supplier['email'] ?>" required>
@@ -63,5 +63,17 @@ if(!$res) {
 
     <br>
     <button type="submit" class="btn btn-primary">Salva Fornitore</button>
+
+    <script>
+          const telInput = document.getElementById('tel-input');
+  telInput.addEventListener("change", function() {
+    if(telInput.value.startsWith("00")) {
+        telInput.value = telInput.value.replace(/^00/, "+");
+    }
+    else if(telInput.value.startsWith("0")) {
+        telInput.value = telInput.value.replace(/^0/, "+41");
+    }
+  });
+    </script>
 
 <?php end: ?>

@@ -309,4 +309,11 @@ class Utils
         EOD;
     }
     
+
+    public static function get_days_in_month($month, $year)
+    {
+        return cal_days_in_month(CAL_GREGORIAN, $month, $year);
+    }
+
+
 }

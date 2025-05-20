@@ -28,10 +28,17 @@ else {
     $total = (1 - $sale['discount'] / 100) * $total;
 }
 
+$sql = "SELECT rate FROM exchange_rates WHERE currency = 'EUR'";
+$stmt = $dbconnection->prepare($sql);
+$stmt->execute();
+$rate = $stmt->fetchColumn();
+
+$total_eur = $total * $rate;
+
 ?>
 
 <h1>Pagamento</h1>
-<p class="display-6 underline">Totale da pagare: <?php echo Utils::format_price($total) ?> CHF</p>
+<p class="display-6 underline">Totale da pagare: <?php echo Utils::format_price($total) ?> CHF <small>(<?php echo Utils::format_price($total_eur) ?> €)</small> </p>
 
 <form action="actions/sales/pay.php" method="POST" id="form-pay">
     <input type="hidden" name="sale_id" value="<?php echo $saleId ?>">
@@ -46,9 +53,14 @@ else {
     <div class="input-group mb-3">
         <span class="input-group-text"><i class="fa-solid fa-money-bill"></i></span>
         <input type="number" id="given-input" step="0.01" min="0" name="amount" class="form-control" required placeholder="Importo pagato" id="amount">
-        <span class="input-group-text">CHF</span>
+        <span class="input-group-text">
+            <select name="currency" id="currency-select" class="form-select">
+                <option value="CHF" selected>CHF</option>
+                <option value="EUR">€</option>
+            </select>
+        </span>
     </div>
-    <p hidden id="return-p" class="lead" style="font-size: 120%;">Resto: <span id="return-span"></span> CHF</p>
+    <p hidden id="return-p" class="lead" style="font-size: 120%;">Resto: <span id="return-span"></span> </p>
     <div class="alert alert-warning">
         <b>Attenzione!</b> La vendita diventa definitiva quando si clicca su "Conferma pagamento". L'azione è irreversibile. 
         Si consiglia di premere il pulsante solo dopo che il pagamento è andato a buon fine, onde evitare cambiamenti repentini del metodo di pagamento del Cliente (p.es. errore carta di credito, mancanza di contanti, etc). 
@@ -69,7 +81,18 @@ else {
         const total = <?php echo $total ?>;
         const given = parseFloat(givenInput.value) * 100;
         const paymentMethod = paymentMethodSelect.value;
-        const returnAmount = given - total;
+        const currency = document.getElementById('currency-select').value;
+        const currencyRate = currency === "CHF" ? 1 : <?php echo $rate ?>;
+        let returnAmount = 0;
+
+        if(currency === "CHF") {
+            returnAmount = given - total;
+        }
+        else {
+            returnAmount = given - (total* currencyRate);
+            returnAmount = returnAmount * currencyRate;
+
+        }
 
         if(paymentMethod === "CASH") {
             givenInput.removeAttribute("hidden");
@@ -81,7 +104,7 @@ else {
         }
 
         if(paymentMethod === "CASH" && returnAmount >= 0) {
-            returnSpan.innerText = (returnAmount / 100).toFixed(2);
+            returnSpan.innerText = (returnAmount / 100).toFixed(2) + " CHF"; 
             returnP.removeAttribute('hidden');
         }
 
