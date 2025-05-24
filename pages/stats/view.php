@@ -7,7 +7,7 @@
     <li class="list-group-item"><a href="index.php?page=stats-views_sales-over-time-year">Vendite anno per anno</a></li>
     <li class="list-group-item"><a href="index.php?page=stats-views_most-sold-variants">Taglie e colori più venduti</a></li>
     <li class="list-group-item"><a href="index.php?page=stats-views_most-sold-product">Capi più venduti</a></li>
-    <li class="list-group-item"><a href="">Fascia oraria con più vendite</a></li>
-    <li class="list-group-item"><a href="">Vendite per fascia d'età</a></li>
-    <li class="list-group-item"><a href="">Brand più venduto</a></li>
+    <li class="list-group-item"><a href="index.php?page=stats-views_time-intervals">Vendite per fascia oraria</a></li>
+<!--    <li class="list-group-item"><a href="">Vendite per fascia d'età</a></li> -->
+    <li class="list-group-item"><a href="index.php?page=stats-views_most-sold-brands">Brand più venduto</a></li>
 </ul>

@@ -1,11 +1,17 @@
 <h1>Statistiche</h1>
 <a href="index.php?page=stats_view"><i class="fas fa-arrow-left"></i>Torna al menù statistiche</a>
 <p>&nbsp;</p>
-<h2>Top 10 dei prodotti più venduti</h2>
-<p>Questa pagina mostra i 10 prodotti più venduti, in assoluto o in uno specifico lasso di tempo.</p>
+<h2>Classifica delle taglie/colori più venduti</h2>
+<p>Questa pagina mostra le varianti più vendute, in assoluto o in uno specifico lasso di tempo, per uno specifico prodotto.</p>
 
 <form action="#" method="GET">
-    <input type="hidden" name="page" value="stats-views_most-sold-product">
+    <input type="hidden" name="page" value="stats-views_most-sold-variants">
+    <div class="row">
+        <div class="col">
+            <label for="product_id">Prodotto:</label>
+            <select name="product_id" id="product_id-select" class="form-select"></select>
+        </div>
+    </div>
     <div class="row">
         <div class="col">
             <input type="radio" class="form-check-input" name="timeframe_type" id="timeframe_type-absolute" value="absolute"
@@ -34,66 +40,61 @@
     <button type="submit" class="btn btn-outline-primary">Visualizza</button>
 </form>
 
+<?php if(isset($_GET['product_id']) && !empty($_GET['product_id'])): ?>
 
 <?php
 $dbconnection = DBConnection::get_db_connection();
 
 if(!isset($_GET['timeframe_type']) || $_GET['timeframe_type'] == 'absolute') {
     $sql = <<<EOD
-        SELECT
-  si.product_id,
-  p.name AS product_name,
-  p.product_id as product_id,
-  SUM(si.quantity) AS total_quantity_sold
-FROM
-  sales_items si
-JOIN
-  products p ON si.product_id = p.product_id
-GROUP BY
-  si.product_id, p.name
-ORDER BY
-  total_quantity_sold DESC
-LIMIT 10;
+       SELECT
+  si.variant_id,
+  pv.color,
+  pv.size,
+  SUM(si.quantity) AS total_sold
+FROM sales_items si
+JOIN sales s ON si.sale_id = s.sale_id
+JOIN product_variants pv ON si.product_id = pv.product_id AND si.variant_id = pv.variant_id
+WHERE si.product_id = :product_id
+  AND s.status = 'completed'
+GROUP BY si.variant_id, pv.color, pv.size
+ORDER BY total_sold DESC;
+
 EOD;
 
 $stmt = $dbconnection->prepare($sql);
-$stmt->execute();
+$stmt->execute([":product_id" => $_GET['product_id']]);
 }
 
 else {
     $start_date = $_GET['start_date'];
     $end_date = $_GET['end_date'] ;
     $sql = <<<EOD
-       SELECT
-    si.product_id,
-    p.name AS product_name,
-    SUM(si.quantity) AS total_quantity_sold
-FROM
-    sales_items si
-JOIN
-    products p ON si.product_id = p.product_id
-JOIN
-    sales s ON si.sale_id = s.sale_id
-WHERE
-    s.closed_at >= :start_date
-    AND s.closed_at <= :end_date
-    AND s.status = 'completed'
-GROUP BY
-    si.product_id, p.name
-ORDER BY
-    total_quantity_sold DESC
-LIMIT 10;
+      SELECT
+  si.variant_id,
+  pv.color,
+  pv.size,
+  SUM(si.quantity) AS total_sold
+FROM sales_items si
+JOIN sales s ON si.sale_id = s.sale_id
+JOIN product_variants pv ON si.product_id = pv.product_id AND si.variant_id = pv.variant_id
+WHERE si.product_id = :product_id
+  AND s.status = 'completed'
+  AND s.closed_at BETWEEN :start_date AND :end_date
+GROUP BY si.variant_id, pv.color, pv.size
+ORDER BY total_sold DESC;
 EOD;
 
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([
+        ':product_id' => $_GET['product_id'],
         ':start_date' => $start_date,
         ':end_date' => $end_date
     ]);
 }
 
 
-$top_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$variants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <p>&nbsp;</p>
 <div class="table-responsive">
@@ -101,21 +102,23 @@ $top_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <thead>
             <tr>
                 <th>Pos.</th>
-                <th>ID Prodotto</th>
-                <th>Nome</th>
+                <th>ID Variante</th>
+                <th>Taglia</th>
+                <th>Colore</th>
                 <th>Quantità totale venduta</th>
             </tr>
         </thead>
         <tbody>
             <?php
             $position = 1;
-            foreach ($top_products as $row): ?>
+            foreach ($variants as $row): ?>
                 <tr>
                     <?php
                     echo Utils::print_table_row($position++);
-                    echo Utils::print_table_row("<span class='tt'>" . $row['product_id'] . "</span>");
-                    echo Utils::print_table_row($row['product_name']);
-                    echo Utils::print_table_row($row['total_quantity_sold']);
+                    echo Utils::print_table_row("<span class='tt'>" . $row['variant_id'] . "</span>");
+                    echo Utils::print_table_row($row['size']);
+                    echo Utils::print_table_row($row['color']);
+                    echo Utils::print_table_row($row['total_sold']);
                     ?>
                 </tr>
             <?php endforeach; ?>
@@ -145,7 +148,7 @@ $top_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </script>
 
 <?php
-$title = "Top 10 dei prodotti più venduti";
+$title = "Top 10 delle varianti più vendute per il prodotto " . $_GET['product_id'] ;
 $title .= (isset($_GET['timeframe_type']) && $_GET['timeframe_type'] === "timeframe") ? " dal " . Utils::format_date($_GET['start_date']) . " al " . Utils::format_date($_GET['end_date']) : "";
 
 ?>
@@ -160,11 +163,6 @@ $title .= (isset($_GET['timeframe_type']) && $_GET['timeframe_type'] === "timefr
             lengthMenu: [10, 25, 30, 50, 100], // opzioni selezionabili nel menu a tendina
             sortable: true,
             searchable: true,
-            columnDefs: [{
-                    targets: 0,
-                    type: 'date-eu'
-                } // la colonna "Data"
-            ],
             dom: 'Brtip', // B = Buttons, f = filter, r = processing, t = table, i = info, p = pagination
             buttons: [{
                     extend: 'excelHtml5',
@@ -185,4 +183,30 @@ $title .= (isset($_GET['timeframe_type']) && $_GET['timeframe_type'] === "timefr
             ]
         });
 
+</script>
+<?php endif;  ?>
+
+<script>
+    $(document).ready(() => {
+        $("#product_id-select").select2({
+            language: "it",
+            theme: "bootstrap-5",
+            allowClear: true,
+            placeholder: "",
+            ajax: {
+                url: '/actions/products/list.php',
+                dataType: 'json',
+                processResults: (data) => {
+                    return {
+                        results: data.results.map((product) => {
+                            console.log(product);
+                            return {
+                                id: product.product_id,
+                                text: product.product_id + " - " +  product.name + " (" + product.brand_name + ")"
+                            }
+                        })
+                    }
+                },
+            },
+        })})
 </script>

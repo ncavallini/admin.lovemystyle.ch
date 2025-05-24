@@ -90,7 +90,8 @@ SELECT
   DATE_FORMAT(closed_at, '%Y-%m-01') AS month_start,
   COUNT(*) AS cnt
 FROM sales
-WHERE created_at >= DATE_FORMAT(:start_ym, '%Y-%m-01')
+WHERE status = 'completed' 
+AND created_at >= DATE_FORMAT(:start_ym, '%Y-%m-01')
   AND created_at <  DATE_FORMAT(:end_ym, '%Y-%m-01') + INTERVAL 1 MONTH
   %op
 GROUP BY month_start
@@ -130,6 +131,7 @@ EOD;
             </thead>
             <tbody>
                 <?php foreach ($month_by_month as $row): ?>
+                    <?php if(!$row['month_start']) continue; ?>
                     <tr>
                         <td><?php echo date("m/Y", strtotime($row['month_start'])) ?></td>
                         <td><?php echo $row['cnt']; ?></td>

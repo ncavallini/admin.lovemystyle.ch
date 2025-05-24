@@ -69,6 +69,7 @@
     <link rel="stylesheet" href="inc/style.css">
     <link rel="stylesheet" href="inc/quiche_display.css">
     <script src="/inc/util.js"></script>
+    <script src="/inc/postcode.js"></script>
 
     <!-- Favicon -->
 

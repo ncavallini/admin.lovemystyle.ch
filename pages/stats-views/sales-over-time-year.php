@@ -68,7 +68,8 @@ SELECT
   DATE_FORMAT(closed_at, '%Y') AS year,
   COUNT(*) AS cnt
 FROM sales
-WHERE created_at >= DATE_FORMAT(:start_year, '%Y-01-01')
+WHERE status = 'completed'
+  AND created_at >= DATE_FORMAT(:start_year, '%Y-01-01')
   AND created_at <  DATE_FORMAT(:end_year, '%Y-01-01') + INTERVAL 1 YEAR
   %op
 GROUP BY year
@@ -106,6 +107,7 @@ EOD;
             <tbody>
                 <?php foreach ($year_by_year as $row): ?>
                     <tr>
+                        <?php if(!$row['year']) continue; ?>
                         <td><?php echo date("Y", strtotime($row['year'])) ?></td>
                         <td><?php echo $row['cnt']; ?></td>
                     </tr>
@@ -116,9 +118,9 @@ EOD;
         </table>
     </div>
     <br>
-    <canvas id="month_by_month_plot"></canvas>
+    <canvas id="year_by_year_plot"></canvas>
     <script>
-        let month_by_month_plot = new DataTable("#year_by_year", {
+        let year_by_year = new DataTable("#year_by_year", {
             language: {
                 url: '//cdn.datatables.net/plug-ins/2.3.0/i18n/it-IT.json',
             },
@@ -148,14 +150,14 @@ EOD;
         });
 
         $(document).ready(function() {
-            const ctx = document.getElementById('month_by_month_plot').getContext('2d');
+            const ctx = document.getElementById('year_by_year_plot').getContext('2d');
 
             const chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: <?php echo json_encode(array_map(fn($row) => date("Y", strtotime($row['year'])), $year_by_year)) ?>,
+                    labels: <?php echo json_encode(array_map(fn($row) => ($row['year']) ? date("Y", strtotime($row['year'])) : "", $year_by_year)) ?>,
                     datasets: [{
-                        label: 'Totale mensile',
+                        label: 'Totale anniuale',
                         data: <?php echo json_encode(array_map(fn($row) => $row['cnt'], $year_by_year)) ?>,
                     }]
                 },

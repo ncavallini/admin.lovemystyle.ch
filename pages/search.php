@@ -1,6 +1,7 @@
 <h1>Ricerca rapida</h1>
 <?php
     $query = $_GET['q'] ?? "";
+    $query = trim($query);
     if(empty($query)) {
         Utils::print_error("Nessun termine di ricerca specificato");
         return;

@@ -13,7 +13,7 @@ if (!isset($_GET['sale_id']) && !isset($saleId)) {
     $saleId = $_GET['sale_id'];
 }
 
-$sql = "SELECT i.*, p.name FROM sales_items i JOIN products p USING(product_id) WHERE sale_id = ?";
+$sql = "SELECT i.*, p.name, p.brand_id, b.name AS brand_name FROM sales_items i JOIN products p USING(product_id) JOIN brands b USING(brand_id) WHERE sale_id = ?";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$saleId]);
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -44,6 +44,7 @@ $sale = $stmt->fetch();
                 <tr>
                     <th>Codice Articolo</th>
                     <th>Nome</th>
+                    <th>Brand</th>
                     <th>Variante</th>
                     <th>Quantità</th>
                     <th>Prezzo unit. (CHF)</th>
@@ -66,6 +67,7 @@ $sale = $stmt->fetch();
                     echo "<tr>";
                     Utils::print_table_row(InternalNumbers::get_sku($item['product_id'], $item['variant_id']));
                     Utils::print_table_row($item['name']);
+                    Utils::print_table_row($item['brand_name']);
                     Utils::print_table_row($variantData['color'] . " / " . $variantData['size']);
                     Utils::print_table_row($item['quantity']);
                     Utils::print_table_row(Utils::format_price($item['price']));

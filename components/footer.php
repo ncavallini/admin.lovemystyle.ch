@@ -43,4 +43,38 @@
     }
 });
 
+
+const cityInputs = document.querySelectorAll('input[name="city"]');
+cityInputs.forEach(input => {
+    input.addEventListener('change', function() {
+        const city = this.value.trim();
+        const postcodeInput = document.querySelector('input[name="postcode"]');
+        const country = document.querySelector('select[name="country"]').value || "CH";
+        if(city && postcodeInput) getPostCodeFromCity(postcodeInput, city, country);
+    });
+});
+
+const postcodeInputs = document.querySelectorAll('input[name="postcode"]');
+postcodeInputs.forEach(input => {
+    input.addEventListener('change', function() {
+        const postcode = this.value.trim();
+        const cityInput = document.querySelector('input[name="city"]');
+        const country = document.querySelector('select[name="country"]').value || "CH";
+        if(postcode && cityInput) getCityFromPostCode(cityInput, postcode, country);
+    });
+});
+
+const countrySelects = document.querySelectorAll('select[name="country"]');
+countrySelects.forEach(select => {
+    select.addEventListener('change', function() {
+        const country = this.value;
+        const postcodeInput = document.querySelector('input[name="postcode"]');
+        const cityInput = document.querySelector('input[name="city"]');
+        if(postcodeInput && cityInput) {
+            if(postcodeInput.value.trim()) getCityFromPostCode(cityInput, postcodeInput.value.trim(), country);
+            if(cityInput.value.trim()) getPostCodeFromCity(postcodeInput, cityInput.value.trim(), country);
+        }
+    });
+});
+
 </script>
