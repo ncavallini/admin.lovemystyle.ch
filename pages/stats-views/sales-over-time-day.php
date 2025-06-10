@@ -79,26 +79,65 @@
     $end_date = $_GET['end_date'];
     $operator = $_GET['operator'] ?? null;
     $sql = <<<EOD
-            WITH RECURSIVE
-            params AS (
-            SELECT
-                :start_date AS start_date,
-                :end_date AS end_date
-            ),
-            all_days AS (
-            SELECT start_date AS day FROM params
-            UNION ALL
-            SELECT day + INTERVAL 1 DAY
-            FROM all_days
-            JOIN params ON day < end_date
-            ),
-            daily_counts AS (
-            SELECT
-                DATE(closed_at) AS day,
-                COUNT(*) AS cnt
-            FROM sales
-            WHERE closed_at BETWEEN (SELECT start_date FROM params)
-                                            AND (SELECT end_date   FROM params) + INTERVAL 1 DAY
+           WITH RECURSIVE
+params AS (
+    SELECT
+        :start_date AS start_date,
+        :end_date AS end_date
+),
+all_days AS (
+    SELECT start_date AS day FROM params
+    UNION ALL
+    SELECT day + INTERVAL 1 DAY
+    FROM all_days
+    JOIN params ON day < end_date
+),
+-- Totali lordi per ogni sale_id
+gross_totals AS (
+    SELECT
+        si.sale_id,
+        SUM(si.price * si.quantity) AS gross_total
+    FROM sales_items si
+    GROUP BY si.sale_id
+),
+-- Totali netti per ogni sale_id dopo sconto
+net_sales AS (
+    SELECT
+        s.sale_id,
+        DATE(s.closed_at) AS day,
+        gt.gross_total,
+        CASE
+            WHEN s.discount_type = 'CHF' THEN
+                GREATEST(gt.gross_total - s.discount * 100, 0)
+            WHEN s.discount_type = '%' THEN
+                GREATEST(gt.gross_total - (gt.gross_total * s.discount / 100), 0)
+            ELSE
+                gt.gross_total
+        END AS net_total
+    FROM sales s
+    JOIN gross_totals gt ON s.sale_id = gt.sale_id
+    WHERE s.closed_at BETWEEN (SELECT start_date FROM params)
+                          AND (SELECT end_date FROM params) + INTERVAL 1 DAY
+      AND s.status = 'completed'
+),
+-- Aggregazione giornaliera
+daily_counts AS (
+    SELECT
+        day,
+        COUNT(*) AS sales_count,
+        SUM(net_total) AS total_value
+    FROM net_sales
+    GROUP BY day
+)
+-- Join con calendario completo
+SELECT
+    ad.day,
+    COALESCE(dc.sales_count, 0) AS sales_count,
+    COALESCE(dc.total_value, 0) AS total_value
+FROM all_days ad
+LEFT JOIN daily_counts dc ON ad.day = dc.day
+ORDER BY ad.day;
+
                                 
 EOD;
 
@@ -109,7 +148,7 @@ EOD;
             )
             SELECT
             d.day,
-            COALESCE(dc.cnt, 0) AS cnt
+            COALESCE(dc.sales_count, 0) AS sales_count,
             FROM all_days d
             LEFT JOIN daily_counts dc ON dc.day = d.day
             ORDER BY d.day;
@@ -139,14 +178,16 @@ EOD;
             <thead>
                 <tr>
                     <th>Data</th>
-                    <th>Vendite</th>
+                    <th>Vendite (#)</th>
+                    <th>Incasso (CHF)</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($day_by_day as $row): ?>
                     <tr>
                         <td><?php echo Utils::format_date($row['day']) ?></td>
-                        <td><?php echo $row['cnt']; ?></td>
+                        <td><?php echo $row['sales_count']; ?></td>
+                        <th><?php echo Utils::format_price($row['total_value']) ?></th>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -199,8 +240,8 @@ EOD;
                 data: {
                     labels: <?php echo json_encode(array_map(fn($row) => $row['day'], $day_by_day)) ?>,
                     datasets: [{
-                        label: 'Totale giornaliero',
-                        data: <?php echo json_encode(array_map(fn($row) => $row['cnt'], $day_by_day)) ?>,
+                        label: 'Incasso giornaliero (CHF)',
+                        data: <?php echo json_encode(array_map(fn($row) => $row['total_value'] / 100, $day_by_day)) ?>,
                     }]
                 },
                 options: {

@@ -3,15 +3,17 @@
         return Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', $GLOBALS['CONFIG']['BREVO_API_KEY']);
     }
 
-    public static function add_customer(string $customerNumber, string $firstName, string $lastName, string $email) {
+    public static function add_customer(string $customerNumber, string $firstName, string $lastName, string $email, string $phone = "") {
         $apiInstance = new Brevo\Client\Api\ContactsApi(config: self::get_config());
         $contact = new Brevo\Client\Model\CreateContact();
         $contact->setExtId($customerNumber);
         $contact->setListIds($GLOBALS['CONFIG']['BREVO_DEFAULT_LIST_ID']);
         $contact->setEmail($email);
         $contact->setAttributes((object)[
-            'FNAME' => $firstName,
-            'LNAME' => $lastName,
+            'CUSTOMER_ID' => $customerNumber,
+            'NOME' => $firstName,
+            'COGNOME' => $lastName,
+            'SMS' => $phone,            
         ]);
         
         $apiInstance->createContact($contact);

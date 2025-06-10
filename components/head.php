@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="<?php echo $_GET['lang'] ?? "it"?>">
 
 <head>
     <meta charset="UTF-8">
@@ -65,6 +65,15 @@
 <!-- Chart.js -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<!-- Flatpickr -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/it.js"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
+
+
 
     <link rel="stylesheet" href="inc/style.css">
     <link rel="stylesheet" href="inc/quiche_display.css">

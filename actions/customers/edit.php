@@ -41,7 +41,7 @@ if($_POST['is_newsletter_allowed'] === "off") {
 else {
     if($oldEmail !== $_POST['email']) {
         Brevo::delete_customer($oldEmail);
-        Brevo::add_customer($customer_number, $_POST['first_name'], $_POST['last_name'], $_POST['email']);
+        Brevo::add_customer($customer_number, $_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['tel'] ?? "");
     }
 }
 

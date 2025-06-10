@@ -164,7 +164,7 @@ if ($isWorking) {
                 if (!result) {
                     return;
                 }
-                window.location.href = `/actions/clockings/print_report.php?username=<?php echo $username ?>&year=<?php echo $year ?>&month=<?php echo $month ?>&type=${result}`;
+		window.open(`/actions/clockings/print_report.php?username=<?php echo $username ?>&year=<?php echo $year ?>&month=<?php echo $month ?>&type=${result}`, "_blank")
             }
         });
     }

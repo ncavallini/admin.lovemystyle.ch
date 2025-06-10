@@ -52,18 +52,19 @@ $sales = $stmt->fetchAll();
                 foreach ($sales as $sale) {
                     $saleId = $sale['sale_id'];
                     $total = 0;
+                    $sign = $sale['status'] === "negative" ? -1 : 1;
                     $sql = "SELECT SUM(quantity * price) FROM sales_items WHERE sale_id = ?";
                     $stmt = $connection->prepare($sql);
                     $stmt->execute([$saleId]);
                     $total = $stmt->fetchColumn(0);
-                    $total = Utils::compute_discounted_price($total, $sale['discount'], $sale['discount_type']);
+                    $total = Utils::compute_discounted_price($total, $sale['discount'] , $sale['discount_type']);
                   
                     echo "<tr class='sale-{$sale['status']}'>";
 
                     Utils::print_table_row(Utils::format_datetime($sale["created_at"]));
                     Utils::print_table_row(empty($sale['closed_at']) ? "-" : "<b>" . Utils::format_datetime($sale['closed_at'])  . "</b>");
                     Utils::print_table_row(($sale['first_name'] != null) ? $sale['first_name'] . " " . $sale['last_name'] : "<i>Esterno</i>");
-                    Utils::print_table_row(Utils::format_price($total));
+                    Utils::print_table_row(Utils::format_price($total * $sign));
                     Utils::print_table_row(strtoupper($sale['payment_method'] ?? "-") ?? "-");
                     Utils::print_table_row(Auth::get_fullname_by_username($sale['username']));
 

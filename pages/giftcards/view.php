@@ -2,7 +2,7 @@
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $searchQuery = Pagination::build_search_query($q, ["last_name", "first_name", "customer_id", "card_id"]);
-$sql = "SELECT gc.*, COALESCE(c.first_name, gc.first_name) AS resolved_first_name, COALESCE(c.last_name, gc.last_name) AS resolved_last_name FROM gift_cards gc LEFT JOIN customers c USING(customer_id);  WHERE " . $searchQuery['text'] . " ORDER BY card_id ASC ";
+$sql = "SELECT gc.*, COALESCE(c.first_name, gc.first_name) AS resolved_first_name, COALESCE(c.last_name, gc.last_name) AS resolved_last_name FROM gift_cards gc LEFT JOIN customers c USING(customer_id)  WHERE " . $searchQuery['text'] . " ORDER BY gc.created_at DESC ";
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $pagination = new Pagination($stmt->rowCount());

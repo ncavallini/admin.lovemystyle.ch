@@ -13,6 +13,8 @@ if (!isset($_GET['sale_id']) && !isset($saleId)) {
     $saleId = $_GET['sale_id'];
 }
 
+$negative = isset($_GET['negative']) && $_GET['negative'] == "1" ? 1 : 0;
+
 $sql = "SELECT i.*, p.name, p.brand_id, b.name AS brand_name FROM sales_items i JOIN products p USING(product_id) JOIN brands b USING(brand_id) WHERE sale_id = ?";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$saleId]);
@@ -25,10 +27,16 @@ $sale = $stmt->fetch();
 
 ?>
 
-<h1>Aggiungi / Modifica vendita</h1>
+<?php if(!$negative): ?>
+    <h1>Aggiungi / Modifica vendita</h1>
+<?php else: ?>
+ <h1>Storna vendita</h1>
+<?php endif; ?>
+
 <p><b>Operatore:</b> <?php echo Auth::get_fullname() ?></p>
 <form id="form-new-item" action="actions/sales/add_item.php" method="POST">
     <input type="hidden" name="sale_id" value="<?php echo $saleId ?>">
+    <input type="hidden" name="negative" value="<?php echo $negative ? "1" : "0" ?>">
     <label for="sku">Codice Articolo *</label>
     <div class="input-group mb-3">
         <span class="input-group-text"><i class="fa-solid fa-barcode"></i></span>
@@ -56,13 +64,15 @@ $sale = $stmt->fetch();
                 <?php
                 $subtotal = 0;
                 $pieces = 0;
+                $factor = $negative ? -1 : 1;
+
                 foreach ($items as $item) {
                     $sku = InternalNumbers::get_sku($item["product_id"], $item["variant_id"]);
                     $sql = "SELECT color, size FROM product_variants WHERE product_id = ? AND variant_id = ?";
                     $stmt = $dbconnection->prepare($sql);
                     $stmt->execute([$item['product_id'], $item['variant_id']]);
                     $variantData = $stmt->fetch();
-                    $subtotal += $item['price'] * $item['quantity'];
+                    $subtotal += $factor * $item['price'] * $item['quantity'];
                     $pieces += $item['quantity'];
                     echo "<tr>";
                     Utils::print_table_row(InternalNumbers::get_sku($item['product_id'], $item['variant_id']));
@@ -74,7 +84,7 @@ $sale = $stmt->fetch();
                     Utils::print_table_row(Utils::format_price($item['total_price']));
                     Utils::print_table_row(
                         <<<EOD
-                        <a href="actions/sales/decrease_item_quantity.php?sale_id=$saleId&sku=$sku" class='btn btn-sm btn-warning'><i class='fa fa-minus'></i></a>
+                        <a href="actions/sales/decrease_item_quantity.php?sale_id=$saleId&sku=$sku&negative=$negative" class='btn btn-sm btn-warning'><i class='fa fa-minus'></i></a>
                         <a onclick="deleteItem('$sku')" class='btn btn-sm btn-danger'><i class='fa fa-trash'></i></a>
                         EOD
 
@@ -89,6 +99,9 @@ $sale = $stmt->fetch();
     <hr>
     <p class="display-6 underline">Subtotale: <?php echo Utils::format_price($subtotal) ?> CHF</p>
     <p>&nbsp;</p>
+
+    <?php if(!$negative): ?>
+
     <h2>Sconto</h2>
     È possibile applicare uno sconto alla vendita. Inserire l'importo dello sconto in CHF o la percentuale sul subtotale.
     <div class="row d-flex align-items-center">
@@ -115,6 +128,7 @@ $sale = $stmt->fetch();
 </div>
 
 <a href="#" onclick="window.open('index.php?page=giftcards_redeem&sale_id=<?php echo $saleId; ?>', 'GiftcardPopup', 'width=600,height=600,scrollbars=yes,resizable=yes'); return false;" class="btn btn-sm btn-secondary">Usa Carta Regalo</a>
+<a href="#" onclick="window.open('index.php?page=discount-codes_redeem&sale_id=<?php echo $saleId; ?>', 'Discount-CodePopup', 'width=600,height=600,scrollbars=yes,resizable=yes'); return false;" class="btn btn-sm btn-secondary">Usa Codice Sconto</a>
 
 <p>&nbsp;</p>
 
@@ -127,10 +141,12 @@ $sale = $stmt->fetch();
 <select name="customer_number" id="customer-select" class="form-control">
 </select>
 
+<?php endif; ?>
+
 <hr>
 <p class="display-6 underline b" id="grand-total"></p>
 <p>&nbsp;</p> 
-<a class="btn btn-primary" href="index.php?page=sales_pay&sale_id=<?php echo $saleId ?>">Vai al pagamento</a>
+<a class="btn btn-primary" href="index.php?page=sales_pay&sale_id=<?php echo $saleId ?>&negative=<?php echo $negative ?>">Vai al pagamento</a>
 </div>
 
 
@@ -150,7 +166,7 @@ $sale = $stmt->fetch();
             message: "Sei sicuro di voler eliminare il prodotto dal carrello?",
             callback: function(result) {
                 if (result) {
-                    window.location.href = "/actions/sales/delete_item.php?sale_id=<?php echo $saleId ?>&sku=" + sku;
+                    window.location.href = "/actions/sales/delete_item.php?sale_id=<?php echo $saleId ?>&sku=" + sku + "&negative=<?php echo $negative ?>";
                 }
             }
         })

@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
             }
             self::$client = new Client(['base_uri'=> $GLOBALS['CONFIG']['POS_MIDDLEWARE_URL'], "timeout" => 10.0, "headers" => [
                 "x-api-key" => $GLOBALS['CONFIG']['POS_MIDDLEWARE_API_KEY']
-            ]]);
+            ], 'verify' => false]);
             return self::$client;
         }
     }

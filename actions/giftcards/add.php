@@ -4,7 +4,6 @@ $dbconnection = DBConnection::get_db_connection();
 $cardId = InternalNumbers::get_gift_card_number();
 
 $duration = $CONFIG["GIFT_CARD_DURATION"];
-var_dump($_POST);
 
 
 if(isset($_POST["customer_id"])) {

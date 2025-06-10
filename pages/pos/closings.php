@@ -38,19 +38,21 @@ $closings = $stmt->fetchAll();
             $stmt = $connection->prepare($sql);
             $stmt->execute();
             $todayContent = $stmt->fetchColumn();
-            $sql = "SELECT * FROM sales WHERE DATE(closed_at) = CURDATE() AND status = 'completed'";
+            $sql = "SELECT * FROM sales WHERE DATE(closed_at) = CURDATE() AND (status = 'completed' OR status = 'negative')";
             $stmt = $connection->prepare($sql);
             $stmt->execute();
             $sales = $stmt->fetchAll();
             $todayIncome = 0;
             foreach ($sales as $sale) {
-                $sql = "SELECT * FROM sales_items WHERE sale_id = ?";
+                $sql = "SELECT * FROM sales_items WHERE sale_id = ? ";
                 $stmt = $connection->prepare($sql);
                 $stmt->execute([$sale['sale_id']]);
+                $sign = $sale['status'] === "negative" ? -1 : 1;
                 $items = $stmt->fetchAll();
                 $subtotal = array_reduce($items, function ($carry, $item) {
                     return $carry + $item['total_price'];
                 }, 0);
+                $subtotal *= $sign;
                 $todayIncome += Utils::compute_discounted_price($subtotal, $sale['discount'], $sale['discount_type']);
             }
             ?>

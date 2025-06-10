@@ -83,6 +83,7 @@ $products = $stmt->fetchAll();
 
         const form = document.createElement('form');
         form.method = 'POST';
+	form.target = "_blank";
         form.action = '/actions/products/print_price_display.php';
         const input = document.createElement('input');
         input.type = 'hidden';

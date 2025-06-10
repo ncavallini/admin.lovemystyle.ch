@@ -28,6 +28,9 @@ if (isset($_GET['tablet'])) return;
         <li class="nav-item">
           <a class="nav-link" href="index.php?page=giftcards_view">Carte Regalo</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.php?page=discount-codes_view">Codici Sconto</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Sistema di cassa
@@ -44,6 +47,8 @@ if (isset($_GET['tablet'])) return;
             Strumenti
           </a>
           <ul class="dropdown-menu">
+          <li><a href="index.php?page=shippings_view" class="dropdown-item">Spedizioni</a></li>
+                      <li><hr class='dropdown-divider'></li>
           <li><a class="dropdown-item" href="index.php?page=stats_view">Statistiche</a></li>
           <li><a class="dropdown-item" href="https://myportal.nexi.swiss" target="_blank">Nexi MyPortal (statistiche carta di credito)</a></li>
             <?php if(Auth::is_owner(true)): ?> <li><hr class='dropdown-divider'></li><?php endif ?>
@@ -53,6 +58,7 @@ if (isset($_GET['tablet'])) return;
             <li><a class="dropdown-item" href="https://ic2.globalblue.com" target="_blank">Global Blue (tax free)</a></li>
             <li><a href="https://www.eda.admin.ch/eda/it/dfae/rappresentanze-e-consigli-di-viaggio/schweizer-vertretungen-im-ausland.html" target="_blank" class="dropdown-item">Rappresentanze della Svizzera all'estero (Ambasciate e Consolati)</a></li>
             <li><hr class='dropdown-divider'></li>
+            <li><a class="dropdown-item" href="https://unlayer.com" target="_blank">Unlayer Email Builder</a></li>
             <li><a class="dropdown-item" href="https://app.brevo.com/" target="_blank">Brevo (newsletter)</a></li>
             <li><hr class='dropdown-divider'></li>
             <li><a class="dropdown-item" href="https://my.arlo.com/" target="_blank">Telecamere</a></li>

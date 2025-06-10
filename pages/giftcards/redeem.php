@@ -8,6 +8,18 @@ $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$saleId]);
 $sale = $stmt->fetch();
 
+$sql = "SELECT * FROM sales_items WHERE sale_id = ?";
+$stmt = $dbconnection->prepare($sql);
+$stmt->execute([$saleId]);
+$items = $stmt->fetchAll();
+
+$sum = 0;
+
+foreach($items as $item) {
+$sum += $item['price'] * $item['quantity'];
+}
+$sum = $sum / 100;
+
 if (!$sale) {
     Utils::print_error("Vendita non trovata");
     return;
@@ -17,7 +29,7 @@ if (!$sale) {
 <form action="actions/giftcards/redeem.php" method="POST">
     <input type="hidden" name="sale_id" value="<?php echo $saleId ?>">
     <label for="card_id">Codice Carta Regalo *</label>
-    <input type="text" name="card_id" id="card_id-input" class="form-control" required minlength="8" maxlength="8">
+    <input type="text" name="card_id" id="card_id-input" class="form-control" required minlength="4" maxlength="4">
     <br>
     <label for="amount">Importo da scontare *</label>
     <input type="number" name="amount" id="amount-input" class="form-control" required min="0" max="0">
@@ -69,8 +81,8 @@ if (!$sale) {
                 }
 
                 const amountInput = document.getElementById("amount-input");
-                amountInput.value = data.balance;
-                amountInput.max = data.balance;
+                amountInput.value = Math.min(data.balance, <?php echo $sum ?>);
+                amountInput.max = Math.min(data.balance, <?php echo $sum ?>);
             })
             .catch(e => {
                 console.error("Errore di rete o parsing:", e);

@@ -55,6 +55,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 $subtotal = 0;
                 $pieces = 0;
+                $factor = $sale['status'] === "negative" ? -1 : 1;
                 $receiptItems = [];
                 foreach ($items as $item) {
                     $receiptItems[] = [
@@ -78,8 +79,8 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Utils::print_table_row($item['brand_name']);
                     Utils::print_table_row($variantData['color'] . " / " . $variantData['size']);
                     Utils::print_table_row($item['quantity']);
-                    Utils::print_table_row(Utils::format_price($item['price']));
-                    Utils::print_table_row(Utils::format_price($item['total_price']));
+                    Utils::print_table_row(Utils::format_price($item['price'] * $factor));
+                    Utils::print_table_row(Utils::format_price($item['total_price'] * $factor));
                     echo "</tr>";
                 }
                 ?>

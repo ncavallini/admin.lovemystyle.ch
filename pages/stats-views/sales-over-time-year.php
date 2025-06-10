@@ -64,16 +64,41 @@
     <?php
     $operator = $_GET['operator'] ?? null;
     $sql = <<<EOD
+WITH gross_totals AS (
+  SELECT
+    si.sale_id,
+    SUM(si.price * si.quantity) AS gross_total
+  FROM sales_items si
+  GROUP BY si.sale_id
+),
+net_sales AS (
+  SELECT
+    s.sale_id,
+    DATE_FORMAT(s.closed_at, '%Y') AS year,
+    gt.gross_total,
+    CASE
+      WHEN s.discount_type = 'CHF' THEN
+        GREATEST(gt.gross_total - s.discount*100, 0)
+      WHEN s.discount_type = '%' THEN
+        GREATEST(gt.gross_total - (gt.gross_total * s.discount / 100), 0)
+      ELSE
+        gt.gross_total
+    END AS net_total
+  FROM sales s
+  JOIN gross_totals gt ON s.sale_id = gt.sale_id
+  WHERE s.status = 'completed'
+    AND s.created_at >= DATE_FORMAT(:start_year, '%Y-01-01')
+    AND s.created_at <  DATE_FORMAT(:end_year, '%Y-01-01') + INTERVAL 1 YEAR
+    %op
+)
 SELECT
-  DATE_FORMAT(closed_at, '%Y') AS year,
-  COUNT(*) AS cnt
-FROM sales
-WHERE status = 'completed'
-  AND created_at >= DATE_FORMAT(:start_year, '%Y-01-01')
-  AND created_at <  DATE_FORMAT(:end_year, '%Y-01-01') + INTERVAL 1 YEAR
-  %op
+  year,
+  COUNT(*) AS sales_count,
+  SUM(net_total) AS total_value
+FROM net_sales
 GROUP BY year
 ORDER BY year;
+
 EOD;
 
 
@@ -101,7 +126,8 @@ EOD;
             <thead>
                 <tr>
                     <th>Anno</th>
-                    <th>Vendite</th>
+                    <th>Vendite (#)</th>
+                    <th>Incasso (CHF)</th>
                 </tr>
             </thead>
             <tbody>
@@ -109,7 +135,8 @@ EOD;
                     <tr>
                         <?php if(!$row['year']) continue; ?>
                         <td><?php echo date("Y", strtotime($row['year'])) ?></td>
-                        <td><?php echo $row['cnt']; ?></td>
+                        <td><?php echo $row['sales_count']; ?></td>
+                        <td><?php echo Utils::format_price($row['total_value']); ?> CHF</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -157,8 +184,8 @@ EOD;
                 data: {
                     labels: <?php echo json_encode(array_map(fn($row) => ($row['year']) ? date("Y", strtotime($row['year'])) : "", $year_by_year)) ?>,
                     datasets: [{
-                        label: 'Totale anniuale',
-                        data: <?php echo json_encode(array_map(fn($row) => $row['cnt'], $year_by_year)) ?>,
+                        label: 'Incasso anniuale (CHF)',
+                        data: <?php echo json_encode(array_map(fn($row) => $row['total_value'] / 100, $year_by_year)) ?>,
                     }]
                 },
                 options: {

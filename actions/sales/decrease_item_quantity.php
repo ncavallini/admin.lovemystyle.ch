@@ -28,6 +28,6 @@ $stmt->execute([
     ":variant_id"=> $variantId,
     ":new_quantity" => $quantity - 1
 ]);
-header("Location: /index.php?page=sales_add&sale_id=$saleId");
+header("Location: /index.php?page=sales_add&sale_id=$saleId &negative=" . $_POST['negative']);
 
 ?>

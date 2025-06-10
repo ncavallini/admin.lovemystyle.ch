@@ -164,7 +164,7 @@ class Utils
     public static function compute_discounted_price(int $subtotal, float $discount, string $discountType)
     {
         if ($discountType === "CHF") {
-            return $subtotal - $discount;
+            return $subtotal - $discount * 100;
         } else {
             return $subtotal * (1 - $discount / 100);
         }

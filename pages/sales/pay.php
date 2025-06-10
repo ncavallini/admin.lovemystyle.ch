@@ -11,6 +11,7 @@ if (!$sale) {
 }
 
 $total = 0;
+$negative = $_GET['negative'] || 0;
 
 $sql = "SELECT price, quantity FROM sales_items WHERE sale_id = ?";
 $stmt = $dbconnection->prepare($sql);
@@ -21,28 +22,26 @@ foreach ($items as $item) {
     $total += $item["price"] * $item["quantity"];
 }
 
-if($sale["discount_type"] === "CHF") {
-    $total -= ($sale['discount'] * 100);
-}
-else {
-    $total = (1 - $sale['discount'] / 100) * $total;
-}
+$total = Utils::compute_discounted_price($total, $sale['discount'], $sale['discount_type']);
 
 $sql = "SELECT rate FROM exchange_rates WHERE currency = 'EUR'";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute();
 $rate = $stmt->fetchColumn();
 
-$total_eur = $total * $rate;
+
+$factor = $negative ? -1 : 1;
+$total_eur = $factor * $total * $rate;
 
 ?>
 
 <h1>Pagamento</h1>
-<p class="display-6 underline">Totale da pagare: <?php echo Utils::format_price($total) ?> CHF <small>(<?php echo Utils::format_price($total_eur) ?> €)</small> </p>
+<p class="display-6 underline">Totale da pagare: <?php echo Utils::format_price($total * $factor) ?> CHF <small>(<?php echo Utils::format_price($total_eur) ?> €)</small> </p>
 
 <form action="actions/sales/pay.php" method="POST" id="form-pay">
     <input type="hidden" name="sale_id" value="<?php echo $saleId ?>">
     <input type="hidden" name="total" value="<?php echo $total ?>">
+    <input type="hidden" name="negative" value="<?php echo $negative ?>">
     <div class="input-group mb-3">
         <span class="input-group-text"><i class="fa-solid fa-credit-card"></i></span>
         <select id="payment_method-select" name="payment_method" class="form-select" required>
@@ -52,7 +51,7 @@ $total_eur = $total * $rate;
     </div>
     <div class="input-group mb-3">
         <span class="input-group-text"><i class="fa-solid fa-money-bill"></i></span>
-        <input type="number" id="given-input" step="0.01" min="0" name="amount" class="form-control" required placeholder="Importo pagato" id="amount">
+        <input type="number" id="given-input" step="0.01" min="0" name="amount"  class="form-control" placeholder="Importo pagato" id="amount">
         <span class="input-group-text">
             <select name="currency" id="currency-select" class="form-select">
                 <option value="CHF" selected>CHF</option>
@@ -96,7 +95,6 @@ $total_eur = $total * $rate;
 
         if(paymentMethod === "CASH") {
             givenInput.removeAttribute("hidden");
-            givenInput.setAttribute("required", "true");
         }
 
         else {
@@ -110,7 +108,6 @@ $total_eur = $total * $rate;
 
         else {
             returnP.setAttribute('hidden', 'true');
-            givenInput.removeAttribute("required");
         }
 
         
@@ -123,6 +120,18 @@ $total_eur = $total * $rate;
     });
 
     document.getElementById("btn-confirm").addEventListener("click", (e) => {
+e.preventDefault();
+let given = parseFloat(givenInput.value);
+if(isNaN(given)) given = 0.0;
+given *= 100;
+        const paymentMethod = paymentMethodSelect.value;
+const total = <?php echo $total ?>;
+ 
+if (paymentMethod === "CASH" && given < total && !<?php echo $negative ? 'true' : 'false'; ?>) {
+    alert("Importo insufficiente");
+ 	return; 
+	
+}      
        e.target.setAttribute("disabled", "true");
        document.getElementById("form-pay").submit();
     });

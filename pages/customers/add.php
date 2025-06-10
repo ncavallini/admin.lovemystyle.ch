@@ -31,10 +31,10 @@
 
 
     <label for="birth_date">Data di nascita</label>
-    <input type="date" name="birth_date" class="form-control" max="<?php echo date("Y-m-d") ?>">
+    <input type="text" name="birth_date" id="birth_date-input" class="form-control" max="<?php echo date("Y-m-d") ?>">
     <br>
     <label for="street">Via</label>
-    <input type="text" name="street" class="form-control" placeholder="Via">
+    <input type="text" name="street" class="form-control" placeholder="">
     <br>
 
     <div class="row">
@@ -100,7 +100,7 @@
     <br>
 
     <label for="birth_date">Geburtsdatum</label>
-    <input type="date" name="birth_date" class="form-control" max="<?php echo date('Y-m-d') ?>">
+    <input type="text" name="birth_date" id="birth_date-input" class="form-control" max="<?php echo date("Y-m-d") ?>">
     <br>
 
     <label for="street">Straße</label>
@@ -171,7 +171,7 @@
     <br>
 
     <label for="birth_date">Date of Birth</label>
-    <input type="date" name="birth_date" class="form-control" max="<?php echo date('Y-m-d') ?>">
+    <input type="text" name="birth_date" id="birth_date-input" class="form-control" max="<?php echo date("Y-m-d") ?>">
     <br>
 
     <label for="street">Street</label>
@@ -235,6 +235,16 @@
         } else if (telInput.value.startsWith("0")) {
             telInput.value = telInput.value.replace(/^0/, "+41");
         }
+    });
+
+    const birthDateInput = document.getElementById('birth_date-input');
+    flatpickr(birthDateInput, {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d.m.Y",
+        maxDate: new Date(), // Set the maximum date to today
+        locale: "<?php echo $lang ?>",
+        disableMobile: true,
     });
 </script>
 

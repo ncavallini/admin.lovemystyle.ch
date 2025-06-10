@@ -17,3 +17,7 @@
     <a href="index.php?page=forgot-password">Password dimenticata?</a>
 
 </form>
+
+<script>
+window.localStorage.setItem("selectedProducts", JSON.stringify([]))
+</script>

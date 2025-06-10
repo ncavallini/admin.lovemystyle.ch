@@ -7,8 +7,33 @@ require_once __DIR__ . "/../../vendor/autoload.php";
 class Email
 {
 
-    public static function send
-    (
+    public static function get_php_mailer(string|null $from): PHPMailer
+    {
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->Host = $GLOBALS['CONFIG']['SMTP_HOSTNAME'];
+        $mail->SMTPAuth = $GLOBALS['CONFIG']['SMTP_AUTH'];
+        $mail->Username = $GLOBALS['CONFIG']['SMTP_USERNAME'];
+        $mail->Password = $GLOBALS['CONFIG']['SMTP_PASSWORD'];
+        $mail->SMTPSecure = $GLOBALS['CONFIG']['SMTP_ENCRYPTION'];
+        $mail->Port = $GLOBALS['CONFIG']['SMTP_PORT'];
+        $mail->SMTPDebug = $GLOBALS['CONFIG']['SMTP_DEBUG'];
+
+        if ($from === null) $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
+        else $mail->setFrom($from);
+        if (Auth::is_logged()) {
+            $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
+        }
+
+
+        $mail->isHTML($GLOBALS['CONFIG']['SMTP_USE_HTML']);
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = 'quoted-printable';
+
+        return $mail;
+    }
+
+    public static function send(
         string $to,
         string $subject,
         string $message,
@@ -16,7 +41,7 @@ class Email
         array $string_attachments = [], // [[ 'content' => 'string', 'name' => 'filename', 'type' => 'application/pdf']]
         string|null $from = null
     ): bool {
-        
+
 
         $mail = new PHPMailer;
 
@@ -30,13 +55,13 @@ class Email
             $mail->Port = $GLOBALS['CONFIG']['SMTP_PORT'];
             $mail->SMTPDebug = $GLOBALS['CONFIG']['SMTP_DEBUG'];
 
-           if($from === null) $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
-           else $mail->setFrom($from);
+            if ($from === null) $mail->setFrom($GLOBALS['CONFIG']['SMTP_USERNAME'], "Love My Style");
+            else $mail->setFrom($from);
             $mail->addAddress($to);
-            if(Auth::is_logged()) {
+            if (Auth::is_logged()) {
                 $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
             }
-             
+
 
             $mail->isHTML($GLOBALS['CONFIG']['SMTP_USE_HTML']);
             $mail->CharSet = 'UTF-8';

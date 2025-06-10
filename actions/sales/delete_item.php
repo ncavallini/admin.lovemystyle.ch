@@ -11,6 +11,6 @@ $stmt->execute([
     ":product_id"=> $productId,
     ":variant_id"=> $variantId
 ]);
-header("Location: /index.php?page=sales_add&sale_id=$saleId");
+header("Location: /index.php?page=sales_add&sale_id=$saleId&negative=" . $_GET['negative']);
 
 ?>

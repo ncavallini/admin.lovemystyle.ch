@@ -59,5 +59,5 @@ else if($action === "inc") {
 
 else {}
 
-header("Location: /index.php?page=sales_add&sale_id=$saleId");
+header("Location: /index.php?page=sales_add&sale_id=$saleId&negative=" . $_POST['negative']);
 ?>

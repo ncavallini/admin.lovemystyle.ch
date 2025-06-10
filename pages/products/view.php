@@ -11,18 +11,23 @@ $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $products = $stmt->fetchAll();
 
-$sql = "SELECT product_id FROM products";
+$sql = "SELECT product_id, price FROM products";
 $stmt = $connection->prepare($sql);
 $stmt->execute();
 $all_products_id = $stmt->fetchAll();
 $all_products_count = 0;
+$value = 0;
 
 foreach($all_products_id as $product_id) {
     $sql = "SELECT SUM(stock) FROM product_variants WHERE product_id = :product_id";
     $stmt = $connection->prepare($sql);
     $stmt->execute(['product_id' => $product_id['product_id']]);
     $stock = $stmt->fetchColumn();
-    if($stock <= 1e6) $all_products_count += $stock;
+    // Only count products with stock <= 1 million
+    if($stock <= 1e6) {
+        $all_products_count += $stock;
+        $value += $stock * $product_id['price'];
+    }
 }
 
 
@@ -43,6 +48,7 @@ if(!empty($q)) {
 <h1>Prodotti</h1>
 <p></p>
 <small><p><?php echo $all_products_count ?> pezzi.</p></small>
+<small><p>Valore totale: <?php echo Utils::format_price($value) ?> CHF.</p></small>
 <p></p>
 <a href="/index.php?page=products_add" class="btn btn-primary" title="Aggiungi Prodotto"><i class="fa-solid fa-plus"></i></a>
 <a href="/actions/products/print_inventory.php" class="btn btn-secondary" title="Stampa inventario"><i class="fa-solid fa-print"></i></a>
@@ -60,6 +66,7 @@ if(!empty($q)) {
 </form>
 <p>&nbsp;</p>
 <a href="javascript:void(0)" id="check-select-all" onclick="toggleSelectAll(event)">Seleziona tutto</a>
+<a href="javascript:void(0)" id="check-deselect-all" onclick="toggleDeselectAll()" class="text-secondary">Deseleziona tutto</a>
 <div class="table-responsive">
     <table id="table" class="table table-striped">
         <thead>
@@ -115,7 +122,27 @@ if(!empty($q)) {
     }
 
 
-    let selectedProducts = new Set();
+    let selectedProducts = new Set(JSON.parse(localStorage.getItem("selectedProducts") || '[]'));
+    if( selectedProducts.size > 0) {
+        const checkboxes = document.getElementsByClassName("product-checkbox");
+        for (let i = 0; i < checkboxes.length; i++) {
+            const productId = checkboxes[i].closest("tr").getAttribute("data-product-id");
+            if (selectedProducts.has(productId)) {
+                checkboxes[i].checked = true;
+                toggleProductSelection({
+                    target: checkboxes[i]
+                });
+            }
+        }
+        const btn = document.getElementById("btn-apply-discount");
+        btn.onclick = applyMassDiscount;
+        btn.classList.remove("disabled");
+    } else {
+        const btn = document.getElementById("btn-apply-discount");
+        btn.onclick = null;
+        btn.classList.add("disabled");
+    }
+    
 
     function toggleSelectAll(event) {
         const checkboxes = document.getElementsByClassName("product-checkbox");
@@ -125,6 +152,18 @@ if(!empty($q)) {
                 target: checkboxes[i]
             });
         }
+    }
+
+    function toggleDeselectAll() {
+        const checkboxes = document.getElementsByClassName("product-checkbox");
+        for (let i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+            toggleProductSelection({
+                target: checkboxes[i]
+            });
+        }
+        selectedProducts.clear();
+        window.localStorage.setItem("selectedProducts", JSON.stringify([]));
     }
 
     function toggleProductSelection(event) {
@@ -137,11 +176,13 @@ if(!empty($q)) {
         if (event.target.checked) {
             table.classList.remove("table-striped");
             selectedProducts.add(productId);
+            window.localStorage.setItem("selectedProducts", JSON.stringify([...selectedProducts]));
             tr.classList.add("table-primary");
 
         } else {
             table.classList.add("table-striped");
             selectedProducts.delete(productId);
+            window.localStorage.setItem("selectedProducts", JSON.stringify([...selectedProducts]));
             tr.classList.remove("table-primary");
         }
 

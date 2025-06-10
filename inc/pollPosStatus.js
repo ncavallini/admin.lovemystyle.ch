@@ -64,14 +64,14 @@ function connectToSSE() {
         if (retryCount < MAX_RETRIES) {
             retryCount++;
             setTimeout(connectToSSE, 3000 * retryCount);
-        } else {
+        } else {/*
             bootbox.alert(
                 "<div class='alert alert-danger'>Errore di connessione al sistema POS. Controlla la rete e ricarica la pagina.</div>",
                 () => {
                     location.reload();
                 }
             );
-        }
+      à*/  }
     };
 }
 

@@ -26,6 +26,6 @@
 
 <script>
     setTimeout(() => {
-        window.location.href = "/index.php?page=customers_add&tablet=1";
+        window.location.href = "https://admin.lovemystyle.ch/index.php?page=languagepicker&to=customers_add&tablet=1";
     }, 5000);
 </script>

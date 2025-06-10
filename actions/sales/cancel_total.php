@@ -16,10 +16,21 @@ $stmt->execute([$saleId]);
 
 
 
-$sql = "SELECT * FROM sales_items WHERE sale_id = ?";
+$sql = "SELECT i.*, p.name FROM sales_items i JOIN products p USING(product_id) WHERE sale_id = ?";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$saleId]);
 $items = $stmt->fetchAll();
+
+$receiptItems = [];
+foreach ($items as $item) {
+    $receiptItems[] = [
+        "sku" => InternalNumbers::get_sku($item['product_id'], $item['variant_id']),
+        "name" => $item['name'],
+        "price" => Utils::format_price(-$item['price']),
+        "quantity" => $item['quantity'],
+        "total" => Utils::format_price(-$item['price'] * $item['quantity'])
+    ];
+}
 
 $status = $sale['status'];
 $subtotal = array_reduce($items, function($carry, $item) {
@@ -44,16 +55,17 @@ if($status !== "open") {
 
 $receipt = [
     "saleId" => $saleId,
-    "subtotal" => Utils::format_price($subtotal),
-    "total" => Utils::format_price($total),
+    "subtotal" => Utils::format_price(-$subtotal),
+    "total" => Utils::format_price($total * -1),
     "discount" => ($sale['discount']) != 0 ? $sale['discount'] . " " . $sale['discount_type'] : "",
-    "paymentMethod" => $paymentMethod,
+    "paymentMethod" => $sale['payment_method'],
     "username" => Auth::get_fullname_by_username($sale['username']),
     "customer" => ($sale['customer_id']) !== null ? $sale['first_name'] . " " . $sale['last_name'] : "Esterno",
     "datetime" => $sale['closed_at'],
     "items" => $receiptItems,
     "type" => "return",
 ];
+
 
 $posClient = POSHttpClient::get_http_client();
 try {
@@ -64,6 +76,7 @@ try {
         ]);
 } catch (Exception $e) {
     echo $e->getMessage();
+    
 }
 
 
