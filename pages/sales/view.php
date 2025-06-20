@@ -2,6 +2,7 @@
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $searchQuery = Pagination::build_search_query($q, ["sale_id", "username", "s.customer_id", "c.first_name", "c.last_name"]);
+
 try {
     $sql = "DELETE FROM sales WHERE sale_id NOT IN (SELECT DISTINCT sale_id FROM sales_items)";
     $stmt = $connection->prepare($sql);
@@ -10,12 +11,17 @@ try {
     // Handle error if needed
 }
 
+// First, get the total count for pagination - this is the key fix
+$countSql = "SELECT COUNT(*) FROM sales s LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'];
+$countStmt = $connection->prepare($countSql);
+$countStmt->execute($searchQuery['params']);
+$totalRows = $countStmt->fetchColumn();
 
-$sql = "SELECT s.*, c.first_name, c.last_name FROM sales s  LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY created_at DESC, closed_at DESC, created_at DESC";
-$stmt = $connection->prepare($sql);
-$stmt->execute($searchQuery['params']);
-$pagination = new Pagination($stmt->rowCount(), pageSize:100);
-$sql .= $pagination->get_sql();
+// Initialize pagination with the correct total count
+$pagination = new Pagination($totalRows, pageSize:50);
+
+// Now get the actual data with pagination
+$sql = "SELECT s.*, c.first_name, c.last_name FROM sales s LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY created_at DESC, closed_at DESC, created_at DESC" . $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $sales = $stmt->fetchAll();

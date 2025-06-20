@@ -12,7 +12,7 @@ if(strlen($term) < 3) {
     exit();
 }
 
-$sql = "SELECT customer_id, customer_number, first_name, last_name, birth_date FROM customers WHERE customer_number = :customer_number OR last_name LIKE :term OR first_name LIKE :term";
+$sql = "SELECT customer_id, customer_number, first_name, last_name, birth_date, tel, email FROM customers WHERE customer_number = :customer_number OR last_name LIKE :term OR first_name LIKE :term";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([
     ":customer_number" => $term,

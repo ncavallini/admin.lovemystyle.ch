@@ -2,15 +2,23 @@
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $searchQuery = Pagination::build_search_query($q, ["product_id", "p.name", "p.price", "b.name"]);
-$sql = "SELECT p.*, b.name AS brand_name FROM products p JOIN brands b USING(brand_id) WHERE " . $searchQuery['text'] . " ORDER BY last_edit_at DESC";;
-$stmt = $connection->prepare($sql);
-$stmt->execute($searchQuery['params']);
-$pagination = new Pagination($stmt->rowCount());
-$sql .= $pagination->get_sql();
+
+// First, get the total count for pagination - this is the key fix
+$countSql = "SELECT COUNT(*) FROM products p JOIN brands b USING(brand_id) WHERE " . $searchQuery['text'];
+$countStmt = $connection->prepare($countSql);
+$countStmt->execute($searchQuery['params']);
+$totalRows = $countStmt->fetchColumn();
+
+// Initialize pagination with the correct total count
+$pagination = new Pagination($totalRows);
+
+// Now get the actual data with pagination
+$sql = "SELECT p.*, b.name AS brand_name FROM products p JOIN brands b USING(brand_id) WHERE " . $searchQuery['text'] . " ORDER BY last_edit_at DESC" . $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $products = $stmt->fetchAll();
 
+// Rest of the inventory calculation code remains the same
 $sql = "SELECT product_id, price FROM products";
 $stmt = $connection->prepare($sql);
 $stmt->execute();
@@ -29,8 +37,6 @@ foreach($all_products_id as $product_id) {
         $value += $stock * $product_id['price'];
     }
 }
-
-
 
 $items = 0;
 if(!empty($q)) {

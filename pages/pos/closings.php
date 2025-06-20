@@ -4,11 +4,18 @@
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $searchQuery = Pagination::build_search_query($q, ["date"]);
-$sql = "SELECT * FROM closings WHERE " . $searchQuery['text'] . " ORDER BY date DESC ";
-$stmt = $connection->prepare($sql);
-$stmt->execute($searchQuery['params']);
-$pagination = new Pagination($stmt->rowCount());
-$sql .= $pagination->get_sql();
+
+// First, get the total count for pagination
+$countSql = "SELECT COUNT(*) FROM closings WHERE " . $searchQuery['text'];
+$countStmt = $connection->prepare($countSql);
+$countStmt->execute($searchQuery['params']);
+$totalRows = $countStmt->fetchColumn();
+
+// Initialize pagination with the total count
+$pagination = new Pagination($totalRows);
+
+// Now get the actual data with pagination
+$sql = "SELECT * FROM closings WHERE " . $searchQuery['text'] . " ORDER BY date DESC " . $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $closings = $stmt->fetchAll();

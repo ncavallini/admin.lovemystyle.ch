@@ -2,11 +2,18 @@
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
 $searchQuery = Pagination::build_search_query($q, ["brand_id", "b.name", "s.name"]);
-$sql = "SELECT b.*, s.name AS supplier_name FROM brands b JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'] . " ORDER BY name";
-$stmt = $connection->prepare($sql);
-$stmt->execute($searchQuery['params']);
-$pagination = new Pagination($stmt->rowCount());
-$sql .= $pagination->get_sql();
+
+// First, get the total count for pagination
+$countSql = "SELECT COUNT(*) FROM brands b JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'];
+$countStmt = $connection->prepare($countSql);
+$countStmt->execute($searchQuery['params']);
+$totalRows = $countStmt->fetchColumn();
+
+// Initialize pagination with the total count
+$pagination = new Pagination($totalRows);
+
+// Now get the actual data with pagination
+$sql = "SELECT b.*, s.name AS supplier_name FROM brands b JOIN suppliers s USING(supplier_id) WHERE " . $searchQuery['text'] . " ORDER BY b.name" . $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $brands = $stmt->fetchAll();

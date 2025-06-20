@@ -321,5 +321,24 @@ class Utils
         return cal_days_in_month(CAL_GREGORIAN, $month, $year);
     }
 
+    public static function get_next_closing_datetime() {
+        $currentDay = date('w'); // 0 (Sunday) to 6 (Saturday)
+        $addedDays = 0;
+        $nextDay = ($currentDay + 1) % 7; // Get the next day, wrapping around to Sunday if needed
+        $addedDays = 1; // Start with one day added
+        while(!isset($GLOBALS['CONFIG']['OPENING_TIMES'][$nextDay]) || empty($GLOBALS['CONFIG']['OPENING_TIMES'][$nextDay])) {
+            $nextDay = ($nextDay + 1) % 7; // Skip to the next day if the current one is closed
+            $addedDays++;
+        }
+        $nextClosingTime = end($GLOBALS['CONFIG']['OPENING_TIMES'][$nextDay]);
+        $nextClosingDateTime = new DateTime();
+        $nextClosingDateTime->modify("+$addedDays day");
+        $nextClosingDateTime->setTime(
+            (int) explode(':', $nextClosingTime)[0], // Hour
+            (int) explode(':', $nextClosingTime)[1] // Minute
+        );
+        return $nextClosingDateTime->format('Y-m-d H:i:s');
+    }
+
 
 }
