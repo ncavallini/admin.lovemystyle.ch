@@ -18,6 +18,11 @@ if ($giftcard["balance"] < $amount) {
     return;
 }
 
+if($giftcard["starts_at"] > date("Y-m-d")) {
+    Utils::print_error("Carta regalo non ancora attiva", true);
+    return;
+}
+
 if ($giftcard["expires_at"] < date("Y-m-d")) {
     Utils::print_error("Carta regalo scaduta", true);
     return;

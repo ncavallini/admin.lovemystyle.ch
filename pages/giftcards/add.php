@@ -83,6 +83,15 @@
                 </div>
             </div>
         </div>
+
+         <div class="col">
+            <div class="giftcard card h-100" tabindex="0" role="button" onclick="selectGiftCard(this, 1000)">
+                <div class="card-body">
+                    <h5 class="card-title">Carta Regalo 1000 CHF</h5>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -90,6 +99,7 @@
 <form action="actions/giftcards/add.php" method="POST" class="mt-4">
     <input id="value-input" type="hidden" name="value" value="" required>
 
+    <p class="lead">Destinatario</p>
     <div class="row">
         <div class="col-5">
             <label for="customer_id">Cerca Cliente registrato</label>
@@ -106,6 +116,11 @@
             <input id="last_name-input" type="text" name="last_name" class="form-control" required>
         </div>
     </div>
+
+    <p>&nbsp;</p>
+
+    <p class="lead">Data di inizio</p>
+    <input type="date" name="starts_at" class="form-control" value="<?php echo date("Y-m-d") ?>" min="<?php echo date("Y-m-d") ?>" required>
 
     <p>&nbsp;</p>
     <button disabled id="form-submit-btn" type="submit" class="btn btn-primary">Conferma</button>

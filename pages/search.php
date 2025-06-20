@@ -7,6 +7,18 @@
         return;
     }
     $dbconnection = DBConnection::get_db_connection();
+    $stock_string = "";
+
+    if (preg_match('/^\d{8}-\d{4}$/', $query)) {
+      $sql = "SELECT stock FROM product_variants WHERE CONCAT(product_id, '-', LPAD(variant_id, 4, '0')) = ?";
+      $stmt = $dbconnection->prepare($sql);
+      $stmt->execute([$query]);
+      $result = $stmt->fetch();
+      if ($result) {
+          $stock_string = "<p class='lead'>Stock: " . $result['stock'] . "</p>";
+      }
+  }
+
 
     $sql = "SELECT * FROM sales WHERE sale_id LIKE ?";
     $stmt = $dbconnection->prepare($sql);
@@ -53,7 +65,7 @@
 
 ?>
 <p>Termine di ricerca: <i><?php echo htmlspecialchars($query) ?></i> </p>
-
+<?php if(!empty($stock_string)) echo $stock_string . "<p>&nbsp;</p>"; ?>
 <div class="card">
   <div class="card-header">
     <p class="h5">Vendite (<?php echo count($sales)  ?>)</p>

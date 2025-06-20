@@ -10,7 +10,7 @@ if(!isset($_GET['key']) || $_GET['key'] != $CONFIG['CRON_KEY']) {
     exit;
 }
 
-$today = date('Y-m-d'); // Do not use CURDATE() in case of switching day during loop
+$today = $_GET['date'] ?? date('Y-m-d'); // Do not use CURDATE() in case of switching day during loop
 $sql = "SELECT content FROM cash_content WHERE id = 1";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute();
@@ -36,7 +36,9 @@ foreach($sales as $sale) {
 }
 
 
-
+if(isset($_GET['no_update'])) {
+   goto print_receipt;
+}
 
 $sql = "INSERT INTO closings VALUES(:date, :content, :income)";
 $stmt = $dbconnection->prepare($sql);
@@ -46,6 +48,7 @@ $stmt->execute([
     ":income" => $income
 ]);
 
+print_receipt: 
 $posClient = POSHttpClient::get_http_client();
 $posClient->post('/receipt/close', [
     'json' => [

@@ -24,7 +24,7 @@ foreach($all_products_id as $product_id) {
     $stmt->execute(['product_id' => $product_id['product_id']]);
     $stock = $stmt->fetchColumn();
     // Only count products with stock <= 1 million
-    if($stock <= 1e6) {
+    if($stock > 0 && $stock <= 1e6) {
         $all_products_count += $stock;
         $value += $stock * $product_id['price'];
     }
@@ -39,7 +39,7 @@ if(!empty($q)) {
         $stmt = $connection->prepare($sql);
         $stmt->execute(['product_id' => $product['product_id']]);
         $stock = $stmt->fetchColumn();
-        if($stock <= 1e6) $items += $stock;
+        if($stock > 0 && $stock <= 1e6) $items += $stock;
     }
 }
 

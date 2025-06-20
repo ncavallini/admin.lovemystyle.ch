@@ -11,7 +11,9 @@
                     <b>Sistema di cassa: </b>
                     <span id="pos-overall-icon"></span> &nbsp;
                     <span><a href="actions/pos/open_draw.php" class="btn btn-sm btn-secondary">Apri cassetto</a></span> &nbsp;
-                    </a>
+                    <span><a href="actions/pos/cut.php" class="btn btn-sm btn-secondary">Taglia carta</a></span> &nbsp;
+    
+                </a>
                     
                 </div>
             </div>

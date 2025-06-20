@@ -15,7 +15,7 @@
 
 <h1>Aggiungi Cliente</h1>
 <p>I campi contrassegnati con * sono obbligatori.</p>
-<form action="actions/customers/add.php" method="POST">
+<form id="add_customer-form" action="actions/customers/add.php" method="POST">
     <div class="row">
         <div class="col-6">
             <label for="first_name">Nome *</label>
@@ -79,13 +79,13 @@
     <br>
     <input type="hidden" name="tablet" value="<?php echo $tablet ? "1" : "0" ?>">
 
-    <button type="submit" class="btn btn-primary"><?php echo $tablet ? "Registrati" : "Aggiungi Cliente" ?></button>
+    <button type="submit" id="submit-button" class="btn btn-primary"><?php echo $tablet ? "Registrati" : "Aggiungi Cliente" ?></button>
 </form>
 
 <?php elseif($lang === "de"): ?>
     <h1>Kunden hinzufügen</h1>
 <p>Felder mit * sind Pflichtfelder.</p>
-<form action="actions/customers/add.php" method="POST">
+<form id="add_customer-form" action="actions/customers/add.php" method="POST">
     <div class="row">
         <div class="col-6">
             <label for="first_name">Vorname *</label>
@@ -150,13 +150,13 @@
 
     <input type="hidden" name="tablet" value="<?php echo $tablet ? '1' : '0' ?>">
 
-    <button type="submit" class="btn btn-primary"><?php echo $tablet ? 'Registrieren' : 'Kunden hinzufügen' ?></button>
+    <button type="submit" id="submit-button" class="btn btn-primary"><?php echo $tablet ? 'Registrieren' : 'Kunden hinzufügen' ?></button>
 </form>
 
 <?php elseif($lang === "en"): ?>
 <h1>Add Customer</h1>
 <p>Fields marked with * are required.</p>
-<form action="actions/customers/add.php" method="POST">
+<form id="add_customer-form" action="actions/customers/add.php" method="POST">
     <div class="row">
         <div class="col-6">
             <label for="first_name">First Name *</label>
@@ -221,7 +221,7 @@
 
     <input type="hidden" name="tablet" value="<?php echo $tablet ? '1' : '0' ?>">
 
-    <button type="submit" class="btn btn-primary"><?php echo $tablet ? 'Sign up' : 'Add Customer' ?></button>
+    <button type="submit" id="submit-button" class="btn btn-primary"><?php echo $tablet ? 'Sign up' : 'Add Customer' ?></button>
 </form>
 <?php endif ?>
 
@@ -246,5 +246,13 @@
         locale: "<?php echo $lang ?>",
         disableMobile: true,
     });
+</script>
+
+<script>
+    document.getElementById("submit-button").addEventListener("click", (e) => {
+        document.getElementById("add_customer-form").submit();
+        e.target.setAttribute("disabled", "disabled");
+        e.target.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+    })
 </script>
 

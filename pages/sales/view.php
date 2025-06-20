@@ -14,7 +14,7 @@ try {
 $sql = "SELECT s.*, c.first_name, c.last_name FROM sales s  LEFT JOIN customers c ON s.customer_id = c.customer_id WHERE " . $searchQuery['text'] . " ORDER BY created_at DESC, closed_at DESC, created_at DESC";
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
-$pagination = new Pagination($stmt->rowCount());
+$pagination = new Pagination($stmt->rowCount(), pageSize:100);
 $sql .= $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);

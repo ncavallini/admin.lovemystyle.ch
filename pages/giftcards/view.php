@@ -33,6 +33,7 @@ $gift_cards = $stmt->fetchAll();
                 <th>Importo (CHF)</th>
                 <th>Bilancio (CHF)</th>
                 <th>Data di emissione</th>
+                <th>Data di inizio validità</th>
                 <th>Data di scadenza</th>
                 <th>Azioni</th>
             </tr>
@@ -46,6 +47,7 @@ $gift_cards = $stmt->fetchAll();
                 Utils::print_table_row(Utils::format_price($gift_card['amount']));
                 Utils::print_table_row(Utils::format_price($gift_card['balance']));
                 Utils::print_table_row(Utils::format_date($gift_card['created_at']));
+                Utils::print_table_row(Utils::format_date($gift_card['starts_at']));
                 Utils::print_table_row(Utils::format_date($gift_card['expires_at']));
                 Utils::print_table_row(data: <<<EOD
                 <a href="index.php?page=sales_details&sale_id={$gift_card['sale_id']}" class="btn btn-outline-primary btn-sm" title='Vedi vendita'><i class="fa-solid fa-eye"></i></a>

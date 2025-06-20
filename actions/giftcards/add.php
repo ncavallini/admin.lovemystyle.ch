@@ -18,14 +18,16 @@ if(isset($_POST["customer_id"])) {
 }
 
 else {
-    $sql = "INSERT INTO gift_cards (card_id, amount, balance, first_name, last_name, created_at, expires_at) VALUES (:card_id, :amount, :balance, :first_name, :last_name, NOW(), DATE(DATE_ADD(NOW(), INTERVAL $duration YEAR)))";
+    $sql = "INSERT INTO gift_cards (card_id, amount, balance, first_name, last_name, created_at, starts_at, expires_at) VALUES (:card_id, :amount, :balance, :first_name, :last_name, NOW(), :starts_at, :expires_at)";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute(params: [
         ":card_id" => $cardId,
         ":first_name" => $_POST["first_name"],
         ":last_name" => $_POST["last_name"],
+        ":starts_at" => $_POST["starts_at"],
         ":amount" => $_POST["value"] * 100,
         ":balance" => $_POST["value"] * 100,
+        ":expires_at" => date("Y-m-d", strtotime("+$duration year", strtotime($_POST["starts_at"]))),
     ]);
 }
 
@@ -43,7 +45,8 @@ $saleId = $stmt->fetch(PDO::FETCH_ASSOC)["sale_id"];
 
 $sql = "INSERT INTO sales_items (sale_id, product_id, variant_id, quantity, price) VALUES (:sale_id, :product_id, 1, 1, :price)";
 
-$productId = "10000" . str_pad($_POST['value'], 3, "0", STR_PAD_LEFT);
+$padLength = 8 - strlen($_POST['value']) - 1;
+$productId = "1" . str_repeat("0", $padLength) . $_POST['value'];
 
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([

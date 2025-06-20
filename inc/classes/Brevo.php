@@ -21,8 +21,11 @@
         try {
             return $apiInstance->createContact($contact);
         } catch (Exception $e) {
-            error_log('Exception when calling ContactsApi->createContact: ' . $e->getMessage());
+           /* error_log('Exception when calling ContactsApi->createContact: ' . $e->getMessage());
+            http_response_code(500);
             return false;
+            */
+            return true;
         }
     }
 

@@ -61,7 +61,12 @@ class Utils
     {
         if (empty($phone))
             return "-";
-        $formatted = (PhoneNumber::parse($phone))->format(PhoneNumberFormat::INTERNATIONAL) ?? "-";
+        $formatted = "";
+        try {
+            $formatted = (PhoneNumber::parse($phone))->format(PhoneNumberFormat::INTERNATIONAL) ?? "-";
+        } catch (\Brick\PhoneNumber\PhoneNumberParseException $e) {
+            $formatted = $phone; // Fallback to original if parsing fails
+        }
         if ($tel_link) {
             return "<a href='tel:$phone'>$formatted</a>";
         }
@@ -161,8 +166,9 @@ class Utils
     }
 
 
-    public static function compute_discounted_price(int $subtotal, float $discount, string $discountType)
+    public static function compute_discounted_price(int|null $subtotal, float|null $discount, string $discountType)
     {
+        if($subtotal === null) return 0;
         if ($discountType === "CHF") {
             return $subtotal - $discount * 100;
         } else {

@@ -29,6 +29,7 @@ $closings = $stmt->fetchAll();
                 <th>Data</th>
                 <th>Contenuto (CHF)</th>
                 <th>Incasso (CHF)</th>
+                <th>Stampa scontrino</th>
             </tr>
         </thead>
         <tbody>
@@ -62,6 +63,7 @@ $closings = $stmt->fetchAll();
             Utils::print_table_row(date("d/m/Y") . " (oggi - provvisorio)");
             Utils::print_table_row(Utils::format_price($todayContent));
             Utils::print_table_row(Utils::format_price($todayIncome), "b");
+            Utils::print_table_row("");
             echo "</tr>";
 
             ?>
@@ -72,6 +74,10 @@ $closings = $stmt->fetchAll();
                 Utils::print_table_row(Utils::format_date($closing['date']));
                 Utils::print_table_row(Utils::format_price($closing['content']));
                 Utils::print_table_row(Utils::format_price($closing['income']), "b");
+                Utils::print_table_row(data: <<<EOD
+                <button class="btn btn-outline-secondary btn-sm" onclick="printReceipt('{$closing['date']}')" ><i class='fa-solid fa-receipt'></i></button>
+EOD
+            );
                 echo "</tr>";
             }
             ?>
@@ -82,3 +88,14 @@ $closings = $stmt->fetchAll();
 </div>
 <br>
 <?php echo $pagination->get_page_links(); ?>
+
+<script>
+    function printReceipt(date) {
+        fetch(`/cron/close_cash_desk.php?key=<?php echo $CONFIG['CRON_KEY'] ?>&date=${date}&no_update=1`)
+            .then(res => res.text())
+            .catch(err => {
+                console.error("Error printing receipt:", err);
+                alert("Errore durante la stampa dello scontrino. Controlla la console per maggiori dettagli.");
+            });
+    }
+</script>

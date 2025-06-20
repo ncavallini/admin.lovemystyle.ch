@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
-$sql = "SELECT email FROM customers WHERE is_newsletter_allowed = TRUE";
+$sql = "SELECT * FROM `customers` where is_newsletter_allowed = TRUE";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute();
 $emails = $stmt->fetchAll();

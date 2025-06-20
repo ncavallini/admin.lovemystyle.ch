@@ -47,8 +47,10 @@ if (isset($_GET['tablet'])) return;
             Strumenti
           </a>
           <ul class="dropdown-menu">
+          <!--
           <li><a href="index.php?page=shippings_view" class="dropdown-item">Spedizioni</a></li>
                       <li><hr class='dropdown-divider'></li>
+-->
           <li><a class="dropdown-item" href="index.php?page=stats_view">Statistiche</a></li>
           <li><a class="dropdown-item" href="https://myportal.nexi.swiss" target="_blank">Nexi MyPortal (statistiche carta di credito)</a></li>
             <?php if(Auth::is_owner(true)): ?> <li><hr class='dropdown-divider'></li><?php endif ?>

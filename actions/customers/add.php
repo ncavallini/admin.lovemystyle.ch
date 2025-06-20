@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL & ~E_DEPRECATED); // Suppress deprecated warnings (Brevo's fault)
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
 $sql = "INSERT INTO customers VALUES (UUID(), :customer_number, :first_name, :last_name, :birth_date, :street, :postcode, :city, :country, :tel, :email, NOW(), NOW(), :is_newsletter_allowed)";
@@ -7,8 +6,8 @@ $stmt = $dbconnection->prepare($sql);
 $customer_number = InternalNumbers::get_customer_number();
 $res = $stmt->execute([
     ":customer_number" => $customer_number,
-    ":first_name" => $_POST['first_name'],
-    ":last_name" => $_POST["last_name"],
+    ":first_name" => trim($_POST['first_name']),
+    ":last_name" => trim($_POST["last_name"]),
     ":birth_date" => $_POST["birth_date"] ?? null,
     ":street" => $_POST["street"] ?? null,
     ":postcode" => $_POST["postcode"] ?? null,
@@ -20,13 +19,16 @@ $res = $stmt->execute([
 ]);
 
 if($_POST['is_newsletter_allowed'] === "on") {
-     Brevo::add_customer(
+    try {
+          Brevo::add_customer(
         InternalNumbers::get_customer_number(),
         $_POST['first_name'],
         $_POST['last_name'],
         $_POST['email'],
         $_POST['tel'] ?? "",
     );
+    }
+    catch(Exception $e) {}
     
 }
 
@@ -57,6 +59,10 @@ $html = Utils::str_replace([
 ], $html);
 
 $res = Email::send($to, "Benvenuto in Love My Style", $html);
+
+if(new DateTime() >= new DateTime("2025-06-11") && new DateTime() <= new DateTime("2025-08-31")) {
+    $res = $res && Email::send($to, "Il tuo omaggio di benvenuto", file_get_contents(__DIR__ . "/../../templates/emails/welcome_code.html"));
+}
 
 if(!$res) {
     Utils::print_error("Errore durante l'invio dell'email.", true);

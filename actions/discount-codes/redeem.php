@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
 
+$_POST['code'] = strtoupper($_POST["code"]);
 
 $sql = "SELECT * FROM discount_codes WHERE code = ?";
 $stmt = $dbconnection->prepare($sql);
@@ -34,15 +35,20 @@ $stmt->execute([
     $code["discount_type"],
     $_POST["sale_id"]
 ]);
-$sql = "INSERT INTO used_discount_codes (code, customer_id) VALUES (?, ?)";
-$stmt = $dbconnection->prepare($sql);
-$stmt->execute([
-    $_POST["code"], 
-    $_POST["customer_id"],
-]);
+
+if (!empty($_POST['customer_id'])) {
+    $sql = "INSERT INTO used_discount_codes (code, customer_id) VALUES (?, ?)";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([
+        $_POST["code"],
+        $_POST["customer_id"],
+    ]);
+}
+
+
 ?>
 
 <script>
-    window.opener.location.reload();  
-    window.close();  
+    window.opener.location.reload();
+    window.close();
 </script>

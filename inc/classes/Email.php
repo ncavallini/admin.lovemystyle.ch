@@ -59,7 +59,7 @@ class Email
             else $mail->setFrom($from);
             $mail->addAddress($to);
             if (Auth::is_logged()) {
-                $mail->addReplyTo($_SESSION['user']['email'], $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name']);
+                $mail->addReplyTo($_SESSION['user']['email'], "Love My Style");
             }
 
 
