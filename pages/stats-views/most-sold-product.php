@@ -1,8 +1,11 @@
 <h1>Statistiche</h1>
 <a href="index.php?page=stats_view"><i class="fas fa-arrow-left"></i>Torna al menù statistiche</a>
 <p>&nbsp;</p>
-<h2>Top 10 dei prodotti più venduti</h2>
-<p>Questa pagina mostra i 10 prodotti più venduti, in assoluto o in uno specifico lasso di tempo.</p>
+<h2>Classifica dei prodotti più venduti</h2>
+<?php 
+    $nItems = isset($_GET['nItems']) && is_numeric($_GET['nItems']) ? $_GET['nItems'] : 20; // Numero di prodotti da mostrare
+?>
+<p>Questa pagina mostra i <?php echo $nItems; ?> prodotti più venduti, in assoluto o in uno specifico lasso di tempo.</p>
 
 <form action="#" method="GET">
     <input type="hidden" name="page" value="stats-views_most-sold-product">
@@ -30,6 +33,19 @@
                 value="<?php echo $_GET['end_date'] ?? '' ?>" max="<?php echo date('Y-m-d'); ?>">
         </div>
     </div>
+    <p>&nbsp;</p>
+    <div class="row">
+        <label for="nItems">Numero di prodotti da mostrare:</label>
+        <div class="col-4">
+               <select name="nItems" class="form-select mt-2">
+        <option value="10" <?php echo ($nItems == 10) ? 'selected' : ''; ?>>10</option>
+        <option value="20" <?php echo ($nItems == 20) ? 'selected' : ''; ?>>20</option>
+        <option value="50" <?php echo ($nItems == 50) ? 'selected' : ''; ?>>50</option>
+        <option value="100" <?php echo ($nItems == 100) ? 'selected' : ''; ?>>100</option>
+    </select>
+        </div>
+    </div>
+ 
     <br>
     <button type="submit" class="btn btn-outline-primary">Visualizza</button>
 </form>
@@ -57,7 +73,7 @@ GROUP BY
   si.product_id, p.name
 ORDER BY
   total_quantity_sold DESC
-LIMIT 10;
+LIMIT $nItems;
 EOD;
 
     $stmt = $dbconnection->prepare($sql);
@@ -88,7 +104,7 @@ GROUP BY
     si.product_id, p.name
 ORDER BY
     total_quantity_sold DESC
-LIMIT 10;
+LIMIT $nItems;
 EOD;
 
     $stmt = $dbconnection->prepare($sql);

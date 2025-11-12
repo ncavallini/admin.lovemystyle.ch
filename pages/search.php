@@ -63,6 +63,12 @@
     $stmt->execute([":query" => "%$query%"]);
     $gift_cards = $stmt->fetchAll();
 
+    
+    $sql = "SELECT b.*, c.first_name, c.last_name, p.name AS product_name FROM bookings b JOIN customers c USING(customer_id) JOIN products p USING(product_id) WHERE booking_id LIKE :query OR customer_id LIKE :query OR c.first_name LIKE :query OR c.last_name LIKE :query";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([":query" => "%$query%"]);
+    $bookings = $stmt->fetchAll();
+
 ?>
 <p>Termine di ricerca: <i><?php echo htmlspecialchars($query) ?></i> </p>
 <?php if(!empty($stock_string)) echo $stock_string . "<p>&nbsp;</p>"; ?>
@@ -160,6 +166,24 @@
     <li class="list-group-item">
       <a href="index.php?page=giftcards_view&q=<?php echo $gift_card['card_id'] ?>">
       <i class="fa-solid fa-arrow-right"></i> <?php echo $gift_card['card_id'] ?>
+      </a>
+    </li>
+    <?php endforeach ?>
+  </ul>
+</div>
+<p>&nbsp;</p>
+
+<div class="card">
+  <div class="card-header">
+    <p class="h5">Riservazioni (<?php echo count($bookings)  ?>)</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <?php foreach($bookings as $booking): ?>
+    <li class="list-group-item">
+      <a href="index.php?page=bookings_view&q=<?php echo $booking['booking_id'] ?>">
+      <i class="fa-solid fa-arrow-right"></i> Riservazione di <?php echo $booking['first_name'] . " " . $booking['last_name'] ?> per il prodotto <span class="tt"><?php echo $booking['product_id'] ?></span> - <?php echo $booking['product_name'] ?>, da <?php echo Utils::format_datetime($booking['from_datetime']) ?> a <?php echo Utils::format_datetime($booking['to_datetime']) ?>
+      <span class="tt">(<?php echo InternalNumbers::get_sku($booking['product_id'], $booking['variant_id']) ?>)</span>
+  
       </a>
     </li>
     <?php endforeach ?>

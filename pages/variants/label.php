@@ -30,7 +30,7 @@ if (!$variant) {
     <input type="hidden" name="variant_id" value="<?php echo $variantId ?>"></input>
     <div class="d-flex align-items-center gap-3">
     <label for="copies">Copie *</label>
-    <input type="number" name="copies" min="1" max="100" value="1" placeholder="N. copie" required class="form-control w-auto">
+    <input type="number" name="copies" min="1" max="100" value="<?php echo max($variant['stock'], 1) ?? 1 ?>" placeholder="N. copie" required class="form-control w-auto">
 
     <label for="printer">Stampante *</label>
     <select name="printer" class="form-select w-auto" required>

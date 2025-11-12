@@ -29,6 +29,10 @@ th, td {
     text-align: center;
 }
 
+.total-row td {            /* each cell gets the thick top border */
+    border-top:4px solid #000;
+}
+
 .tt {
     font-family: "Fira Code", "Consolas", "Courier New", monospace;
 }
@@ -52,9 +56,9 @@ th, td {
     text-transform: uppercase;
 }
 
-.numeric {
+/* .numeric {
     text-align: right;
-}
+} */
 
 .sale-totally_canceled {
     text-decoration: line-through;
@@ -78,7 +82,11 @@ th, td {
     text-wrap: nowrap;
 }
 
-
+.strikethrough {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: red ;
+}
 
 @media (max-width: 768px) {
     footer {

@@ -32,7 +32,7 @@ if (!$sale) {
     <input type="text" name="card_id" id="card_id-input" class="form-control" required minlength="4" maxlength="4">
     <br>
     <label for="amount">Importo da scontare *</label>
-    <input type="number" name="amount" id="amount-input" class="form-control" required min="0" max="0">
+    <input type="number" name="amount" id="amount-input" class="form-control" required min="0" max="0" step="0.01" value="0" placeholder="0.00" >
     <br>
     <button type="submit" class="btn btn-primary">Riscatta</button>
 </form>

@@ -1,59 +1,108 @@
 <?php
 // Cron: every day at 23:59
-
 require_once __DIR__ . "/../inc/inc.php";
-$dbconnection = DBConnection::get_db_connection();
+$db = DBConnection::get_db_connection();
 
-if(!isset($_GET['key']) || $_GET['key'] != $CONFIG['CRON_KEY']) {
+if (!isset($_GET['key']) || $_GET['key'] != $CONFIG['CRON_KEY']) {
     echo "Invalid key!";
     http_response_code(403);
     exit;
 }
 
-$today = $_GET['date'] ?? date('Y-m-d'); // Do not use CURDATE() in case of switching day during loop
-$sql = "SELECT content FROM cash_content WHERE id = 1";
-$stmt = $dbconnection->prepare($sql);
-$stmt->execute();
-$content = $stmt->fetchColumn();
+// Use provided date or today's date (avoid CURDATE() drift during long runs)
+$today = $_GET['date'] ?? date('Y-m-d');
 
-$sql = "SELECT * FROM sales WHERE DATE(closed_at) = '$today' AND status = 'completed'";
-$stmt = $dbconnection->prepare($sql);
-$stmt->execute();
-$sales = $stmt->fetchAll();
+// 1) Determine cash content to print for the requested date
+if ($today === date("Y-m-d")) {
+    $sql = "SELECT content FROM cash_content WHERE id = 1";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    $content = (int)$stmt->fetchColumn();
+} else {
+    $sql = "SELECT content FROM closings WHERE date = ?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$today]);
+    $content = (int)$stmt->fetchColumn();
+}
 
+// 2) Fetch sales for that date (parameterized)
+$sql = "SELECT sale_id, status, discount, discount_type
+        FROM sales
+        WHERE DATE(closed_at) = ?
+          AND (status = 'completed' OR status = 'negative')";
+$stmt = $db->prepare($sql);
+$stmt->execute([$today]);
+$sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// 3) Compute daily income in cents, with new rules:
+//    - Apply sale-level discount ONLY to items with is_discounted = 0
+//    - Discounted items CANNOT be returned; if such a (invalid) return exists, ignore it defensively
 $income = 0;
 
-foreach($sales as $sale) {
-    $sql = "SELECT * FROM sales_items WHERE sale_id = ?";
-    $stmt = $dbconnection->prepare($sql);
+foreach ($sales as $sale) {
+    $sign = ($sale['status'] === 'negative') ? -1 : 1;
+
+    // Load line items (cents)
+    $sql = "SELECT quantity, price, total_price, is_discounted
+            FROM sales_items
+            WHERE sale_id = ?";
+    $stmt = $db->prepare($sql);
     $stmt->execute([$sale['sale_id']]);
-    $items = $stmt->fetchAll();
-    $subtotal = array_reduce($items, function($carry, $item) {
-        return $carry + $item['total_price'];
-    }, 0);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $income += Utils::compute_discounted_price($subtotal, $sale['discount'], $sale['discount_type']);
+    $absSubtotalDiscountable    = 0; // is_discounted = 0
+    $absSubtotalNonDiscountable = 0; // is_discounted = 1
+    $containsDiscounted         = false;
+
+    foreach ($items as $it) {
+        $line = (int)$it['price'] * (int)$it['quantity'];
+        if (!empty($it['is_discounted'])) {
+            $containsDiscounted = true;
+            $absSubtotalNonDiscountable += $line;
+        } else {
+            $absSubtotalDiscountable += $line;
+        }
+    }
+
+    // Defensive: if a return includes discounted items, ignore its impact
+    if ($sale['status'] === 'negative' && $containsDiscounted) {
+        continue;
+    }
+
+    // Apply sale-level discount ONLY to discountable bucket
+    $discountVal  = (float)($sale['discount'] ?? 0);
+    $discountType = (string)($sale['discount_type'] ?? 'CHF');
+
+    $discountCentsApplied = 0;
+    if ($discountVal > 0 && $absSubtotalDiscountable > 0) {
+        if ($discountType === 'CHF') {
+            $discountCentsApplied = min((int)round($discountVal * 100), $absSubtotalDiscountable);
+        } else { // "%"
+            $discountCentsApplied = (int) floor($absSubtotalDiscountable * ($discountVal / 100));
+        }
+    }
+
+    $absGrandTotal = ($absSubtotalDiscountable - $discountCentsApplied) + $absSubtotalNonDiscountable;
+    $income += $sign * $absGrandTotal;
 }
 
-
-if(isset($_GET['no_update'])) {
-   goto print_receipt;
+// 4) Optionally persist the closing row (unless no_update is requested)
+if (!isset($_GET['no_update'])) {
+    $sql = "INSERT INTO closings (date, content, income) VALUES (:date, :content, :income)";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([
+        ':date'    => $today,
+        ':content' => (int)$content,
+        ':income'  => (int)$income
+    ]);
 }
 
-$sql = "INSERT INTO closings VALUES(:date, :content, :income)";
-$stmt = $dbconnection->prepare($sql);
-$stmt->execute([
-    ":date" => $today,
-    ":content" => $content,
-    ":income" => $income
-]);
-
-print_receipt: 
+// 5) Print the closing receipt
 $posClient = POSHttpClient::get_http_client();
 $posClient->post('/receipt/close', [
     'json' => [
-        'date' => $today,
-        'content' => Utils::format_price($content),
-        'income' => Utils::format_price($income)
+        'date'    => (new DateTime($today))->format('d/m/Y'),
+        'content' => Utils::format_price((int)$content),
+        'income'  => Utils::format_price((int)$income)
     ]
 ]);

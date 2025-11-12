@@ -42,26 +42,70 @@ $closings = $stmt->fetchAll();
         <tbody>
 
             <?php
+            // Contenuto odierno in cassa (in centesimi)
             $sql = "SELECT content FROM cash_content WHERE id = 1";
             $stmt = $connection->prepare($sql);
             $stmt->execute();
             $todayContent = $stmt->fetchColumn();
-            $sql = "SELECT * FROM sales WHERE DATE(closed_at) = CURDATE() AND (status = 'completed' OR status = 'negative')";
+
+            // Vendite di oggi (completate o storni)
+            $sql = "SELECT sale_id, status, discount, discount_type 
+                    FROM sales 
+                    WHERE DATE(closed_at) = CURDATE() 
+                      AND (status = 'completed' OR status = 'negative')";
             $stmt = $connection->prepare($sql);
             $stmt->execute();
-            $sales = $stmt->fetchAll();
+            $sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $todayIncome = 0;
+
             foreach ($sales as $sale) {
-                $sql = "SELECT * FROM sales_items WHERE sale_id = ? ";
+                $sign = ($sale['status'] === "negative") ? -1 : 1;
+
+                // Carica gli articoli della vendita (prezzi in centesimi)
+                $sql = "SELECT product_id, variant_id, quantity, price, total_price, is_discounted
+                        FROM sales_items
+                        WHERE sale_id = ?";
                 $stmt = $connection->prepare($sql);
                 $stmt->execute([$sale['sale_id']]);
-                $sign = $sale['status'] === "negative" ? -1 : 1;
-                $items = $stmt->fetchAll();
-                $subtotal = array_reduce($items, function ($carry, $item) {
-                    return $carry + $item['total_price'];
-                }, 0);
-                $subtotal *= $sign;
-                $todayIncome += Utils::compute_discounted_price($subtotal, $sale['discount'], $sale['discount_type']);
+                $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Suddividi il subtotale tra quota scontabile e non scontabile
+                $absSubtotalDiscountable = 0;      // is_discounted = 0
+                $absSubtotalNonDiscountable = 0;   // is_discounted = 1
+                $containsDiscounted = false;
+
+                foreach ($items as $it) {
+                    $line = (int)$it['price'] * (int)$it['quantity'];
+                    if (!empty($it['is_discounted'])) {
+                        $containsDiscounted = true;
+                        $absSubtotalNonDiscountable += $line;
+                    } else {
+                        $absSubtotalDiscountable += $line;
+                    }
+                }
+
+                // Regola aziendale: gli articoli scontati non possono essere stornati.
+                // Per robustezza: se mai dovesse comparire uno storno con articoli scontati, ignoriamo il suo impatto.
+                if ($sale['status'] === "negative" && $containsDiscounted) {
+                    continue;
+                }
+
+                // Applica lo sconto di vendita SOLO alla quota scontabile
+                $discountVal  = (float)($sale['discount'] ?? 0);
+                $discountType = (string)($sale['discount_type'] ?? 'CHF');
+
+                $discountCentsApplied = 0;
+                if ($discountVal > 0 && $absSubtotalDiscountable > 0) {
+                    if ($discountType === 'CHF') {
+                        $discountCentsApplied = min((int)round($discountVal * 100), $absSubtotalDiscountable);
+                    } else { // "%"
+                        $discountCentsApplied = (int) floor($absSubtotalDiscountable * ($discountVal / 100));
+                    }
+                }
+
+                $absGrandTotal = ($absSubtotalDiscountable - $discountCentsApplied) + $absSubtotalNonDiscountable;
+                $todayIncome += $sign * $absGrandTotal;
             }
             ?>
 
@@ -72,7 +116,6 @@ $closings = $stmt->fetchAll();
             Utils::print_table_row(Utils::format_price($todayIncome), "b");
             Utils::print_table_row("");
             echo "</tr>";
-
             ?>
 
             <?php
@@ -84,12 +127,10 @@ $closings = $stmt->fetchAll();
                 Utils::print_table_row(data: <<<EOD
                 <button class="btn btn-outline-secondary btn-sm" onclick="printReceipt('{$closing['date']}')" ><i class='fa-solid fa-receipt'></i></button>
 EOD
-            );
+                );
                 echo "</tr>";
             }
             ?>
-
-
         </tbody>
     </table>
 </div>

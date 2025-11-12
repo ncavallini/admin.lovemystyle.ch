@@ -13,7 +13,7 @@ if($passwordStrength['score'] < 3) {
 
 
 
-$sql = "INSERT INTO users (username, first_name, last_name, password_hash, tel, email, street, postcode, city, country, iban, role, is_enabled) VALUES (:username, :first_name, :last_name, :password_hash, :tel, :email, :street, :postcode, :city, :country, :iban, :role, TRUE)";
+$sql = "INSERT INTO users (username, first_name, last_name, password_hash, tel, email, street, postcode, city, country, iban, role, is_enabled, needs_password_change) VALUES (:username, :first_name, :last_name, :password_hash, :tel, :email, :street, :postcode, :city, :country, :iban, :role, TRUE, TRUE)";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
     'username' => $_POST['username'],

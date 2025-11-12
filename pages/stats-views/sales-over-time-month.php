@@ -85,51 +85,37 @@
     <h3>Risultati</h3>
     <?php
     $operator = $_GET['operator'] ?? null;
+
+    $operator_filter = $operator ? 'AND s.username = :username' : '';
+
     $sql = <<<EOD
-WITH gross_totals AS (
+WITH monthly_sales AS (
   SELECT
-    si.sale_id,
-    SUM(si.price * si.quantity) AS gross_total
-  FROM sales_items si
-  GROUP BY si.sale_id
-),
-net_sales AS (
-  SELECT
-    s.sale_id,
     DATE_FORMAT(s.closed_at, '%Y-%m-01') AS month_start,
-    gt.gross_total,
-    CASE
-      WHEN s.discount_type = 'CHF' THEN
-        GREATEST(gt.gross_total - s.discount*100, 0)
-      WHEN s.discount_type = '%' THEN
-        GREATEST(gt.gross_total - (gt.gross_total * s.discount / 100), 0)
-      ELSE
-        gt.gross_total
-    END AS net_total
+    COUNT(*) AS sales_count,
+    SUM(s.paid_cash) AS cash_total,
+    SUM(s.paid_pos) AS pos_total,
+    SUM(s.paid_cash + s.paid_pos) AS total_value
   FROM sales s
-  JOIN gross_totals gt ON s.sale_id = gt.sale_id
   WHERE s.status = 'completed'
-    AND s.created_at >= DATE_FORMAT(:start_ym, '%Y-%m-01')
-    AND s.created_at <  DATE_FORMAT(:end_ym, '%Y-%m-01') + INTERVAL 1 MONTH
-    %op
+    AND s.closed_at >= DATE_FORMAT(:start_ym, '%Y-%m-01')
+    AND s.closed_at <  DATE_FORMAT(:end_ym, '%Y-%m-01') + INTERVAL 1 MONTH
+    $operator_filter
+  GROUP BY DATE_FORMAT(s.closed_at, '%Y-%m-01')
 )
 SELECT
   month_start,
-  COUNT(*) AS sales_count,
-  SUM(net_total) AS total_value
-FROM net_sales
-GROUP BY month_start
+  sales_count,
+  cash_total,
+  pos_total,
+  total_value
+FROM monthly_sales
 ORDER BY month_start;
-
 
 EOD;
 
     $start_date = $_GET['start_year'] . '-' . str_pad($_GET['start_month'], 2, '0', STR_PAD_LEFT) . '-01';
     $end_date = $_GET['end_year'] . '-' . str_pad($_GET['end_month'], 2, '0', STR_PAD_LEFT) . '-01';
-
-    $sql = str_replace('%op', $operator ? 'AND operator = :username' : '', $sql);
-    $sql .= <<<EOD
-EOD;
 
     $dbconnection = DBConnection::get_db_connection();
     $stmt = $dbconnection->prepare($sql);
@@ -152,7 +138,9 @@ EOD;
                 <tr>
                     <th>Mese/anno</th>
                     <th>Vendite (#)</th>
-                    <th>Incasso (CHF)</th>
+                    <th>Incasso Contanti (CHF)</th>
+                    <th>Incasso POS (CHF)</th>
+                    <th>Incasso Totale (CHF)</th>
                 </tr>
             </thead>
             <tbody>
@@ -161,12 +149,16 @@ EOD;
                     <tr>
                         <td><?php echo date("m/Y", strtotime($row['month_start'])) ?></td>
                         <td><?php echo $row['sales_count']; ?></td>
+                        <td><?php echo Utils::format_price($row['cash_total']); ?></td>
+                        <td><?php echo Utils::format_price($row['pos_total']); ?></td>
                         <td><?php echo Utils::format_price($row['total_value']); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 <tr class="total-row">
                     <td class="b" style="color: red;">TOTALE</td>
                     <td class="b" style="color: red;"><?php echo array_sum(array_column($month_by_month, 'sales_count')); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($month_by_month, 'cash_total'))); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($month_by_month, 'pos_total'))); ?></td>
                     <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($month_by_month, 'total_value'))); ?></td>
                 </tr>
             </tbody>
@@ -218,10 +210,22 @@ EOD;
                 type: 'bar',
                 data: {
                     labels: <?php echo json_encode(array_map(fn($row) => date("m/Y", strtotime($row['month_start'])), $month_by_month)) ?>,
-                    datasets: [{
-                        label: 'Incasso mensile (CHF)',
-                        data: <?php echo json_encode(array_map(fn($row) => $row['total_value'] / 100, $month_by_month)) ?>,
-                    }]
+                    datasets: [
+                        {
+                            label: 'Contanti (CHF)',
+                            data: <?php echo json_encode(array_map(fn($row) => $row['cash_total'] / 100, $month_by_month)) ?>,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'POS (CHF)',
+                            data: <?php echo json_encode(array_map(fn($row) => $row['pos_total'] / 100, $month_by_month)) ?>,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -231,7 +235,11 @@ EOD;
                         },
                     },
                     scales: {
+                        x: {
+                            stacked: true
+                        },
                         y: {
+                            stacked: true,
                             beginAtZero: true
                         }
                     }

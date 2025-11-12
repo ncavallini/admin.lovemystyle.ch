@@ -14,22 +14,28 @@ if (isset($_GET['tablet'])) return;
           <a class="nav-link" href="index.php?page=sales_view">Vendite</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.php?page=products_view">Prodotti</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.php?page=brands_view">Brand</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.php?page=suppliers_view">Fornitori</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="index.php?page=customers_view">Clienti</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.php?page=giftcards_view">Carte Regalo</a>
+          <a class="nav-link" href="index.php?page=products_view">Prodotti</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.php?page=discount-codes_view">Codici Sconto</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Brand e Forn.
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="index.php?page=brands_view">Brand</a></li>
+            <li><a class="dropdown-item" href="index.php?page=suppliers_view">Fornitori</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Regali e Sconti
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="index.php?page=giftcards_view">Carte Regalo</a></li>
+            <li><a class="dropdown-item" href="index.php?page=discount-codes_view">Codici Sconto</a></li>
+          </ul>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="index.php?page=bookings_view">Riservazioni</a>
@@ -56,6 +62,7 @@ if (isset($_GET['tablet'])) return;
 -->
           <li><a class="dropdown-item" href="index.php?page=stats_view">Statistiche</a></li>
           <li><a class="dropdown-item" href="https://myportal.nexi.swiss" target="_blank">Nexi MyPortal (statistiche carta di credito)</a></li>
+          <li><a class="dropdown-item" href="https://portal.nexi.de" target="_blank">Nexi Merchant Portal</a></li>
             <?php if(Auth::is_owner(true)): ?> <li><hr class='dropdown-divider'></li><?php endif ?>
             <?php if(Auth::is_owner(true)): ?> <li><a class="dropdown-item" href="https://portal.twint.ch/" target="_blank">TWINT Merchant Portal</a></li> <?php endif ?>
             <?php if(Auth::is_owner(true)): ?> <li><a class="dropdown-item" href="https://gioia.portal.gkb.ch/a" target="_blank">E-banking BCG</a></li> <?php endif ?>
@@ -90,9 +97,6 @@ if (isset($_GET['tablet'])) return;
             </ul>
           </li>
         <?php endif ?>
-        <li class="nav-item">
-          <a class="nav-link" href="actions/auth/logout.php">Logout</a>
-        </li>
       </ul>
       <form class="d-flex" role="search" action="index.php" method="get">
         <input type="hidden" name="page" value="search">

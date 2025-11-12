@@ -78,8 +78,11 @@
     $start_date = $_GET['start_date'];
     $end_date = $_GET['end_date'];
     $operator = $_GET['operator'] ?? null;
+
+    $operator_filter = $operator ? 'AND s.username = :username' : '';
+
     $sql = <<<EOD
-           WITH RECURSIVE
+WITH RECURSIVE
 params AS (
     SELECT
         :start_date AS start_date,
@@ -92,66 +95,31 @@ all_days AS (
     FROM all_days
     JOIN params ON day < end_date
 ),
--- Totali lordi per ogni sale_id
-gross_totals AS (
+-- Aggregazione giornaliera con separazione CASH/POS
+daily_counts AS (
     SELECT
-        si.sale_id,
-        SUM(si.price * si.quantity) AS gross_total
-    FROM sales_items si
-    GROUP BY si.sale_id
-),
--- Totali netti per ogni sale_id dopo sconto
-net_sales AS (
-    SELECT
-        s.sale_id,
         DATE(s.closed_at) AS day,
-        gt.gross_total,
-        CASE
-            WHEN s.discount_type = 'CHF' THEN
-                GREATEST(gt.gross_total - s.discount * 100, 0)
-            WHEN s.discount_type = '%' THEN
-                GREATEST(gt.gross_total - (gt.gross_total * s.discount / 100), 0)
-            ELSE
-                gt.gross_total
-        END AS net_total
+        COUNT(*) AS sales_count,
+        SUM(s.paid_cash) AS cash_total,
+        SUM(s.paid_pos) AS pos_total,
+        SUM(s.paid_cash + s.paid_pos) AS total_value
     FROM sales s
-    JOIN gross_totals gt ON s.sale_id = gt.sale_id
     WHERE s.closed_at BETWEEN (SELECT start_date FROM params)
                           AND (SELECT end_date FROM params) + INTERVAL 1 DAY
       AND s.status = 'completed'
-),
--- Aggregazione giornaliera
-daily_counts AS (
-    SELECT
-        day,
-        COUNT(*) AS sales_count,
-        SUM(net_total) AS total_value
-    FROM net_sales
-    GROUP BY day
+      $operator_filter
+    GROUP BY DATE(s.closed_at)
 )
 -- Join con calendario completo
 SELECT
     ad.day,
     COALESCE(dc.sales_count, 0) AS sales_count,
+    COALESCE(dc.cash_total, 0) AS cash_total,
+    COALESCE(dc.pos_total, 0) AS pos_total,
     COALESCE(dc.total_value, 0) AS total_value
 FROM all_days ad
 LEFT JOIN daily_counts dc ON ad.day = dc.day
 ORDER BY ad.day;
-
-                                
-EOD;
-
-    $sql .= $operator ? " AND username = :username" : '';
-
-    $sql .= <<<EOD
-            GROUP BY DATE(closed_at)
-            )
-            SELECT
-            d.day,
-            COALESCE(dc.sales_count, 0) AS sales_count,
-            FROM all_days d
-            LEFT JOIN daily_counts dc ON dc.day = d.day
-            ORDER BY d.day;
 EOD;
 
     $dbconnection = DBConnection::get_db_connection();
@@ -179,7 +147,9 @@ EOD;
                 <tr>
                     <th>Data</th>
                     <th>Vendite (#)</th>
-                    <th>Incasso (CHF)</th>
+                    <th>Incasso Contanti (CHF)</th>
+                    <th>Incasso POS (CHF)</th>
+                    <th>Incasso Totale (CHF)</th>
                 </tr>
             </thead>
             <tbody>
@@ -187,12 +157,16 @@ EOD;
                     <tr>
                         <td><?php echo Utils::format_date($row['day']) ?></td>
                         <td><?php echo $row['sales_count']; ?></td>
+                        <td><?php echo Utils::format_price($row['cash_total']) ?></td>
+                        <td><?php echo Utils::format_price($row['pos_total']) ?></td>
                         <th><?php echo Utils::format_price($row['total_value']) ?></th>
                     </tr>
                 <?php endforeach; ?>
                 <tr class="total-row">
                     <td class="b" style="color: red;">TOTALE</td>
                     <td class="b" style="color: red;"><?php echo array_sum(array_column($day_by_day, 'sales_count')); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($day_by_day, 'cash_total'))); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($day_by_day, 'pos_total'))); ?></td>
                     <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($day_by_day, 'total_value'))); ?></td>
                 </tr>
             </tbody>
@@ -241,13 +215,25 @@ EOD;
             const ctx = document.getElementById('day_by_day_plot').getContext('2d');
 
             const chart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: <?php echo json_encode(array_map(fn($row) => $row['day'], $day_by_day)) ?>,
-                    datasets: [{
-                        label: 'Incasso giornaliero (CHF)',
-                        data: <?php echo json_encode(array_map(fn($row) => $row['total_value'] / 100, $day_by_day)) ?>,
-                    }]
+                    datasets: [
+                        {
+                            label: 'Contanti (CHF)',
+                            data: <?php echo json_encode(array_map(fn($row) => $row['cash_total'] / 100, $day_by_day)) ?>,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'POS (CHF)',
+                            data: <?php echo json_encode(array_map(fn($row) => $row['pos_total'] / 100, $day_by_day)) ?>,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -257,7 +243,11 @@ EOD;
                         },
                     },
                     scales: {
+                        x: {
+                            stacked: true
+                        },
                         y: {
+                            stacked: true,
                             beginAtZero: true
                         }
                     }
