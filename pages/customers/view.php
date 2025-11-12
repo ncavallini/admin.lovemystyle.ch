@@ -58,10 +58,11 @@ $customers = $stmt->fetchAll();
                 Utils::print_table_row(data: $birthDate);
                 Utils::print_table_row(data: Utils::format_address($customer['street'], $customer['postcode'], $customer['city'], $customer['country']));
                 Utils::print_table_row(data: Utils::format_phone_number($customer['tel']));
-                Utils::print_table_row(data: $customer['email'] . ($customer['is_newsletter_allowed'] ? " <i class='fa-solid fa-envelope-open-text' title='Newsletter: Sì'></i>" : ""));
+                Utils::print_table_row(data: $customer['email']);
                 Utils::print_table_row(data: <<<EOD
                 <a href="index.php?page=customers_edit&customer_id={$customer['customer_id']}"  class="btn btn-outline-primary btn-sm" title='Modifica'><i class="fa-solid fa-pen"></i></a>
                 <a href="index.php?page=customers_card&customer_id={$customer['customer_id']}" class="btn btn-outline-primary btn-sm" title='Gestione carta fedeltà'><i class="fa-solid fa-address-card"></i></a>
+                <a href="index.php?page=sales_customer-view&customer_id={$customer['customer_id']}" class="btn btn-outline-primary btn-sm" title='Vendite cliente'><i class="fa-solid fa-bag-shopping"></i></a>
                 <a onclick="deleteCustomer('{$customer['customer_id']}')" class="btn btn-outline-danger btn-sm" title='Elimina'><i class="fa-solid fa-trash"></i></a>
 EOD
                 );

@@ -11,7 +11,7 @@ $oldData = $stmt->fetch();
 $oldEmail = $oldData['email'];
 $customer_number = $oldData['customer_number'];
 
-$sql = "UPDATE customers SET first_name = :first_name, last_name = :last_name, birth_date = :birth_date, street = :street, postcode = :postcode, city = :city, country = :country, tel = :tel, email = :email, is_newsletter_allowed = :is_newsletter_allowed WHERE customer_id = :customer_id";
+$sql = "UPDATE customers SET first_name = :first_name, last_name = :last_name, birth_date = :birth_date, street = :street, postcode = :postcode, city = :city, country = :country, tel = :tel, email = :email WHERE customer_id = :customer_id";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
     ":customer_id" => $_POST['customer_id'],
@@ -24,7 +24,6 @@ $res = $stmt->execute([
     ":country" => $_POST["country"] ?? null,
     ":tel" => $_POST["tel"] ?? null,
     ":email" => $_POST["email"],
-    ":is_newsletter_allowed" => $_POST["is_newsletter_allowed"] === "on",
 ]);
 
 if(!$res) {

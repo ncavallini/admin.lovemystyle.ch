@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 $dbconnection = DBConnection::get_db_connection();
-$sql = "INSERT INTO customers VALUES (UUID(), :customer_number, :first_name, :last_name, :birth_date, :street, :postcode, :city, :country, :tel, :email, NOW(), NOW(), :is_newsletter_allowed)";
+$sql = "INSERT INTO customers VALUES (UUID(), :customer_number, :first_name, :last_name, :birth_date, :street, :postcode, :city, :country, :tel, :email, NOW(), NOW())";
 $stmt = $dbconnection->prepare($sql);
 $customer_number = InternalNumbers::get_customer_number();
 $res = $stmt->execute([
@@ -15,7 +15,6 @@ $res = $stmt->execute([
     ":country" => $_POST["country"] ?? null,
     ":tel" => $_POST["tel"] ?? null,
     ":email" => $_POST["email"],
-    ":is_newsletter_allowed" => $_POST["is_newsletter_allowed"] === "on"
 ]);
 
 if($_POST['is_newsletter_allowed'] === "on") {

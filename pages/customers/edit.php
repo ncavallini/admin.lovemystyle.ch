@@ -68,7 +68,7 @@
     </div>
     <br>
     <div class="form-check">
-    <input type="checkbox" name="is_newsletter_allowed" class="form-check-input" <?php if($customer['is_newsletter_allowed']) echo "checked" ?>>
+    <input type="checkbox" name="is_newsletter_allowed" class="form-check-input" <?php if(Brevo::is_newsletter_subscribed($customer['email'])) echo "checked" ?>>
     <label for="is_newsletter_allowed" class="form-check-label">Desidera ricevere la newsletter?</label>
     </div>
 
