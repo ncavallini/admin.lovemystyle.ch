@@ -32,12 +32,24 @@
     public static function delete_customer(string $email) {
         $apiInstance = new Brevo\Client\Api\ContactsApi(config: self::get_config());
         try {
-            $apiInstance->deleteContact($email);
+            $apiInstance->deleteContact(($email));
         } catch (Exception $e) {
             error_log('Exception when calling ContactsApi->deleteContact: ' . $e->getMessage());
             return false;
         }
         
+    }
+
+    public static function is_newsletter_subscribed(string $email): bool {
+        $apiInstance = new Brevo\Client\Api\ContactsApi(config: self::get_config());
+        try {
+            $contactInfo = $apiInstance->getContactInfo(($email));
+            return !$contactInfo->getEmailBlacklisted();
+        } catch (Exception $e) {
+           
+            error_log('Exception when calling ContactsApi->getContactInfo: ' . $e->getMessage());
+            return false;
+        }
     }
 }
 ?>

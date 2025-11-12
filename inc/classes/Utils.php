@@ -20,6 +20,8 @@ class Utils
         echo <<<EOD
                 <div class="alert alert-danger" role="alert">
                     $message
+                    <hr>
+                    <p><a onclick="window.history.back()" class="btn btn-secondary">Indietro</a></p>
                 </div>
                 EOD;
     }
@@ -108,11 +110,11 @@ class Utils
         return $str;
     }
 
-    public static function format_date(string|null $date_mysql)
+    public static function format_date(string|null $date_mysql, bool $include_prefix = false)
     {
         if (empty($date_mysql) || $date_mysql === NULL) return "-";
         $date = new DateTime($date_mysql);
-        return $date->format("d/m/Y");
+        return $include_prefix ? $date->format("D d/m/Y") : $date->format("d/m/Y");
     }
 
     public static function format_datetime(string|null $date_mysql)
@@ -136,7 +138,7 @@ class Utils
         return (int) ($price * 100);
     }
 
-    public static function format_price(int|float $price): string
+    public static function format_price(int|float $price, string $currency = "CHF"): string
     {
         if (is_float($price)) {
             $price = round($price, 2, PHP_ROUND_HALF_UP);
@@ -174,6 +176,15 @@ class Utils
         } else {
             return $subtotal * (1 - $discount / 100);
         }
+    }
+
+    public static function format_payment_method(string $rawMethod): string {
+        return match (strtolower($rawMethod)) {
+            "cash" => "Contanti",
+            "pos" => "POS",
+            "mixed" => "Misto",
+            default => strtoupper($rawMethod),
+        };
     }
 
     public static function format_pos(string $text): string
@@ -339,6 +350,18 @@ class Utils
         );
         return $nextClosingDateTime->format('Y-m-d H:i:s');
     }
+
+    public static function computeAge($birthDate) {
+    if (empty($birthDate)) {
+        return null;
+    }
+    
+    $birth = new DateTime($birthDate);
+    $today = new DateTime('today');
+    $age = $birth->diff($today)->y;
+    
+    return $age;
+}
 
 
 }
