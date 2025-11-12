@@ -164,6 +164,11 @@ EOD;
                         <td><?php echo Utils::format_price($row['total_value']); ?></td>
                     </tr>
                 <?php endforeach; ?>
+                <tr class="total-row">
+                    <td class="b" style="color: red;">TOTALE</td>
+                    <td class="b" style="color: red;"><?php echo array_sum(array_column($month_by_month, 'sales_count')); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($month_by_month, 'total_value'))); ?></td>
+                </tr>
             </tbody>
             </tr>
             </thead>

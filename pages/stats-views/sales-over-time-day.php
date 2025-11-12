@@ -190,6 +190,11 @@ EOD;
                         <th><?php echo Utils::format_price($row['total_value']) ?></th>
                     </tr>
                 <?php endforeach; ?>
+                <tr class="total-row">
+                    <td class="b" style="color: red;">TOTALE</td>
+                    <td class="b" style="color: red;"><?php echo array_sum(array_column($day_by_day, 'sales_count')); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($day_by_day, 'total_value'))); ?></td>
+                </tr>
             </tbody>
             </tr>
             </thead>

@@ -139,6 +139,11 @@ EOD;
                         <td><?php echo Utils::format_price($row['total_value']); ?> CHF</td>
                     </tr>
                 <?php endforeach; ?>
+                <tr class="total-row">
+                    <td class="b" style="color: red;">TOTALE</td>
+                    <td class="b" style="color: red;"><?php echo array_sum(array_column($year_by_year, 'sales_count')); ?></td>
+                    <td class="b" style="color: red;"><?php echo Utils::format_price(array_sum(array_column($year_by_year, 'total_value'))); ?></td>
+                </tr>
             </tbody>
             </tr>
             </thead>

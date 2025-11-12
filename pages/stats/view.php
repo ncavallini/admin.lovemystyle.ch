@@ -10,4 +10,10 @@
     <li class="list-group-item"><a href="index.php?page=stats-views_time-intervals">Vendite per fascia oraria</a></li>
 <!--    <li class="list-group-item"><a href="">Vendite per fascia d'età</a></li> -->
     <li class="list-group-item"><a href="index.php?page=stats-views_most-sold-brands">Brand più venduto</a></li>
+    <li class="list-group-item"><a href="index.php?page=stats-views_most-spending-customer">Cliente più spendente</a></li>
+    <li class="list-group-item"><a href="index.php?page=stats-views_sales-by-country">Vendite per paese</a></li>
+    <li class="list-group-item"><a href="index.php?page=stats-views_sales-by-age">Vendite per età</a></li>
+
+
+
 </ul>
