@@ -1,7 +1,15 @@
 <?php
 $connection = DBConnection::get_db_connection();
 $q = $_GET['q'] ?? "";
-$searchQuery = Pagination::build_search_query($q, ["last_name", "first_name", "customer_id", "booking_id"]);
+$searchQuery = Pagination::build_search_query($q, ["customer_id", "booking_id"]);
+$countSql = "SELECT COUNT(*) FROM bookings WHERE " . $searchQuery['text'];
+$countStmt = $connection->prepare($countSql);
+$countStmt->execute($searchQuery['params']);
+$totalRows = $countStmt->fetchColumn();
+
+// Initialize pagination with the total count
+$pagination = new Pagination($totalRows);
+
 $sql = "SELECT 
   b.*, 
   c.first_name, c.last_name, c.customer_id, c.tel, c.email, 
@@ -12,11 +20,7 @@ JOIN customers c ON b.customer_id = c.customer_id
 JOIN products p ON b.product_id = p.product_id
 JOIN product_variants v ON b.variant_id = v.variant_id AND b.product_id = v.product_id;
         WHERE " . $searchQuery['text'] . " 
-        ORDER BY b.from_datetime DESC";
-$stmt = $connection->prepare($sql);
-$stmt->execute($searchQuery['params']);
-$pagination = new Pagination($stmt->rowCount());
-$sql .= $pagination->get_sql();
+        ORDER BY b.from_datetime DESC" . $pagination->get_sql();
 $stmt = $connection->prepare($sql);
 $stmt->execute($searchQuery['params']);
 $bookings = $stmt->fetchAll();
@@ -52,13 +56,15 @@ $bookings = $stmt->fetchAll();
                 Utils::print_table_row($booking['last_name'] . " " . $booking['first_name'], "text-nowrap");
                 Utils::print_table_row(Utils::format_datetime($booking['from_datetime']), "text-nowrap");
                 Utils::print_table_row(Utils::format_datetime($booking['to_datetime']), "text-nowrap");
-                Utils::print_table_row($booking['product_name'] . " @ " . $booking['size'] . " / " . $booking['color'] . " (<span class='tt'>" . InternalNumbers::get_sku($booking['product_id'], $booking['variant_id']), "text-nowrap");
-                /*
+                Utils::print_table_row($booking['product_name'] . " @ " . $booking['size'] . " / " . $booking['color'] . " (<span class='tt'>" . InternalNumbers::get_sku($booking['product_id'], $booking['variant_id']) . "</span>)", "text-nowrap");
+                
                 Utils::print_table_row(data: <<<EOD
-                <a href="index.php?page=sales_details&sale_id={$gift_card['sale_id']}" class="btn btn-outline-primary btn-sm" title='Vedi vendita'><i class="fa-solid fa-eye"></i></a>
+            <a href="actions/bookings/print.php?booking_id={$booking['booking_id']}" class="btn btn-outline-secondary btn-sm" title='Stampa'><i class="fa-solid fa-print"></i></a>
+            <a onclick="deleteBooking('{$booking['booking_id']}')" class="btn btn-outline-danger btn-sm" title='Elimina'><i class="fa-solid fa-trash"></i></a>
+
 EOD
                 );
-*/
+
                 echo "</tr>";
             }
 
@@ -72,14 +78,14 @@ EOD
 <?php echo $pagination->get_page_links(); ?>
 
 <script>
-    function deleteCustomer(customer_id) {
+    function deleteBooking(booking_id) {
         bootbox.confirm({
-            title: "Elimina Cliente",
-            message: "Sei sicuro di voler eliminare il cliente?",
+            title: "Elimina Prenotazione",
+            message: "Sei sicuro di voler eliminare la prenotazione?",
 
             callback: function(result) {
                 if (result) {
-                    window.location.href = "/actions/customers/delete.php?customer_id=" + customer_id;
+                    window.location.href = "/actions/bookings/delete.php?booking_id=" + booking_id;
                 }
             }
         })
