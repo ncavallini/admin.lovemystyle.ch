@@ -26,7 +26,7 @@ if($token_data['expires_at'] < date("Y-m-d H:i:s")) {
     return;
 }
 
-$sql = "UPDATE users SET password_hash = ? WHERE username = ?;";
+$sql = "UPDATE users SET password_hash = ?, needs_password_change = FALSE WHERE username = ?;";
 $stmt = $dbconnection->prepare($sql);
 $stmt->execute([$hash, $token_data['username']]);
 $sql = "DELETE FROM password_reset_tokens WHERE token = ?;";

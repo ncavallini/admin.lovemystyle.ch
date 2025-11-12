@@ -11,7 +11,15 @@ if($passwordStrength['score'] < 3) {
     die;
 }
 
-$sql = "UPDATE users SET password_hash = :password_hash WHERE username = :username";
+$isSelf = ($_POST['username'] === $_SESSION['user']['username']);
+if(!$isSelf && !Auth::is_owner(includeAdmin: true)) {
+    Utils::print_error("Non hai i permessi per resettare la password di questo utente.", true);
+    die;
+}
+
+
+
+$sql = "UPDATE users SET password_hash = :password_hash, needs_password_change = FALSE WHERE username = :username";
 $stmt = $dbconnection->prepare($sql);
 $res = $stmt->execute([
     'password_hash' => password_hash($_POST['password'], PASSWORD_BCRYPT),

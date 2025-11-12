@@ -23,7 +23,8 @@ require_once __DIR__ . "/DBConnection.php";
 class Auth
 {
 
-    private static array $allowedPages = ['login', 'forgot-password', 'customers_add', 'customers_add-success', 'languagepicker'];
+    private static array $allowedPages = ['login', 'forgot-password', 'customers_add', 'customers_add-success', 'languagepicker'
+    , 'public-forms_elisa-sanna-nov-25'];
     public static function login(string $username, string $password): bool
     {
         $connection = DBConnection::get_db_connection();

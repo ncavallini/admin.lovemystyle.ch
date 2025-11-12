@@ -1,3 +1,21 @@
+<?php
+
+if($_GET["username"] === Auth::get_username()) {
+    // L'utente sta resettando la propria password
+    // Non fare nulla
+} else {
+    // L'utente sta resettando la password di un altro utente
+    // Verifica che l'utente loggato sia un admin
+    if(!Auth::is_owner(includeAdmin: true)) {
+        Utils::print_error("Non hai i permessi per resettare la password di questo utente.");
+        goto end;
+    }
+}
+
+?>
+
+
+
 <script src="/inc/zxcvbn.js"></script>
 
 <h1>Resetta Password</h1>
