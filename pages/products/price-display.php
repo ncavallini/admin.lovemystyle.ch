@@ -47,7 +47,7 @@ $products = $stmt->fetchAll();
                     Utils::print_table_row("<input type='text' value='{$product['name']}' id='{$id}it'  class='form-control' required>");
                     Utils::print_table_row("<input type='text' value='' id='{$id}de'  class='form-control' required>");
                     Utils::print_table_row("<input type='text' value='' id='{$id}en'  class='form-control' required>");
-                    Utils::print_table_row(Utils::format_price($product['price']));
+                    Utils::print_table_row(data: ($product['is_discounted'] ? "(<span class='strikethrough'>" . Utils::format_price($product['full_price']) . "</span>)&nbsp;&nbsp;" : "") .  Utils::format_price($product['price']));
                     echo "</tr>";
                 }
             ?>
@@ -70,7 +70,7 @@ $products = $stmt->fetchAll();
             let it = document.getElementById(`displayname_${id}_it`).value;
             let de = document.getElementById(`displayname_${id}_de`).value;
             let en = document.getElementById(`displayname_${id}_en`).value;
-            let price = row.querySelector('td:last-child').innerText;
+            let price = row.querySelector('td:last-child').innerHTML;
             result.push({
                 id: id,
                 brandName: brandName,

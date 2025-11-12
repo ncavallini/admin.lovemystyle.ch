@@ -13,15 +13,20 @@ class ProductTagLabel implements DYMOLabel {
    private string|null $size;
    private string $sku;
    private int $price;
+   private int $full_price;
+
+   private bool $is_discounted;
    private GuzzleHttp\Client $httpClient;
 
-   public function __construct(string $name, string $brand, string|null $color, string|null $size, string $sku, int $price) {
+   public function __construct(string $name, string $brand, string|null $color, string|null $size, string $sku, int $price, int $full_price, bool $is_discounted) {
        $this->name = $name;
        $this->brand = $brand;
        $this->color = $color;
        $this->size = $size;
        $this->sku = $sku;
        $this->price = $price;
+       $this->full_price = $full_price;
+       $this->is_discounted = $is_discounted;
        $this->httpClient = POSHttpClient::get_http_client();
    }
 
@@ -35,12 +40,18 @@ class ProductTagLabel implements DYMOLabel {
         throw new Error("Variante non trovata.");
     }
     $sku = InternalNumbers::get_sku($productId, $variantId);
-    $label = new ProductTagLabel($variant['name'], $variant["brand_name"], $variant['color'], $variant['size'], $sku, $variant['price']);
+    if($variant['is_discounted']) {
+        $label = new ProductTagLabel($variant['name'], $variant["brand_name"], $variant['color'], $variant['size'], $sku, $variant['price'], $variant['full_price'], $variant['is_discounted']);
+    }
+    else {
+        $label = new ProductTagLabel($variant['name'], $variant["brand_name"], $variant['color'], $variant['size'], $sku, $variant['price'], $variant['price'], $variant['is_discounted']);
+    }
     return $label;
    }
 
    public function get_xml(): string {
-        $xml = file_get_contents(__DIR__ . "/../../templates/labels/product_label.dymo");
+    $prefix = $this->is_discounted ? "discounted_" : "";
+        $xml = file_get_contents(__DIR__ . "/../../templates/labels/$prefix" . "product_label.dymo");
         $bom = "\xEF\xBB\xBF";
 if (substr($xml, 0, 3) === $bom) {
     $xml= substr($xml, 3);
@@ -51,6 +62,7 @@ if (substr($xml, 0, 3) === $bom) {
             "%size" => $this->size ?? "",
             "%color" => !empty($this->color) ? Utils::format_pos($this->color) : "",
             "%sku" => $this->sku,
+            "%full_price" => Utils::format_price($this->full_price),
             "%price" => Utils::format_price($this->price)
         ], str: $xml, escape_html_entities: true);
    }

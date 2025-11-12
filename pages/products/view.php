@@ -89,12 +89,13 @@ if(!empty($q)) {
         <tbody>
             <?php
             foreach ($products as $product) {
+                $isDiscounted = $product['is_discounted'] ?? false;
                 echo "<tr data-product-id='{$product['product_id']}'>";
                 Utils::print_table_row("<input type='checkbox' onclick='toggleProductSelection(event)' class='form-check-input product-checkbox'>");
                 Utils::print_table_row("<span class='tt'>{$product['product_id']}</span>");
                 Utils::print_table_row($product['name']);
                 Utils::print_table_row($product['brand_name']);
-                Utils::print_table_row(Utils::format_price($product['price']));
+                Utils::print_table_row(($isDiscounted ? "(<span class='strikethrough'>" . Utils::format_price($product['full_price']) . "</span>)&nbsp;&nbsp;" : "") .  Utils::format_price($product['price']));
                 Utils::print_table_row("<a href='index.php?page=variants_view&product_id={$product['product_id']}'  class='btn btn-outline-primary btn-sm' title='Varianti'><i class='fa-solid fa-shirt'></i></a>");
                 Utils::print_table_row(
                     data: <<<EOD
@@ -202,34 +203,20 @@ if(!empty($q)) {
     }
 
     function applyMassDiscount() {
-        bootbox.prompt({
-            title: "Applica sconto ai prodotti selezionati - Inserisci %",
-            inputType: 'number',
-            min: 0,
-            max: 100,
-            callback: function(result) {
-                if (!result) return;
-                const discount = parseInt(result);
-                fetch("/actions/products/mass_discount.php", {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        product_ids: [...selectedProducts],
-                        discount: discount
-                    })
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'index.php?page=products_discount';
 
-                }).then(response => {
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        bootbox.alert("<div class='alert alert-danger'>Errore durante l'applicazione dello sconto</div>");
-                    }
-                });
-            }
-        });
+        // Pass the selected products as a hidden input
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'products';
+            input.value = JSON.stringify([...selectedProducts]);
+            form.appendChild(input);
+        
+
+        document.body.appendChild(form);
+        form.submit(); // 🚀 This triggers a POST and navigates!
     }
 
     function printDisplay() {

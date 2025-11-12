@@ -37,7 +37,7 @@ foreach($products as $product) {
     $tbody .= "<td style='width: 50%; padding: 5px 0;'>" . htmlspecialchars($product["it"]) . "</td>";
     $tbody .= "<td style='width: 30%; padding: 5px 0;'>" . htmlspecialchars($product["brandName"]) . "</td>";
     $tbody .= "<td style='width: 20%; text-align: right; padding-right: 0.5cm; padding: 5px 0; white-space: nowrap;'>"
-              . htmlspecialchars($product["price"]) 
+              . ($product["price"]) 
               . "</td>";
     $tbody .= "</tr>"; 
 }
@@ -50,7 +50,7 @@ foreach($products as $product) {
     $tbody .= "<td style='width: 50%; padding: 5px 0;'>" . htmlspecialchars($product["de"]) . "</td>";
     $tbody .= "<td style='width: 30%; padding: 5px 0;'>" . htmlspecialchars($product["brandName"]) . "</td>";
     $tbody .= "<td style='width: 20%; text-align: right; padding-right: 0.5cm; padding: 5px 0; white-space: nowrap;'>"
-              . htmlspecialchars($product["price"]) 
+              . ($product["price"]) 
               . "</td>";
     $tbody .= "</tr>";
     
@@ -64,7 +64,7 @@ foreach($products as $product) {
     $tbody .= "<td style='width: 50%; padding: 5px 0;'>" . htmlspecialchars($product["en"]) . "</td>";
     $tbody .= "<td style='width: 30%; padding: 5px 0;'>" . htmlspecialchars($product["brandName"]) . "</td>";
     $tbody .= "<td style='width: 20%; text-align: right; padding-right: 0.5cm; padding: 5px 0; white-space: nowrap;'>"
-              . htmlspecialchars($product["price"]) 
+              . ($product["price"]) 
               . "</td>";
     $tbody .= "</tr>";
     
