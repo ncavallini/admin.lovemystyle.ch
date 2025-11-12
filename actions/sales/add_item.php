@@ -4,6 +4,7 @@ $dbconnection = DBConnection::get_db_connection();
 $saleId = $_POST['sale_id'] ?? "";
 $sku = $_POST['sku'];
 $action = $_POST['action'] ?? 'new'; // 'inc', 'new'
+$oldSaleId = $_POST['old_sale_id'] ?? "";
 
 try {
     list($productId, $variantId) = InternalNumbers::parse_sku($sku);
@@ -32,18 +33,34 @@ if($stmt->rowCount() > 0) {
 
 if($action === "new") {
 
-    $sql = "SELECT price FROM products WHERE product_id = ?";
+    $sql = "SELECT price, is_discounted FROM products WHERE product_id = ?";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([$productId]);
-    $price = $stmt->fetchColumn(0);
+    list($price, $isDiscounted) = $stmt->fetch(PDO::FETCH_NUM);
 
-    $sql = "INSERT INTO sales_items (sale_id, product_id, variant_id, quantity, price) VALUES (:sale_id, :product_id, :variant_id, 1, :price)";
+    $sql = "SELECT is_discounted FROM sales_items WHERE sale_id = :sale_id AND product_id = :product_id AND variant_id = :variant_id";
+    $stmt = $dbconnection->prepare($sql);
+    $stmt->execute([
+        ":sale_id" => $oldSaleId,
+        ":product_id" => $productId,
+        ":variant_id" => $variantId
+    ]);
+    $isItemDiscounted = $stmt->fetchColumn();
+    
+    
+    if($_POST['negative'] && $isItemDiscounted === 1) {
+        Utils::print_error("Impossibile stornare un articolo saldato.", true);
+        die;
+    }
+
+    $sql = "INSERT INTO sales_items (sale_id, product_id, variant_id, quantity, price, is_discounted) VALUES (:sale_id, :product_id, :variant_id, 1, :price, :is_discounted)";
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute([
         ":sale_id" => $saleId,
         ":product_id" => $productId,
         ":variant_id" => $variantId,
-        ":price" => $price
+        ":price" => $price,
+        ":is_discounted" => $isDiscounted
     ]);
 }
 
@@ -59,5 +76,5 @@ else if($action === "inc") {
 
 else {}
 
-header("Location: /index.php?page=sales_add&sale_id=$saleId&negative=" . $_POST['negative']);
+header("Location: /index.php?page=sales_add&sale_id=$saleId&negative=" . $_POST['negative'] . "&old_sale_id=" . ($_POST['old_sale_id'] ?? ''));
 ?>

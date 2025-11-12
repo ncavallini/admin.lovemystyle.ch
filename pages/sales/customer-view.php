@@ -15,13 +15,17 @@ if (!$customer) {
     die;
 }
 
-$sql = "SELECT * FROM sales  WHERE customer_id = :customer_id ORDER BY created_at DESC, closed_at DESC, created_at DESC";
+$sql = "SELECT COUNT(*) FROM sales WHERE customer_id = :customer_id";
 $stmt = $connection->prepare($sql);
 $stmt->execute([':customer_id' => $customer_id]);
+$totalRows = $stmt->fetchColumn();
 $pagination = new Pagination($stmt->rowCount(), pageSize:100);
+
+$sql = "SELECT * FROM sales  WHERE customer_id = :customer_id ORDER BY closed_at DESC, created_at DESC";
+$stmt = $connection->prepare($sql);
 $sql .= $pagination->get_sql();
 $stmt = $connection->prepare($sql);
-$stmt->execute($searchQuery['params']);
+$stmt->execute([':customer_id' => $customer_id]);
 $sales = $stmt->fetchAll();
 
 
@@ -37,7 +41,7 @@ $sales = $stmt->fetchAll();
                 <th>Totale (CHF)</th>
                 <th>Metodo di pagamento</th>
                 <th>Operatore</th>
-                <th>Azioni</th>
+                <th>Visualizza</th>
             </tr>
         </thead>
         <tbody>
@@ -59,6 +63,7 @@ $sales = $stmt->fetchAll();
                     Utils::print_table_row(Utils::format_price($total * $sign));
                     Utils::print_table_row(strtoupper($sale['payment_method'] ?? "-") ?? "-");
                     Utils::print_table_row(Auth::get_fullname_by_username($sale['username']));
+                    Utils::print_table_row("<a href='index.php?page=sales_details&sale_id={$saleId}' class='btn btn-sm btn-outline-primary'><i class='fa fa-eye'></i></a>");
                 }
             ?>
         </tbody>
