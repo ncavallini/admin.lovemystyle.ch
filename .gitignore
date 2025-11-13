@@ -6,3 +6,7 @@
 /logs/
 /assets/
 /private/
+/claude.md
+/.claude
+/commit_script.sh
+/create_commits.sh
