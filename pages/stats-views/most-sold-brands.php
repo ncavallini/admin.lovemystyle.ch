@@ -55,7 +55,7 @@ if (!isset($_GET['timeframe_type']) || $_GET['timeframe_type'] == 'absolute') {
             b.brand_id
         ORDER BY
             total_revenue DESC
-        LIMIT 10;
+       
     EOD;
     $stmt = $dbconnection->prepare($sql);
     $stmt->execute();
