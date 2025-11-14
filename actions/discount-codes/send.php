@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "SELECT * FROM `customers` where is_newsletter_allowed = TRUE";
 $stmt = $dbconnection->prepare($sql);

@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "UPDATE product_variants SET color = ?, size = ?, stock = ? WHERE product_id = ? AND variant_id = ?";
 $stmt = $dbconnection->prepare($sql);

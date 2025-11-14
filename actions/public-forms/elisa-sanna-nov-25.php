@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "INSERT INTO elisa_sanna_nov_25 (first_name, last_name, email, phone, date, time) VALUES (:first_name, :last_name, :email, :phone, :date, :time)";
 $stmt = $dbconnection->prepare($sql);

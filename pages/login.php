@@ -8,6 +8,7 @@
 ?>
 
 <form action="actions/auth/login.php" method="POST">
+    <?php echo CSRF::tokenField(); ?>
     <input type="text" class="form-control" required name="username" placeholder="Username">
     <br>
     <input type="password" class="form-control" required name="password" placeholder="Password">

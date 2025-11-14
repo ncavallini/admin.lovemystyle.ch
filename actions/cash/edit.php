@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "UPDATE cash_content SET content = :content, last_updated_at = :last_updated_at, last_updated_by = :last_updated_by";
 $stmt = $dbconnection->prepare($sql);

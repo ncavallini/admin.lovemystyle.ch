@@ -23,8 +23,8 @@ require_once __DIR__ . "/DBConnection.php";
 class Auth
 {
 
-    private static array $allowedPages = ['login', 'forgot-password', 'customers_add', 'customers_add-success', 'languagepicker'
-    , 'public-forms_elisa-sanna-nov-25'];
+    // SECURITY: Only public pages that don't require authentication
+    private static array $allowedPages = ['login', 'forgot-password', 'languagepicker', 'public-forms_elisa-sanna-nov-25'];
     public static function login(string $username, string $password): bool
     {
         $connection = DBConnection::get_db_connection();
@@ -36,6 +36,9 @@ class Auth
             return false;
 
         if (password_verify($password, $user['password_hash'])) {
+            // SECURITY: Regenerate session ID to prevent session fixation
+            session_regenerate_id(true);
+
             $sql = "UPDATE users SET last_login_at = NOW() WHERE username = ?";
             $stmt = $connection->prepare($sql);
             $stmt->execute([$username]);

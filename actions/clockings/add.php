@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "INSERT INTO clockings VALUES(UUID(), :username, NOW(), :type)";
 $stmt = $dbconnection->prepare($sql);

@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
 
+// CSRF Protection
+CSRF::requireValidToken();
+
+
 $db = DBConnection::get_db_connection();
 
 $saleId = $_GET['sale_id'] ?? "";

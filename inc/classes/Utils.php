@@ -9,6 +9,8 @@ class Utils
 
     public static function print_error(string $message, bool $needs_bootstrap = false)
     {
+        // Sanitize message to prevent XSS
+        $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
         if ($needs_bootstrap) {
             echo <<<EOD
@@ -28,17 +30,24 @@ class Utils
 
     public static function redirect(string $destination)
     {
-        echo <<<EOD
-                <script>
-                    window.location.href = "$destination";
-                </script>
-            EOD;
+        // Use json_encode to safely escape the URL for JavaScript context
+        $safe_destination = json_encode($destination, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        echo "<script>window.location.href = " . $safe_destination . ";</script>";
+        exit;
     }
 
     public static function print_table_row(?string $data, $class = "", $colspan = 1)
     {
         if ($data == null)
             $data = "";
+
+        // Sanitize all parameters that go into attributes
+        $class = htmlspecialchars($class, ENT_QUOTES, 'UTF-8');
+        $colspan = (int)$colspan; // Force integer type to prevent XSS
+
+        // Validate colspan is positive
+        if ($colspan < 1) $colspan = 1;
+
         echo "<td class='$class text-nowrap' colspan='$colspan'>$data</td>";
     }
 
@@ -70,7 +79,10 @@ class Utils
             $formatted = $phone; // Fallback to original if parsing fails
         }
         if ($tel_link) {
-            return "<a href='tel:$phone'>$formatted</a>";
+            // Sanitize phone numbers in HTML to prevent XSS
+            $safe_phone = htmlspecialchars($phone, ENT_QUOTES, 'UTF-8');
+            $safe_formatted = htmlspecialchars($formatted, ENT_QUOTES, 'UTF-8');
+            return "<a href='tel:$safe_phone'>$safe_formatted</a>";
         }
         return $formatted;
     }
@@ -309,16 +321,17 @@ class Utils
             "WARNING" => 3,
             "INFO" => 4,
         ];
-        
+
         if(!array_key_exists($type, $typeMapping)) {
             $type = "INFO";
         }
+        // Use JSON_HEX flags to prevent XSS when embedding in script tags
         $json = json_encode([
             "title" => $title,
             "message" => $message,
             "type" => $typeMapping[$type],
             "timeout" => $timeout
-        ]);
+        ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         echo <<<EOD
             <script>
                 setToast($json);
@@ -355,13 +368,23 @@ class Utils
     if (empty($birthDate)) {
         return null;
     }
-    
+
     $birth = new DateTime($birthDate);
     $today = new DateTime('today');
     $age = $birth->diff($today)->y;
-    
+
     return $age;
 }
+
+    /**
+     * Validate UUID format (v4)
+     * @param string $uuid The UUID to validate
+     * @return bool True if valid UUID format, false otherwise
+     */
+    public static function validate_uuid(string $uuid): bool
+    {
+        return (bool)preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i', $uuid);
+    }
 
 
 }

@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 Auth::require_owner();
 $sql = "UPDATE clockings SET datetime = :datetime, type = :type WHERE clocking_id = :clocking_id";

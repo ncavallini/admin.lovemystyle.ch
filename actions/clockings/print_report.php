@@ -2,6 +2,10 @@
 mb_internal_encoding("UTF-8");
 
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 // Create an instance of the class:
 

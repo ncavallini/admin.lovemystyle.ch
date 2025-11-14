@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 if(substr($_POST["tel"], 0, 2) == "00") {
     $_POST["tel"] = "+" . substr($_POST["tel"], 2);

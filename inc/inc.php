@@ -17,4 +17,5 @@ require_once __DIR__ . "/classes/POSHttpClient.php";
 require_once __DIR__ . "/classes/Logging.php";
 require_once __DIR__ . "/classes/LoyaltyCard.php";
 require_once __DIR__ . "/classes/Brevo.php";
+require_once __DIR__ . "/classes/CSRF.php";
 ?>

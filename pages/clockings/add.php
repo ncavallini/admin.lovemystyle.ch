@@ -19,6 +19,6 @@
             </select>
         </div>
     </div>
-    <input type="hidden" name="username" value="<?php echo $_GET['username'] ?>">
+    <input type="hidden" name="username" value="<?php echo htmlspecialchars($_GET['username'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
     <br>
     <button type="submit" class="btn btn-primary">Aggiungi</button>

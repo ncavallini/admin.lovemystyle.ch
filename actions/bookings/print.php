@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "SELECT b.*, c.first_name, c.last_name, c.tel, c.email, p.name AS product_name FROM bookings b JOIN customers c USING(customer_id) JOIN products p USING(product_id) WHERE booking_id = ?";
 $stmt = $dbconnection->prepare($sql);

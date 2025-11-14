@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $saleId = $_POST['sale_id'] ?? "";
 $customerNumber = $_POST['customer_number'] ?? NULL;

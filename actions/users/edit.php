@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "UPDATE users SET tel = :tel, email = :email, street = :street, postcode = :postcode, city = :city, country = :country, iban = :iban, role = :role WHERE username = :username";
 $stmt = $dbconnection->prepare($sql);

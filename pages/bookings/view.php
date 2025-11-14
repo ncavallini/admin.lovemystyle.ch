@@ -33,10 +33,10 @@ $bookings = $stmt->fetchAll();
 <p>&nbsp;</p>
 <form action="/index.php" method="GET" style="display: flex; align-items: center;">
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="q" placeholder="Cerca riservazione" value="<?php echo $_GET['q'] ?? '' ?>" style="flex-grow: 1; margin-right: 8px;">
-        <button type="submit" class="btn btn-secondary "><i class="fa-solid fa-magnifying-glass"></i></button>
+ <input type="text" class="form-control" name="q" placeholder="Cerca riservazione" value="<?php echo
+  htmlspecialchars($_GET['q'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" style="flex-grow: 1; margin-right: 8px;">        <button type="submit" class="btn btn-secondary "><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
-    <input type="hidden" name="page" value="<?php echo $_GET['page'] ?>">
+    <input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 </form>
 <div class="table-responsive">
     <table class="table table-striped">

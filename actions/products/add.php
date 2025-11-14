@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $dbconnection = DBConnection::get_db_connection();
 $sql = "INSERT INTO products (product_id, name, brand_id, full_price, vat_id, last_edit_at) VALUES (:product_id, :name, :brand_id, :price, :vat, NOW())";
 $stmt = $dbconnection->prepare($sql);

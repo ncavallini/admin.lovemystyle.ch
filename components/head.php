@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?php echo $_GET['lang'] ?? "it"?>">
+<html lang="<?php echo htmlspecialchars($_GET['lang'] ?? 'it', ENT_QUOTES, 'UTF-8'); ?>">
 
 <head>
     <meta charset="UTF-8">

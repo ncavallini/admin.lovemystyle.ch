@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
 $productId = $_POST['product_id'] ?? "";
 $dbconnection = DBConnection::get_db_connection();
 $sql = "SELECT v.variant_id, v.stock FROM product_variants v WHERE product_id = ?"; 

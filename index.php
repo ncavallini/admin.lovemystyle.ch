@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
-ini_set('display_errors', '0');
+error_reporting(E_ALL );
+ini_set('display_errors', '1');
 require_once __DIR__ . "/inc/inc.php";
 require_once __DIR__ . "/components/head.php";
 require_once __DIR__ . "/components/header.php";
@@ -8,6 +8,12 @@ require_once __DIR__ . "/components/header.php";
 
 
 $page = $_GET['page'] ?? "home";
+
+// SECURITY: Validate page parameter to prevent path traversal
+if (strpos($page, '..') !== false || strpos($page, '/') !== false || strpos($page, '\\') !== false) {
+    Utils::print_error("Invalid page request.");
+    goto footer;
+}
 
 if (Auth::is_logged()) {
     require_once __DIR__ . "/components/nav_user.php";
@@ -25,8 +31,19 @@ if (Auth::is_logged()) {
         <p>&nbsp;</p>
    <?php
     $pagePath = __DIR__ . "/pages/" . str_replace("_", "/", $page) . ".php";
-    if (!file_exists($pagePath)) {
+
+    // SECURITY: Verify the resolved path is within pages directory
+    $realPagesDir = realpath(__DIR__ . "/pages");
+    $realPagePath = realpath($pagePath);
+
+    // Check if file exists and is within pages directory
+    if ($realPagePath === false || !file_exists($realPagePath)) {
         Utils::print_error("La pagina richiesta non esiste.");
+        goto footer;
+    }
+
+    if (strpos($realPagePath, $realPagesDir) !== 0) {
+        Utils::print_error("Invalid page request.");
         goto footer;
     }
 
@@ -34,7 +51,7 @@ if (Auth::is_logged()) {
         Utils::redirect("index.php?page=login&returnTo=" . urlencode("index.php?page=$page"));
     }
 
-    require_once $pagePath;
+    require_once $realPagePath;
     ?>
     <p>&nbsp;</p>
     <p>&nbsp;</p>

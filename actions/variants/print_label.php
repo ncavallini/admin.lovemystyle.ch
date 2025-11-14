@@ -1,5 +1,9 @@
 <?php
     require_once __DIR__ . "/../actions_init.php";
+
+// CSRF Protection
+CSRF::requireValidToken();
+
     $productId = $_POST['product_id'] ?? "";
     $variantId = $_POST['variant_id'] ?? "";
 

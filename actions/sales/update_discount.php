@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . "/../actions_init.php";
 
+// CSRF Protection
+CSRF::requireValidToken();
+
+
 header('Content-Type: application/json; charset=utf-8');
 
 try {
