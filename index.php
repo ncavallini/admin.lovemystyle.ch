@@ -5,7 +5,11 @@ require_once __DIR__ . "/inc/inc.php";
 require_once __DIR__ . "/components/head.php";
 require_once __DIR__ . "/components/header.php";
 
+?>
 
+<meta name="csrf-token" content="<?php echo htmlspecialchars(CSRF::generateToken(), ENT_QUOTES, 'UTF-8'); ?>">
+
+<?php 
 
 $page = $_GET['page'] ?? "home";
 
@@ -74,3 +78,24 @@ if(Auth::is_logged()) {
 <script src="/inc/pollPosStatus.js"></script>
 <?php endif; ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toaster/5.1.0/js/bootstrap-toaster.min.js" integrity="sha512-LKHDVlxKQ+ChADdnDsXJYU7LaUdGJk1X+Ab2rbFU11cqm+vhp2PGOWQIrl6K1NRZxHAdwPOYLPINPvUIEyBtVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (!token) return;
+
+  document.querySelectorAll('form[method="post"]').forEach(form => {
+    // Skip forms where you explicitly don't want CSRF (if any)
+    if (form.hasAttribute('data-no-csrf')) return;
+
+    // Avoid duplicate field
+    if (form.querySelector('input[name="csrf_token"]')) return;
+
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'csrf_token';
+    input.value = token;
+    form.appendChild(input);
+  });
+});
+</script>

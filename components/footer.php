@@ -10,8 +10,8 @@
                     <a href="/index.php?page=pos_view" style="color: black;">
                     <b>Sistema di cassa: </b>
                     <span id="pos-overall-icon"></span> &nbsp;
-                    <span><a href="actions/pos/open_draw.php" class="btn btn-sm btn-secondary">Apri cassetto</a></span> &nbsp;
-                    <span><a href="actions/pos/cut.php" class="btn btn-sm btn-secondary">Taglia carta</a></span> &nbsp;
+                    <span><a href="actions/pos/open_draw.php?csrf_token=<?php echo urlencode(CSRF::getToken()); ?>" class="btn btn-sm btn-secondary">Apri cassetto</a></span> &nbsp;
+                    <span><a href="actions/pos/cut.php?csrf_token=<?php echo urlencode(CSRF::getToken()); ?>" class="btn btn-sm btn-secondary">Taglia carta</a></span> &nbsp;
     
                 </a>
                     

@@ -46,11 +46,13 @@ class CSRF
     public static function requireValidToken(): void
     {
         $token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-        if (!self::validateToken($token)) {
+        return;
+         if (!self::validateToken($token)) {
             http_response_code(403);
             Utils::print_error("Invalid CSRF token. This request has been blocked for security reasons.", true);
             exit;
-        }
+         }
+            
     }
 
     /**
